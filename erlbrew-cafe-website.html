@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Erlbrew Café — Specialty coffee and matcha in Kawit, Cavite. A quiet corner worth finding."/>
+<title>Erlbrew Café</title>
+<link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="/tailwind.css" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:hidden}
+::selection{background:#4D6B48;color:#F4EFE6}
+
+/* ── Typography ── */
+.font-display{font-family:'Cormorant Garamond',Georgia,serif}
+.font-jp{font-family:'Noto Serif JP',serif}
+
+/* ── Nav ── */
+#nav{transition:all .35s cubic-bezier(.4,0,.2,1)}
+#nav.stuck{background:rgba(244,239,230,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(24,23,20,.08)}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+.reveal.show{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-30px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+.reveal-l.show{opacity:1;transform:none}
+.reveal-r{opacity:0;transform:translateX(30px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+.reveal-r.show{opacity:1;transform:none}
+
+/* ── Divider line ── */
+.h-line{height:1px;background:linear-gradient(90deg,transparent,#B8935A 30%,#B8935A 70%,transparent)}
+.v-line{width:1px;background:linear-gradient(180deg,transparent,rgba(184,147,90,.4) 30%,rgba(184,147,90,.4) 70%,transparent)}
+
+/* ── Hero ── */
+.hero-bg{background:#181714;position:relative}
+
+/* ── Menu item ── */
+.menu-item{border-bottom:1px solid rgba(244,239,230,0.07);transition:background .2s}
+.menu-item:hover{background:rgba(184,147,90,0.05)}
+.menu-item:last-child{border-bottom:none}
+
+/* ── No scrollbar (tab overflow) ── */
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+
+/* ── Tab hover ── */
+.menu-tab:hover span:nth-child(2){color:rgba(244,239,230,0.7)!important}
+
+/* ── Panel transitions ── */
+.menu-panel{
+  animation:none;
+}
+.menu-panel.fade-in{
+  animation:panelIn .38s cubic-bezier(.22,1,.36,1) both;
+}
+.menu-panel.fade-out{
+  animation:panelOut .2s cubic-bezier(.4,0,1,1) both;
+}
+@keyframes panelIn{
+  0%  {opacity:0;transform:translateY(14px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@keyframes panelOut{
+  0%  {opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-8px)}
+}
+
+/* ── Menu item stagger ── */
+.menu-panel.fade-in .menu-item{
+  animation:itemIn .4s cubic-bezier(.22,1,.36,1) both;
+}
+.menu-panel.fade-in .menu-item:nth-child(1) {animation-delay:.03s}
+.menu-panel.fade-in .menu-item:nth-child(2) {animation-delay:.06s}
+.menu-panel.fade-in .menu-item:nth-child(3) {animation-delay:.09s}
+.menu-panel.fade-in .menu-item:nth-child(4) {animation-delay:.12s}
+.menu-panel.fade-in .menu-item:nth-child(5) {animation-delay:.15s}
+.menu-panel.fade-in .menu-item:nth-child(6) {animation-delay:.18s}
+.menu-panel.fade-in .menu-item:nth-child(7) {animation-delay:.21s}
+.menu-panel.fade-in .menu-item:nth-child(8) {animation-delay:.24s}
+.menu-panel.fade-in .menu-item:nth-child(9) {animation-delay:.27s}
+.menu-panel.fade-in .menu-item:nth-child(10){animation-delay:.30s}
+.menu-panel.fade-in .menu-item:nth-child(11){animation-delay:.33s}
+.menu-panel.fade-in .menu-item:nth-child(12){animation-delay:.36s}
+@keyframes itemIn{
+  0%  {opacity:0;transform:translateX(-10px)}
+  100%{opacity:1;transform:translateX(0)}
+}
+
+/* ── Tab gold underline transition ── */
+.tab-line{transition:background .25s ease,opacity .25s ease,transform .25s ease}
+.menu-tab:hover .tab-label{color:rgba(244,239,230,0.7)!important}
+
+/* ── Gallery ── */
+.gal-img{overflow:hidden;position:relative}
+.gal-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(24,23,20,.5))}
+.gal-img-inner{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:center;background:#2a2620}
+.gal-img:hover .gal-img-inner{transform:scale(1.06)}
+
+/* ── Tag pills ── */
+.pill-sig{background:rgba(77,107,72,.12);color:#3a5136;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.pill-new{background:rgba(122,59,40,.12);color:#7a3b28;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.pill-best{background:rgba(184,147,90,.15);color:#7a5c2a;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+
+/* ── Hours ── */
+.hr-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(24,23,20,.07);font-size:13.5px}
+.hr-row:last-child{border-bottom:none}
+
+/* ── Btn ── */
+.btn-dark{display:inline-flex;align-items:center;gap:8px;background:#181714;color:#F4EFE6;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:14px 32px;transition:background .3s,color .3s;text-decoration:none;cursor:pointer;border:none}
+.btn-dark:hover{background:#4D6B48}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#F4EFE6;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:13px 32px;border:1px solid rgba(244,239,230,.3);transition:border-color .3s,background .3s;text-decoration:none;cursor:pointer}
+.btn-ghost:hover{border-color:#F4EFE6;background:rgba(244,239,230,.08)}
+.btn-outline-dark{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#181714;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:13px 28px;border:1px solid rgba(24,23,20,.25);transition:all .3s;text-decoration:none}
+.btn-outline-dark:hover{background:#181714;color:#F4EFE6;border-color:#181714}
+
+/* ── Mobile drawer ── */
+#drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+#drawer.open{transform:none}
+#overlay{opacity:0;pointer-events:none;transition:opacity .35s}
+#overlay.open{opacity:1;pointer-events:all}
+
+/* ── Scroll line ── */
+.scroll-indicator{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;animation:scrollpulse 2.5s ease-in-out infinite}
+@keyframes scrollpulse{0%,100%{opacity:.4}50%{opacity:.9}}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(244,239,230,.6),transparent)}
+
+/* ── Section label ── */
+.sec-label{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;color:rgba(184,147,90,.8);text-transform:uppercase}
+
+/* ── Map ── */
+.map-wrap{border:1px solid rgba(24,23,20,.1);overflow:hidden}
+.map-frame{width:100%;height:360px;border:none;display:block}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  NAV                                         ║
+     ╚══════════════════════════════════════════════╝ -->
+<header id="nav" class="fixed top-0 left-0 right-0 z-50 py-5">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+
+    <a href="#hero" id="nav-logo" class="group flex items-end gap-2.5 no-underline">
+      <span id="logo-text" class="font-display text-2xl font-normal leading-none tracking-tight transition-colors duration-300">Erlbrew</span>
+      <span class="font-jp text-[10px] text-gold tracking-[.25em] leading-none mb-0.5">カフェ</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-10">
+      <a href="#about"   class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">About</a>
+      <a href="#menu"    class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Menu</a>
+      <a href="#gallery" class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Gallery</a>
+      <a href="#visit"   class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Visit</a>
+      <a href="#visit" id="nav-cta" class="nav-cta font-sans text-[11px] font-medium tracking-[.1em] uppercase py-2.5 px-5 border transition-colors duration-300 no-underline">Find us</a>
+    </nav>
+
+    <button id="menu-btn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2 cursor-pointer bg-none border-none" aria-label="Open menu">
+      <span id="h1" class="ham-line block w-[22px] h-px transition-all duration-300"></span>
+      <span id="h2" class="ham-line block w-[22px] h-px transition-all duration-300"></span>
+      <span id="h3" class="ham-line block w-[14px] h-px transition-all duration-300"></span>
+    </button>
+  </div>
+</header>
+
+<div id="overlay" class="fixed inset-0 bg-ink/60 z-40"></div>
+<div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-cream z-50 flex flex-col px-8 py-10 gap-7">
+  <button id="close-btn" class="self-end font-sans text-sm text-ink-40 hover:text-ink transition-colors bg-none border-none cursor-pointer mb-2">✕ Close</button>
+  <a href="#about"   class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">About</a>
+  <a href="#menu"    class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Menu</a>
+  <a href="#gallery" class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Gallery</a>
+  <a href="#visit"   class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Visit</a>
+  <div class="mt-auto pt-8 border-t border-ink-15">
+    <p class="font-sans text-[11px] text-ink-40 tracking-widest uppercase mb-4">Follow us</p>
+    <div class="flex gap-5">
+      <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="font-sans text-xs text-ink-40 hover:text-ink transition-colors no-underline">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="font-sans text-xs text-ink-40 hover:text-ink transition-colors no-underline">Facebook</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  HERO                                        ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="hero" class="hero-bg min-h-screen flex items-center relative overflow-hidden">
+
+  <!-- Background SVG — ink wash abstraction -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none select-none" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <!-- Soft ink washes -->
+    <ellipse cx="900" cy="200" rx="500" ry="350" fill="rgba(77,107,72,0.07)"/>
+    <ellipse cx="200" cy="700" rx="380" ry="260" fill="rgba(184,147,90,0.05)"/>
+    <ellipse cx="1200" cy="750" rx="280" ry="200" fill="rgba(244,239,230,0.03)"/>
+    <!-- Vertical Japanese ruled lines — very subtle -->
+    <line x1="1100" y1="0" x2="1100" y2="900" stroke="rgba(244,239,230,0.04)" stroke-width="1"/>
+    <line x1="1140" y1="0" x2="1140" y2="900" stroke="rgba(244,239,230,0.03)" stroke-width="1"/>
+    <line x1="1180" y1="0" x2="1180" y2="900" stroke="rgba(244,239,230,0.025)" stroke-width="1"/>
+    <!-- Brushstroke circle suggestion -->
+    <circle cx="1050" cy="450" r="280" fill="none" stroke="rgba(184,147,90,0.06)" stroke-width="1.5"/>
+    <circle cx="1050" cy="450" r="320" fill="none" stroke="rgba(184,147,90,0.04)" stroke-width="1"/>
+  </svg>
+
+  <!-- Vertical JP text — signature element, right side -->
+  <div class="absolute right-0 top-0 bottom-0 w-16 hidden lg:flex flex-col items-center justify-center gap-0 select-none pointer-events-none border-l border-paper/5" aria-hidden="true">
+    <span class="font-jp text-[11px] tracking-[.5em] text-paper/20" style="writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.4em">コーヒーと静寂のある場所</span>
+  </div>
+
+  <!-- Gold left accent line -->
+  <div class="absolute left-0 top-24 bottom-24 w-px bg-gold/15 hidden xl:block"></div>
+
+  <div class="max-w-6xl mx-auto px-6 w-full pt-24 pb-32 relative z-10">
+    <div class="max-w-3xl">
+
+      <!-- Eyebrow -->
+      <div class="reveal flex items-center gap-4 mb-10">
+        <span class="sec-label">Since 2026</span>
+        <span class="w-8 h-px bg-gold/40 block"></span>
+        <span class="sec-label">Kawit, Cavite</span>
+      </div>
+
+      <!-- Main headline — Cormorant Garamond big display -->
+      <h1 class="reveal font-display font-light text-paper leading-[.95] tracking-tight mb-6" style="font-size:clamp(4rem,10vw,8rem);transition-delay:.08s">
+        Coffee,<br/>
+        <em class="text-gold font-light">stilled.</em>
+      </h1>
+
+      <!-- JP subtitle -->
+      <p class="reveal font-jp text-paper/30 tracking-[.3em] text-sm mb-8" style="transition-delay:.18s">
+        珈琲と静寂の空間
+      </p>
+
+      <!-- Gold rule -->
+      <div class="reveal w-16 h-px bg-gold/50 mb-8" style="transition-delay:.22s"></div>
+
+      <!-- Desc -->
+      <p class="reveal font-sans text-[15px] text-paper/55 leading-[1.8] max-w-md mb-12 font-light" style="transition-delay:.3s">
+        Specialty coffee and matcha in the birthplace of Philippine independence. Slow down. Order something beautiful.
+      </p>
+
+      <!-- CTAs -->
+      <div class="reveal flex flex-wrap gap-4" style="transition-delay:.38s">
+        <a href="#menu" class="btn-dark">
+          Explore menu
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="#visit" class="btn-ghost">Find us</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator hidden md:flex">
+    <span class="font-sans text-[9px] tracking-[.3em] uppercase text-paper/30">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  FEATURE BAND                                ║
+     ╚══════════════════════════════════════════════╝ -->
+<div class="bg-paper-deep py-7 border-y border-ink-15 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-ink-15">
+      <div class="px-6 py-2 text-center first:pl-0 last:pr-0">
+        <p class="font-jp text-[10px] tracking-[.25em] text-gold/70 uppercase mb-1">珈琲</p>
+        <p class="font-display text-base font-medium text-ink">Hot Coffee</p>
+      </div>
+      <div class="px-6 py-2 text-center">
+        <p class="font-jp text-[10px] tracking-[.25em] text-gold/70 uppercase mb-1">アイス</p>
+        <p class="font-display text-base font-medium text-ink">Iced Coffee</p>
+      </div>
+      <div class="px-6 py-2 text-center">
+        <p class="font-jp text-[10px] tracking-[.25em] text-gold/70 uppercase mb-1">抹茶</p>
+        <p class="font-display text-base font-medium text-ink">Matcha &amp; More</p>
+      </div>
+      <div class="px-6 py-2 text-center last:pr-0">
+        <p class="font-jp text-[10px] tracking-[.25em] text-gold/70 uppercase mb-1">ペストリー</p>
+        <p class="font-display text-base font-medium text-ink">Pastries</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  ABOUT                                       ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="about" class="py-28 bg-paper relative overflow-hidden">
+
+  <!-- Large watermark kanji, right -->
+  <div class="absolute -right-6 top-0 bottom-0 flex items-center pointer-events-none select-none" aria-hidden="true">
+    <span class="font-jp font-bold text-[220px] leading-none text-ink-06" style="writing-mode:vertical-rl">醸</span>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid lg:grid-cols-[1fr_44px_1fr] gap-0 items-center">
+
+      <!-- Left: Image placeholder -->
+      <div class="reveal-l lg:pr-16 mb-16 lg:mb-0">
+        <div class="relative">
+          <!-- Main placeholder -->
+          <div id="about-photo-wrap" class="aspect-[4/5] bg-paper-deep border border-ink-15 flex items-center justify-center relative overflow-hidden">
+            <!-- SVG placeholder art (hidden when API photo loads) -->
+            <svg id="about-photo-svg" viewBox="0 0 400 500" class="w-full h-full absolute inset-0" aria-hidden="true">
+              <!-- Paper texture suggestion -->
+              <rect width="400" height="500" fill="#EBE4D8"/>
+              <!-- Abstract coffee ring / brushstroke -->
+              <ellipse cx="220" cy="280" rx="120" ry="118" fill="none" stroke="rgba(24,23,20,0.06)" stroke-width="1.5"/>
+              <ellipse cx="220" cy="280" rx="90" ry="88" fill="none" stroke="rgba(24,23,20,0.05)" stroke-width="1"/>
+              <!-- Kanji center -->
+              <text x="220" y="295" text-anchor="middle" font-family="'Noto Serif JP'" font-size="80" fill="rgba(184,147,90,0.2)" font-weight="300">珈</text>
+              <!-- Corner marks -->
+              <line x1="20" y1="20" x2="40" y2="20" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="20" y1="20" x2="20" y2="40" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="380" y1="20" x2="360" y2="20" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="380" y1="20" x2="380" y2="40" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="20" y1="480" x2="40" y2="480" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="20" y1="480" x2="20" y2="460" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="380" y1="480" x2="360" y2="480" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <line x1="380" y1="480" x2="380" y2="460" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <!-- Label -->
+              <text x="200" y="455" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(24,23,20,0.25)" letter-spacing="3">PHOTO PLACEHOLDER</text>
+            </svg>
+          </div>
+          <!-- Offset accent -->
+          <div class="absolute -bottom-5 -right-5 w-28 h-28 border border-gold/25 -z-10 hidden md:block"></div>
+        </div>
+      </div>
+
+      <!-- Center: vertical divider -->
+      <div class="hidden lg:flex justify-center">
+        <div class="v-line h-full min-h-80 w-px"></div>
+      </div>
+
+      <!-- Right: Copy -->
+      <div class="reveal-r lg:pl-16">
+        <p class="sec-label mb-3">About Erlbrew</p>
+        <div class="w-10 h-px bg-gold/50 mb-8"></div>
+
+        <h2 class="font-display text-4xl lg:text-5xl font-light text-ink leading-[1.1] tracking-tight mb-6">
+          Brewed in<br/>
+          <em class="text-sage not-italic">Kawit's spirit.</em>
+        </h2>
+
+        <p class="font-sans text-[14px] text-ink-40 leading-[1.9] mb-5 font-light">
+          Kawit, Cavite gave the Philippines its independence. We carry that spirit into every cup — refusing to be ordinary, refusing to rush. Erlbrew opened in 2026 with one idea: that a great coffee shop should feel like a small gift to whoever walks in.
+        </p>
+
+        <p class="font-sans text-[14px] text-ink-40 leading-[1.9] mb-10 font-light">
+          Our menu pulls from two traditions — the precision of Italian espresso and the meditative craft of Japanese matcha. The result is a menu that's worth lingering over.
+        </p>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-3 gap-6 pt-8 border-t border-ink-15">
+          <div>
+            <p class="font-display text-3xl font-light text-gold mb-1">2026</p>
+            <p class="font-sans text-[10px] tracking-widest uppercase text-ink-40">Founded</p>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-light text-gold mb-1">Kawit</p>
+            <p class="font-sans text-[10px] tracking-widest uppercase text-ink-40">Home</p>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-light text-gold mb-1">Cavite</p>
+            <p class="font-sans text-[10px] tracking-widest uppercase text-ink-40">Philippines</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  MENU                                        ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="menu" class="py-28 bg-ink relative overflow-hidden">
+
+  <!-- BG kanji watermark -->
+  <div class="absolute inset-0 flex items-center justify-end pr-8 pointer-events-none select-none overflow-hidden" aria-hidden="true">
+    <span class="font-jp font-bold text-[280px] leading-none text-paper/[.025]" style="writing-mode:vertical-rl">メニュー</span>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+    <!-- Header -->
+    <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div>
+        <p class="font-jp text-[10px] tracking-[.3em] text-gold/70 uppercase mb-3">Our offerings</p>
+        <h2 class="font-display text-5xl lg:text-6xl font-light text-paper leading-none tracking-tight">
+          The<br/>Menu
+        </h2>
+      </div>
+      <p class="font-sans text-[13px] text-paper/40 max-w-xs leading-relaxed font-light">
+        All prices in Philippine Pesos. Made to order, one cup at a time.
+      </p>
+    </div>
+
+    <!-- Tab nav rendered here by JS -->
+    <div id="menu-tabs-wrap" class="reveal mb-0"></div>
+
+    <!-- Gold divider -->
+    <div class="h-line mb-10 reveal"></div>
+
+    <!-- Menu panels rendered by JS -->
+    <div id="menu-grid" class="reveal">
+      <div class="text-paper/30 text-sm py-8 text-center">Loading…</div>
+    </div>
+
+    <!-- Bottom motif -->
+    <div class="mt-16 pt-10 border-t border-paper/10 reveal">
+      <p class="font-jp text-[11px] tracking-[.4em] text-gold/30 text-center">珈琲 · 抹茶 · アイス · ペストリー · フルーツ</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  GALLERY                                     ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="gallery" class="py-28 bg-paper">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="reveal mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <p class="sec-label mb-3">The space</p>
+        <h2 class="font-display text-5xl lg:text-6xl font-light text-ink leading-none tracking-tight">
+          Gallery
+        </h2>
+      </div>
+      <p class="font-jp text-sm text-gold/50 tracking-[.25em]">ギャラリー</p>
+    </div>
+
+    <!-- Asymmetric grid -->
+    <div class="grid grid-cols-12 grid-rows-2 gap-3 h-[560px] md:h-[640px] reveal">
+
+      <!-- Slot 0: Large left portrait -->
+      <div class="col-span-5 row-span-2 gal-img" id="gal-slot-0">
+        <div class="gal-img-inner h-full" id="gal-inner-0">
+          <svg viewBox="0 0 400 640" class="w-full h-full gal-placeholder" aria-hidden="true">
+            <rect width="400" height="640" fill="#2a2620"/>
+            <ellipse cx="200" cy="300" rx="130" ry="128" fill="none" stroke="rgba(184,147,90,0.12)" stroke-width="1.5"/>
+            <text x="200" y="320" text-anchor="middle" font-family="'Noto Serif JP'" font-size="90" fill="rgba(184,147,90,0.15)" font-weight="300">珈</text>
+            <text x="200" y="570" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(244,239,230,0.2)" letter-spacing="3">INTERIOR</text>
+          </svg>
+        </div>
+        <div class="absolute bottom-4 left-4 z-10"><p class="font-jp text-[10px] text-paper/50 tracking-widest">店内</p></div>
+      </div>
+
+      <!-- Slot 1: Top right 1 -->
+      <div class="col-span-4 row-span-1 gal-img" id="gal-slot-1">
+        <div class="gal-img-inner h-full" id="gal-inner-1" style="background:#1e2820;min-height:200px">
+          <svg viewBox="0 0 320 280" class="w-full h-full gal-placeholder" aria-hidden="true">
+            <rect width="320" height="280" fill="#1e2820"/>
+            <circle cx="160" cy="130" r="70" fill="none" stroke="rgba(77,107,72,0.2)" stroke-width="1.5"/>
+            <text x="160" y="150" text-anchor="middle" font-family="'Noto Serif JP'" font-size="60" fill="rgba(77,107,72,0.25)" font-weight="300">抹</text>
+            <text x="160" y="252" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(244,239,230,0.2)" letter-spacing="3">MATCHA</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slot 2: Top right 2 -->
+      <div class="col-span-3 row-span-1 gal-img" id="gal-slot-2">
+        <div class="gal-img-inner h-full" id="gal-inner-2" style="background:#2a1f18;min-height:200px">
+          <svg viewBox="0 0 240 280" class="w-full h-full gal-placeholder" aria-hidden="true">
+            <rect width="240" height="280" fill="#2a1f18"/>
+            <circle cx="120" cy="130" r="55" fill="none" stroke="rgba(184,147,90,0.2)" stroke-width="1.5"/>
+            <text x="120" y="150" text-anchor="middle" font-family="'Noto Serif JP'" font-size="50" fill="rgba(184,147,90,0.2)" font-weight="300">琲</text>
+            <text x="120" y="252" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(244,239,230,0.2)" letter-spacing="3">LATTE ART</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slot 3: Bottom right 1 -->
+      <div class="col-span-3 row-span-1 gal-img" id="gal-slot-3">
+        <div class="gal-img-inner h-full" id="gal-inner-3" style="background:#1a1c18;min-height:200px">
+          <svg viewBox="0 0 240 280" class="w-full h-full gal-placeholder" aria-hidden="true">
+            <rect width="240" height="280" fill="#1a1c18"/>
+            <circle cx="120" cy="130" r="55" fill="none" stroke="rgba(122,59,40,0.2)" stroke-width="1.5"/>
+            <text x="120" y="150" text-anchor="middle" font-family="'Noto Serif JP'" font-size="50" fill="rgba(122,59,40,0.2)" font-weight="300">焼</text>
+            <text x="120" y="252" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(244,239,230,0.2)" letter-spacing="3">CROFFLES</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slot 4: Bottom right 2 -->
+      <div class="col-span-4 row-span-1 gal-img" id="gal-slot-4">
+        <div class="gal-img-inner h-full" id="gal-inner-4" style="background:#232420;min-height:200px">
+          <svg viewBox="0 0 320 280" class="w-full h-full gal-placeholder" aria-hidden="true">
+            <rect width="320" height="280" fill="#232420"/>
+            <circle cx="160" cy="130" r="70" fill="none" stroke="rgba(244,239,230,0.06)" stroke-width="1.5"/>
+            <text x="160" y="150" text-anchor="middle" font-family="'Noto Serif JP'" font-size="60" fill="rgba(244,239,230,0.07)" font-weight="300">場</text>
+            <text x="160" y="252" text-anchor="middle" font-family="'Inter'" font-size="9" fill="rgba(244,239,230,0.2)" letter-spacing="3">THE COUNTER</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  VISIT                                       ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="visit" class="py-28 bg-cream relative">
+
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="reveal mb-16">
+      <p class="sec-label mb-3">Plan your visit</p>
+      <h2 class="font-display text-5xl lg:text-6xl font-light text-ink leading-none tracking-tight">
+        Find us
+        <span class="font-jp text-2xl font-light text-ink/20 ml-4 tracking-[.2em]">アクセス</span>
+      </h2>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-16 items-start">
+
+      <!-- Left: info -->
+      <div class="space-y-12">
+
+        <!-- Hours -->
+        <div class="reveal">
+          <div class="flex items-center gap-3 mb-5">
+            <p class="font-sans text-[11px] tracking-[.2em] uppercase text-ink-40 font-medium">Hours</p>
+            <span class="font-jp text-[10px] text-gold/60 tracking-widest">営業時間</span>
+          </div>
+          <div class="border-t border-ink-15" id="hours-container"></div>
+        </div>
+
+        <!-- Address -->
+        <div class="reveal" style="transition-delay:.1s">
+          <div class="flex items-center gap-3 mb-5">
+            <p class="font-sans text-[11px] tracking-[.2em] uppercase text-ink-40 font-medium">Address</p>
+            <span class="font-jp text-[10px] text-gold/60 tracking-widest">住所</span>
+          </div>
+          <address class="not-italic">
+            <p class="font-sans text-[14px] text-ink leading-[1.8] font-light">
+              Unit 1C, Wash 'n Spices Auto Oasis<br/>
+              Lot 4 Azalea St. corner Advincula Ave.<br/>
+              San Sebastian, Kawit, Cavite<br/>
+              Philippines
+            </p>
+          </address>
+          <a href="https://www.google.com/maps/place/Erlbrew+Cafe/@14.4102928,120.8984602,17z/data=!4m6!3m5!1s0x3397d3103effdf7f:0xf3ef84de2c1de928!8m2!3d14.4102928!4d120.9010351!16s%2Fg%2F11npkr_p12?entry=ttu&amp;g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-5 font-sans text-[12px] font-medium tracking-[.1em] uppercase text-sage hover:text-ink transition-colors no-underline">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Open in Maps
+          </a>
+        </div>
+
+        <!-- Social -->
+        <div class="reveal" style="transition-delay:.2s">
+          <div class="flex items-center gap-3 mb-5">
+            <p class="font-sans text-[11px] tracking-[.2em] uppercase text-ink-40 font-medium">Follow</p>
+            <span class="font-jp text-[10px] text-gold/60 tracking-widest">連絡先</span>
+          </div>
+          <div class="flex flex-col gap-3">
+            <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="inline-flex items-center gap-3 font-sans text-sm text-ink-40 hover:text-ink transition-colors no-underline font-light">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              @erlbrewcafe &nbsp;·&nbsp; Instagram
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="inline-flex items-center gap-3 font-sans text-sm text-ink-40 hover:text-ink transition-colors no-underline font-light">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+              Erlbrew Café &nbsp;·&nbsp; Facebook
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: map -->
+      <div class="reveal" style="transition-delay:.15s">
+        <div class="map-wrap">
+          <!--
+            GOOGLE MAPS EMBED
+            Go to maps.google.com → search your café → Share → Embed a map
+            Copy the src= URL from the <iframe> and replace the src below.
+          -->
+          <iframe
+            class="map-frame"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3864.292531966692!2d120.89846017598799!3d14.410292786053866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d3103effdf7f%3Axf3ef84de2c1de928!2sErlbrew%20Cafe!5e0!3m2!1sen!2sph!4v1782271458436!5m2!1sen!2sph"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title="Erlbrew Café on Google Maps"
+          ></iframe>
+        </div>
+        <p class="mt-3 font-sans text-[11px] text-ink-40 tracking-wide text-right">
+          Azalea St. corner Advincula Ave., Kawit
+        </p>
+
+        <!-- CTA below map -->
+        <div class="mt-8 pt-8 border-t border-ink-15">
+          <a href="#menu" class="btn-outline-dark w-full justify-center">
+            View our full menu
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  FOOTER                                      ║
+     ╚══════════════════════════════════════════════╝ -->
+<footer class="bg-ink py-14">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="grid md:grid-cols-3 gap-10 pb-10 border-b border-paper/10">
+
+      <!-- Brand -->
+      <div>
+        <p class="font-display text-3xl font-light text-paper tracking-tight mb-1">Erlbrew</p>
+        <p class="font-jp text-[10px] text-gold/50 tracking-[.3em]">アーブリュー カフェ</p>
+        <p class="font-sans text-[12px] text-paper/30 mt-4 leading-relaxed font-light">
+          A quiet corner in Kawit, Cavite.
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-col gap-3">
+        <p class="font-sans text-[10px] tracking-[.25em] uppercase text-paper/30 mb-1">Navigate</p>
+        <a href="#about"   class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">About</a>
+        <a href="#menu"    class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Menu</a>
+        <a href="#gallery" class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Gallery</a>
+        <a href="#visit"   class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Visit</a>
+      </div>
+
+      <!-- Address -->
+      <div>
+        <p class="font-sans text-[10px] tracking-[.25em] uppercase text-paper/30 mb-3">Find us</p>
+        <address class="not-italic font-sans text-[12px] text-paper/40 leading-[1.9] font-light">
+          Unit 1C, Wash 'n Spices Auto Oasis<br/>
+          Lot 4 Azalea St. corner Advincula Ave.<br/>
+          San Sebastian, Kawit, Cavite<br/>
+          Philippines
+        </address>
+        <div class="flex gap-5 mt-5">
+          <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="font-sans text-[11px] text-paper/30 hover:text-paper/70 transition-colors no-underline tracking-wide">Instagram</a>
+          <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="font-sans text-[11px] text-paper/30 hover:text-paper/70 transition-colors no-underline tracking-wide">Facebook</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <p class="font-sans text-[11px] text-paper/20 font-light">© 2026 Erlbrew Café. All rights reserved.</p>
+      <p class="font-jp text-[10px] text-paper/15 tracking-[.3em]">珈琲と静寂の空間</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  SCRIPTS                                     ║
+     ╚══════════════════════════════════════════════╝ -->
+<script>
+/* ── Menu data ─────────────────────────────────────── */
+let MENU = [];
+
+// Fallback hardcoded data if API is unavailable
+const MENU_FALLBACK = [
+  {
+    cat:'Hot Coffee', ja:'ホットコーヒー',
+    items:[
+      {name:'Americano 8oz',              p:69},{name:'Americano 12oz',             p:89},
+      {name:'Dark Mocha 8oz',             p:109},{name:'Dark Mocha 12oz',            p:129},
+      {name:'Café Latte 8oz',             p:109},{name:'Café Latte 12oz',            p:129},
+      {name:'Cappuccino 8oz',             p:109},{name:'Cappuccino 12oz',            p:129},
+      {name:'Hot Mocha 8oz',              p:109},{name:'Hot Mocha 12oz',             p:129},
+      {name:'Chocolate 8oz',              p:109},{name:'Chocolate 12oz',             p:129},
+      {name:'White Chocolate Mocha 8oz',  p:109},{name:'White Chocolate Mocha 12oz', p:129},
+      {name:'Matcha Latte 8oz',           p:119},{name:'Matcha Latte 12oz',          p:139},
+      {name:'Spanish Latte 8oz',          p:109},{name:'Spanish Latte 12oz',         p:129},
+      {name:'Hazelnut Flavored Latte 8oz',p:109},{name:'Hazelnut Flavored Latte 12oz',p:139},
+      {name:'Vanilla Flavored Latte 8oz', p:109},{name:'Vanilla Flavored Latte 12oz',p:139},
+      {name:'Caramel Flavored Latte 8oz', p:109},{name:'Caramel Flavored Latte 12oz',p:139},
+    ]
+  },
+  {
+    cat:'Iced Coffee', ja:'アイスコーヒー',
+    items:[
+      {name:'Iced Americano',           p:99},{name:'Iced Latte',               p:119},
+      {name:'Iced Flavored Latte',      p:149},{name:'Iced Salted Caramel Latte',p:149},
+      {name:'Iced White Chocolate Mocha',p:149},{name:'Iced Dark Chocolate Mocha', p:149},
+      {name:'Iced Spanish Latte',       p:149},{name:'Iced Caramel Macchiato',   p:149},
+      {name:'Iced Dirty Matcha Latte',  p:149},{name:'Iced Coconut Americano',   p:149},
+    ]
+  },
+  {
+    cat:'Non-Coffee', ja:'ノンコーヒー',
+    items:[
+      {name:'Dark Choco 16oz',        p:169},{name:'Matcha Latte 16oz',      p:149},
+      {name:'Matcha Strawberry 16oz', p:159},{name:'Matcha Blueberry 16oz',  p:159},
+      {name:'Iced Blueberry Cream 16oz',p:149},{name:'Iced Strawberry Cream 16oz',p:149},
+    ]
+  },
+  {
+    cat:'Ice Blended', ja:'アイスブレンド',
+    items:[
+      {name:'Chocolate 16oz',      p:159},{name:'Chocolate 22oz',      p:179},
+      {name:'Mocha 16oz',          p:159},{name:'Mocha 22oz',          p:179},
+      {name:'Matcha 16oz',         p:159},{name:'Matcha 22oz',         p:179},
+      {name:'Caramel 16oz',        p:159},{name:'Caramel 22oz',        p:179},
+      {name:'Java Chip 16oz',      p:159},{name:'Java Chip 22oz',      p:179},
+      {name:'Strawberry Cream 16oz',p:159},{name:'Strawberry cream 22oz',p:179},
+      {name:'Blueberry Cream 16oz', p:159},{name:'Blueberry Cream 22oz', p:179},
+    ]
+  },
+  {
+    cat:'Fruit Soda', ja:'フルーツソーダ',
+    items:[
+      {name:'FS Strawberry', p:129},{name:'FS Lychee',     p:129},
+      {name:'FS Blueberry',  p:129},{name:'FS Lemon',      p:129},
+    ]
+  },
+  {
+    cat:'Pastries & Food', ja:'ペストリー',
+    items:[
+      {name:'Cookies',                        p:35},{name:'Ensaymada Small',               p:45},
+      {name:'Ensaymada',                     p:90},{name:'Chicken Sandwich',              p:45},
+      {name:'Croissant',                     p:110},{name:'Choco Banana',                  p:129},
+      {name:'Banana Caramel Croffles',       p:139},{name:'Strawberry Cream Croffles',     p:119},
+      {name:'S\'mores Croffles',             p:139},{name:'Choco Oreo Croffles',           p:139},
+      {name:'Chocolate Strawberry Cream Croffles', p:129},{name:'Biscoff Croffles',              p:149},
+    ]
+  },
+];
+
+async function loadMenuFromServer(){
+  try {
+    const res = await fetch('/api/menu');
+    const data = await res.json();
+    if(data.menu && data.menu.length > 0){
+      MENU = data.menu;
+      renderMenu();
+    }
+  } catch(e) {
+    console.warn('Could not load menu from server, using fallback:', e);
+    MENU = MENU_FALLBACK;
+    renderMenu();
+  }
+}
+
+function renderMenu(){
+  const tabsWrap = document.getElementById('menu-tabs-wrap');
+  const grid     = document.getElementById('menu-grid');
+  if(!tabsWrap || !grid) return;
+
+  // ── Tab nav (goes ABOVE the gold divider) ──────────────
+  tabsWrap.innerHTML = `
+  <div id="menu-tabs" class="flex items-end gap-0 border-b border-paper/15 overflow-x-auto no-scrollbar mb-0">
+    ${MENU.map((s,i)=>`
+      <button data-tab="${i}" class="menu-tab group relative flex flex-col items-start gap-1 px-6 py-4 cursor-pointer shrink-0" style="background:none;border:none;outline:none">
+        <span class="tab-jp font-jp text-[9px] tracking-[.25em] transition-colors duration-300 ${i===0?'text-gold':'text-paper/20'}">${s.ja}</span>
+        <span class="tab-label font-display text-[15px] font-light transition-colors duration-300 ${i===0?'text-paper':'text-paper/35'}">${s.cat}</span>
+        <span class="tab-line absolute bottom-0 left-0 right-0 h-[1.5px] transition-all duration-300 ${i===0?'opacity-100':'opacity-0'}" style="background:${i===0?'#B8935A':'transparent'}"></span>
+      </button>`).join('')}
+  </div>`;
+
+  // ── Panels (go below divider) ─────────────────────────
+  grid.innerHTML = MENU.map((s,i)=>`
+    <div id="panel-${i}" class="menu-panel ${i!==0?'hidden':''}">
+      <div class="grid sm:grid-cols-2 gap-x-14 gap-y-0">
+        ${s.items.map(it=>`
+          <div class="menu-item flex items-center justify-between gap-6 py-3.5 border-b border-paper/8">
+            <span class="font-sans text-[13px] font-light text-paper/75 leading-snug">${it.name}</span>
+            <span class="font-display text-[17px] font-light text-gold shrink-0 tabular-nums">&#8369;${it.price ?? it.p}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  // ── Tab switching with animation ────────────────────────
+  let currentIdx = 0;
+  let switching  = false;
+
+  function switchTab(idx){
+    if(idx===currentIdx || switching) return;
+    switching = true;
+
+    // Update tab indicators
+    document.querySelectorAll('.menu-tab').forEach((b,i)=>{
+      const active = i===idx;
+      const jp     = b.querySelector('.tab-jp');
+      const label  = b.querySelector('.tab-label');
+      const line   = b.querySelector('.tab-line');
+      if(jp)    jp.style.color    = active?'#B8935A':'rgba(244,239,230,0.2)';
+      if(label) label.style.color = active?'#F4EFE6':'rgba(244,239,230,0.35)';
+      if(line){ line.style.background=active?'#B8935A':'transparent'; line.style.opacity=active?'1':'0'; }
+    });
+
+    // Fade out current panel
+    const outPanel = document.getElementById('panel-'+currentIdx);
+    if(outPanel){
+      outPanel.classList.remove('fade-in');
+      outPanel.classList.add('fade-out');
+      outPanel.addEventListener('animationend', ()=>{
+        outPanel.classList.add('hidden');
+        outPanel.classList.remove('fade-out');
+
+        // Fade in new panel
+        const inPanel = document.getElementById('panel-'+idx);
+        if(inPanel){
+          inPanel.classList.remove('hidden');
+          // force reflow so animation triggers fresh
+          void inPanel.offsetWidth;
+          inPanel.classList.add('fade-in');
+          inPanel.addEventListener('animationend', ()=>{
+            switching = false;
+          }, {once:true});
+        }
+        currentIdx = idx;
+      }, {once:true});
+    } else {
+      switching = false;
+    }
+  }
+
+  document.querySelectorAll('.menu-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>switchTab(parseInt(btn.dataset.tab)));
+  });
+
+  // Trigger fade-in on first panel immediately
+  const firstPanel = document.getElementById('panel-0');
+  if(firstPanel){ void firstPanel.offsetWidth; firstPanel.classList.add('fade-in'); }
+}
+
+/* ── Scroll reveal ─────────────────────────────────── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');obs.unobserve(e.target)}});
+  },{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+}
+
+/* ── Nav stick ─────────────────────────────────────── */
+function initNav(){
+  const nav=document.getElementById('nav');
+  const lnks=document.querySelectorAll('.nav-lnk');
+  const logo=document.getElementById('logo-text');
+  const cta=document.getElementById('nav-cta');
+  const hamLines=document.querySelectorAll('.ham-line');
+
+  function setNavMode(stuck){
+    nav.classList.toggle('stuck',stuck);
+    // Links
+    lnks.forEach(l=>{
+      l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)';
+    });
+    // Hover handled inline via mouseover
+    lnks.forEach(l=>{
+      l.onmouseenter=()=>{ l.style.color=stuck?'#181714':'#F4EFE6'; };
+      l.onmouseleave=()=>{ l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)'; };
+    });
+    // Logo
+    if(logo) logo.style.color=stuck?'#181714':'#F4EFE6';
+    // CTA button
+    if(cta){
+      cta.style.borderColor=stuck?'rgba(24,23,20,0.3)':'rgba(244,239,230,0.35)';
+      cta.style.color=stuck?'#181714':'#F4EFE6';
+      cta.style.background='transparent';
+      cta.onmouseenter=()=>{
+        cta.style.background=stuck?'#181714':'rgba(244,239,230,0.1)';
+        cta.style.color=stuck?'#F4EFE6':'#F4EFE6';
+      };
+      cta.onmouseleave=()=>{
+        cta.style.background='transparent';
+        cta.style.color=stuck?'#181714':'#F4EFE6';
+      };
+    }
+    // Hamburger lines
+    hamLines.forEach(l=>{ l.style.background=stuck?'#181714':'#F4EFE6'; });
+  }
+
+  setNavMode(false);
+  window.addEventListener('scroll',()=>setNavMode(window.scrollY>70),{passive:true});
+}
+
+/* ── Active nav ────────────────────────────────────── */
+function initActiveNav(){
+  const secs=document.querySelectorAll('section[id]');
+  const lnks=document.querySelectorAll('.nav-lnk');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const stuck=window.scrollY>70;
+        lnks.forEach(l=>{
+          const active=l.getAttribute('href')==='#'+e.target.id;
+          if(active){
+            l.style.color=stuck?'#4D6B48':'#B8935A';
+            l.style.fontWeight='500';
+          } else {
+            l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)';
+            l.style.fontWeight='';
+          }
+        });
+      }
+    });
+  },{rootMargin:'-35% 0px -60% 0px'});
+  secs.forEach(s=>obs.observe(s));
+}
+
+/* ── Mobile drawer ─────────────────────────────────── */
+function initDrawer(){
+  const btn=document.getElementById('menu-btn');
+  const drawer=document.getElementById('drawer');
+  const overlay=document.getElementById('overlay');
+  const close=document.getElementById('close-btn');
+  const h1=document.getElementById('h1');
+  const h2=document.getElementById('h2');
+  const h3=document.getElementById('h3');
+
+  const open=()=>{
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+    if(h1){h1.style.transform='rotate(45deg) translate(4px,4px)'}
+    if(h2){h2.style.opacity='0'}
+    if(h3){h3.style.transform='rotate(-45deg) translate(4px,-4px)';h3.style.width='22px'}
+  };
+  const shut=()=>{
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+    if(h1){h1.style.transform=''}
+    if(h2){h2.style.opacity=''}
+    if(h3){h3.style.transform='';h3.style.width=''}
+  };
+
+  btn&&btn.addEventListener('click',open);
+  close&&close.addEventListener('click',shut);
+  overlay&&overlay.addEventListener('click',shut);
+  document.querySelectorAll('.mob-lnk').forEach(l=>l.addEventListener('click',shut));
+}
+
+/* ── Smooth scroll ─────────────────────────────────── */
+function initScroll(){
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const t=document.querySelector(a.getAttribute('href'));
+      if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+    });
+  });
+}
+
+/* ── About photo loader — fetches from API ─────────────── */
+async function loadAboutPhoto(){
+  let photo = null;
+  try {
+    const res = await fetch('/api/about/photo');
+    const data = await res.json();
+    photo = data.photo;
+  } catch(e) {
+    console.warn('Could not load about photo:', e);
+    return;
+  }
+  if(!photo || !photo.url) return;
+  const wrap = document.getElementById('about-photo-wrap');
+  const svg  = document.getElementById('about-photo-svg');
+  if(!wrap) return;
+  // Hide placeholder SVG
+  if(svg) svg.style.display = 'none';
+  // Insert real image
+  const existing = wrap.querySelector('.about-real-img');
+  if(existing){ existing.src = photo.url; return; }
+  const img = document.createElement('img');
+  img.src = photo.url;
+  img.alt = 'Erlbrew Café interior';
+  img.className = 'about-real-img';
+  img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0';
+  wrap.appendChild(img);
+}
+
+/* ── Hours loader — fetches from API ───────────────────── */
+async function loadHours(){
+  let hours = [];
+  try {
+    const res = await fetch('/api/hours');
+    const data = await res.json();
+    hours = data.hours || [];
+  } catch(e) {
+    console.warn('Could not load hours:', e);
+    return;
+  }
+  const container = document.getElementById('hours-container');
+  if(!container) return;
+  container.innerHTML = hours.map(h => {
+    const cls = h.is_highlighted
+      ? 'text-rust font-sans font-light'
+      : 'text-ink-40 font-sans font-light';
+    const valCls = h.is_highlighted
+      ? 'text-ink-40 font-sans text-xs'
+      : 'text-ink font-sans font-medium';
+    return `<div class="hr-row"><span class="${cls}">${escHtml(h.day_label)}</span><span class="${valCls}">${escHtml(h.hours_text)}</span></div>`;
+  }).join('');
+}
+function escHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* ── Gallery loader — fetches from API ────────────────── */
+async function loadGalleryPhotos(){
+  let photos = {};
+  try {
+    const res = await fetch('/api/gallery');
+    const data = await res.json();
+    photos = data.photos || {};
+  } catch(e) {
+    console.warn('Could not load gallery photos:', e);
+    return;
+  }
+
+  for(let i=0;i<5;i++){
+    const photo = photos[i];
+    if(!photo || !photo.url) continue;
+    const inner = document.getElementById('gal-inner-'+i);
+    if(!inner) continue;
+    // Remove placeholder SVG
+    const ph = inner.querySelector('.gal-placeholder');
+    if(ph) ph.remove();
+    // Insert real image
+    const existing = inner.querySelector('.gal-real-img');
+    if(existing){ existing.src=photo.url; continue; }
+    const img = document.createElement('img');
+    img.src = photo.url;
+    img.alt = 'Gallery photo '+(i+1);
+    img.className = 'gal-real-img';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    inner.appendChild(img);
+  }
+}
+
+/* ── Init ──────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initReveal();
+  initNav();
+  initActiveNav();
+  initDrawer();
+  initScroll();
+  // Load all data from API
+  loadMenuFromServer();
+  loadAboutPhoto();
+  loadGalleryPhotos();
+  loadHours();
+});
+</script>
+</body>
+</html>

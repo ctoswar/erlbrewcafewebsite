@@ -1,0 +1,27 @@
+services:
+  erlbrew:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: erlbrew-backend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3002}:3000"
+    environment:
+      DB_HOST: "${DB_HOST:-192.168.75.101}"
+      DB_PORT: "${DB_PORT:-3306}"
+      DB_USER: "${DB_USER:-erlbrew}"
+      DB_PASSWORD: "${DB_PASSWORD:-erlbrew_prod_2026}"
+      DB_NAME: "${DB_NAME:-erlbrew}"
+      NODE_ENV: production
+      PORT: 3000
+      ADMIN_USERNAME: "${ADMIN_USERNAME:-admin}"
+      # ADMIN_PASSWORD_HASH is NOT set here — it's loaded from the mounted .env via dotenv
+    volumes:
+      # Mount .env so you can edit credentials without rebuilding the image
+      - ./server/.env:/app/server/.env
+      # Persist uploaded images across container restarts
+      - uploads_data:/app/server/uploads
+
+volumes:
+  uploads_data:

@@ -114,6 +114,40 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
 .hr-input-row input[type=text]:focus{border-color:#B8935A}
 .hr-input-row input[type=checkbox]{width:16px;height:16px;accent-color:#B8935A;cursor:pointer}
 .hr-hl-label{font-size:10px;color:rgba(24,23,20,.4);letter-spacing:.05em;white-space:nowrap}
+
+/* ── Menu CRUD ── */
+.menu-cat-card{border:1px solid rgba(24,23,20,.09);border-radius:3px;background:#fff;margin-bottom:18px;overflow:hidden}
+.menu-cat-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#F4EFE6;border-bottom:1px solid rgba(24,23,20,.07)}
+.menu-cat-header input{font-family:'Inter',sans-serif;font-size:13px;padding:6px 10px;border:1px solid rgba(24,23,20,.12);border-radius:2px;background:#fff;color:#181714;outline:none;transition:border-color .2s;width:auto}
+.menu-cat-header input:focus{border-color:#B8935A}
+.menu-cat-header .menu-cat-name{flex:2;min-width:0;font-weight:500}
+.menu-cat-header .menu-cat-ja{flex:1;min-width:0;font-family:'Noto Serif JP',serif;font-size:11px}
+.menu-items-wrap{padding:4px 14px 10px}
+.menu-item-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(24,23,20,.06)}
+.menu-item-row:last-of-type{border-bottom:none}
+.menu-item-row input{font-family:'Inter',sans-serif;font-size:13px;padding:5px 10px;border:1px solid rgba(24,23,20,.1);border-radius:2px;background:#fff;color:#181714;outline:none;transition:border-color .2s}
+.menu-item-row input:focus{border-color:#B8935A}
+.menu-item-name{flex:1;min-width:0}
+.menu-item-price{width:72px;text-align:right}
+.menu-price-prefix{font-size:11px;color:rgba(24,23,20,.35);flex-shrink:0}
+.menu-btn-del{background:none;border:none;cursor:pointer;font-size:13px;color:rgba(122,59,40,.5);padding:4px;line-height:1;border-radius:2px;transition:all .15s;flex-shrink:0}
+.menu-btn-del:hover{color:#7A3B28;background:rgba(122,59,40,.08)}
+.menu-btn-del.cat-del{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;color:#7A3B28;border:1px solid rgba(122,59,40,.25);border-radius:2px}
+.menu-btn-del.cat-del:hover{background:#7A3B28;color:#fff}
+.menu-item-add-row{display:flex;align-items:center;gap:8px;padding:8px 0 2px;border-top:1px dashed rgba(24,23,20,.1);margin-top:4px}
+.menu-item-add-row input{font-family:'Inter',sans-serif;font-size:12px;padding:5px 10px;border:1px solid rgba(24,23,20,.1);border-radius:2px;background:#F9F7F3;color:#181714;outline:none;transition:border-color .2s}
+.menu-item-add-row input:focus{border-color:#B8935A}
+.menu-add-name{flex:1;min-width:0}
+.menu-add-price{width:72px;text-align:right}
+.menu-btn-add-sm{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.55);background:none;transition:all .15s;flex-shrink:0}
+.menu-btn-add-sm:hover{background:#181714;border-color:#181714;color:#F4EFE6}
+.menu-cat-add-card{border:1px dashed rgba(24,23,20,.18);border-radius:3px;padding:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#FAF8F4}
+.menu-cat-add-card input{font-family:'Inter',sans-serif;font-size:13px;padding:7px 12px;border:1px solid rgba(24,23,20,.12);border-radius:2px;background:#fff;color:#181714;outline:none;transition:border-color .2s}
+.menu-cat-add-card input:focus{border-color:#B8935A}
+.menu-cat-add-card .menu-new-cat-name{flex:2;min-width:140px}
+.menu-cat-add-card .menu-new-cat-ja{flex:1;min-width:100px;font-family:'Noto Serif JP',serif;font-size:11px}
+.menu-btn-add-cat{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:2px;cursor:pointer;border:1px solid rgba(77,107,72,.3);color:#3a5136;background:none;transition:all .15s;flex-shrink:0}
+.menu-btn-add-cat:hover{background:#4D6B48;border-color:#4D6B48;color:#fff}
 </style>
 </head>
 <body>
@@ -308,7 +342,7 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
     <div class="gal-wrap">
       <div class="gal-heading">
         <h2>Menu Prices</h2>
-        <p>Edit item prices. Changes appear immediately on the website after saving.</p>
+        <p>Add, remove, rename, or reprice items. Deletes save immediately; name/price changes save in bulk below.</p>
       </div>
       <div id="menu-admin-wrap" style="max-width:800px"></div>
       <button id="menu-save-btn" class="action-btn" style="margin-top:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 24px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.6);background:none;display:none">Save Changes</button>
@@ -600,7 +634,7 @@ async function saveHours(){
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   MENU PRICES
+   MENU PRICES — Full CRUD
    ══════════════════════════════════════════════════════════════════════════ */
 let MENU_DATA = [];
 
@@ -619,49 +653,203 @@ function renderMenuAdmin(){
   const container = document.getElementById('menu-admin-wrap');
   const saveBtn   = document.getElementById('menu-save-btn');
   if(!container) return;
+
   if(MENU_DATA.length === 0){
-    container.innerHTML = '<p style="color:rgba(24,23,20,.35);font-size:13px">No menu data.</p>';
+    container.innerHTML = '<p style="color:rgba(24,23,20,.35);font-size:13px;margin-bottom:16px">No menu data.</p>';
     if(saveBtn) saveBtn.style.display = 'none';
+    // Still show add-category when empty
+    container.innerHTML += buildAddCategoryHTML();
     return;
   }
+
   container.innerHTML = MENU_DATA.map(cat => `
-    <div style="margin-bottom:24px">
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:#181714;margin-bottom:2px">${escHtml(cat.cat)}</h3>
-      <p style="font-size:10px;color:rgba(24,23,20,.35);margin-bottom:10px;letter-spacing:.15em">${escHtml(cat.ja)}</p>
-      ${cat.items.map(item => `
-        <div class="hr-input-row" style="padding:8px 0">
-          <span style="flex:1;font-size:13px;color:rgba(24,23,20,.7)">${escHtml(item.name)}</span>
-          <span style="font-size:11px;color:rgba(24,23,20,.35);margin-right:6px">₱</span>
-          <input type="number" class="menu-price-input" data-id="${item.id}" value="${item.price}" style="width:80px;padding:6px 10px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid rgba(24,23,20,.15);border-radius:2px;background:#fff;color:#181714;outline:none;text-align:right" min="0"/>
+    <div class="menu-cat-card" data-cat-id="${cat.id}">
+      <div class="menu-cat-header">
+        <input class="menu-cat-name" data-cat-id="${cat.id}" value="${escHtml(cat.cat)}" placeholder="Category name"/>
+        <input class="menu-cat-ja" data-cat-id="${cat.id}" value="${escHtml(cat.ja)}" placeholder="日本語"/>
+        <button class="menu-btn-del cat-del" data-action="del-cat" data-cat-id="${cat.id}" title="Delete this category and all its items">Delete</button>
+      </div>
+      <div class="menu-items-wrap">
+        ${cat.items.map(item => `
+          <div class="menu-item-row" data-item-id="${item.id}">
+            <input class="menu-item-name" data-item-id="${item.id}" value="${escHtml(item.name)}" placeholder="Item name"/>
+            <span class="menu-price-prefix">₱</span>
+            <input type="number" class="menu-item-price" data-item-id="${item.id}" value="${item.price}" placeholder="0" min="0"/>
+            <button class="menu-btn-del" data-action="del-item" data-item-id="${item.id}" title="Delete this item">✕</button>
+          </div>
+        `).join('')}
+        <div class="menu-item-add-row" data-cat-id="${cat.id}">
+          <input class="menu-add-name" placeholder="New item name"/>
+          <input type="number" class="menu-add-price" placeholder="Price" min="0"/>
+          <button class="menu-btn-add-sm" data-action="add-item" data-cat-id="${cat.id}">+ Add</button>
         </div>
-      `).join('')}
+      </div>
     </div>
   `).join('');
+
+  container.innerHTML += buildAddCategoryHTML();
+
   if(saveBtn) saveBtn.style.display = 'block';
+
+  // ── Wire events ────────────────────────────────────
+
+  // Delete category
+  container.querySelectorAll('[data-action="del-cat"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const catId = parseInt(btn.dataset.catId, 10);
+      const cat = MENU_DATA.find(c => c.id === catId);
+      const itemCount = cat ? cat.items.length : 0;
+      const msg = itemCount > 0
+        ? `Delete "${cat.cat}" and all ${itemCount} item${itemCount > 1 ? 's' : ''}?`
+        : `Delete category "${cat ? cat.cat : ''}"?`;
+      if (!confirm(msg)) return;
+      try {
+        const res = await fetch('/api/menu/categories/' + catId, { method: 'DELETE' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Delete failed');
+        toast('Category deleted');
+        await loadMenuFromServer();
+      } catch(e) {
+        toast('Delete failed: ' + e.message, false);
+      }
+    });
+  });
+
+  // Delete item
+  container.querySelectorAll('[data-action="del-item"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Remove this item?')) return;
+      const itemId = parseInt(btn.dataset.itemId, 10);
+      try {
+        const res = await fetch('/api/menu/items/' + itemId, { method: 'DELETE' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Delete failed');
+        toast('Item removed');
+        await loadMenuFromServer();
+      } catch(e) {
+        toast('Delete failed: ' + e.message, false);
+      }
+    });
+  });
+
+  // Add item
+  container.querySelectorAll('[data-action="add-item"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const catId = parseInt(btn.dataset.catId, 10);
+      const row = btn.closest('.menu-item-add-row');
+      const nameInput = row.querySelector('.menu-add-name');
+      const priceInput = row.querySelector('.menu-add-price');
+      const name = nameInput.value.trim();
+      const price = parseInt(priceInput.value, 10);
+
+      if (!name) { toast('Enter an item name', false); nameInput.focus(); return; }
+      if (isNaN(price) || price < 0) { toast('Enter a valid price', false); priceInput.focus(); return; }
+
+      try {
+        const res = await fetch('/api/menu/items', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category_id: catId, name, price }),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Add failed');
+        toast('Item added');
+        await loadMenuFromServer();
+      } catch(e) {
+        toast('Add failed: ' + e.message, false);
+      }
+    });
+  });
+
+  // Add item via Enter key
+  container.querySelectorAll('.menu-add-price').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const row = input.closest('.menu-item-add-row');
+        row.querySelector('[data-action="add-item"]')?.click();
+      }
+    });
+  });
 }
 
+function buildAddCategoryHTML(){
+  return `
+    <div class="menu-cat-add-card">
+      <input class="menu-new-cat-name" id="menu-new-cat-name" placeholder="New category name"/>
+      <input class="menu-new-cat-ja" id="menu-new-cat-ja" placeholder="日本語 (optional)"/>
+      <button class="menu-btn-add-cat" id="menu-btn-add-cat">+ Add Category</button>
+    </div>`;
+}
+
+// ── Wire add-category (delegated, re-runs after re-render) ──
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('#menu-btn-add-cat');
+  if (!btn) return;
+
+  const nameInput = document.getElementById('menu-new-cat-name');
+  const jaInput   = document.getElementById('menu-new-cat-ja');
+  const name = nameInput.value.trim();
+  const ja   = jaInput.value.trim();
+
+  if (!name) { toast('Enter a category name', false); nameInput.focus(); return; }
+
+  try {
+    const res = await fetch('/api/menu/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cat: name, ja }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Add failed');
+    toast('Category added');
+    await loadMenuFromServer();
+  } catch(e) {
+    toast('Add failed: ' + e.message, false);
+  }
+});
+
+// ── Save Changes (batch-save name & price edits) ──
 document.getElementById('menu-save-btn')?.addEventListener('click', async () => {
   const btn = document.getElementById('menu-save-btn');
   btn.textContent = 'Saving...';
   btn.disabled = true;
   try {
-    const inputs = document.querySelectorAll('.menu-price-input');
     const promises = [];
-    inputs.forEach(input => {
-      const id = parseInt(input.dataset.id, 10);
-      const price = parseInt(input.value, 10);
-      if (!isNaN(price)) {
+
+    // Collect category name/ja changes
+    document.querySelectorAll('.menu-cat-name').forEach(input => {
+      const id = parseInt(input.dataset.catId, 10);
+      const jaInput = document.querySelector(`.menu-cat-ja[data-cat-id="${id}"]`);
+      const ja = jaInput ? jaInput.value : '';
+      // Always save to ensure consistency
+      promises.push(
+        fetch('/api/menu/categories/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cat: input.value.trim(), ja }),
+        })
+      );
+    });
+
+    // Collect item name/price changes
+    document.querySelectorAll('.menu-item-name').forEach(input => {
+      const id = parseInt(input.dataset.itemId, 10);
+      const priceInput = document.querySelector(`.menu-item-price[data-item-id="${id}"]`);
+      const price = priceInput ? parseInt(priceInput.value, 10) : 0;
+      const name = input.value.trim();
+      if (!isNaN(price) && price >= 0 && name) {
         promises.push(
           fetch('/api/menu/items/' + id, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ price }),
+            body: JSON.stringify({ name, price }),
           })
         );
       }
     });
+
     await Promise.all(promises);
-    toast('Menu prices saved');
+    toast('Menu saved');
     await loadMenuFromServer();
   } catch(e) {
     toast('Save failed: ' + e.message, false);

@@ -753,24 +753,33 @@ function renderMenu(){
   const grid     = document.getElementById('menu-grid');
   if(!tabsWrap || !grid) return;
 
+  // Filter out categories with no items (avoids empty tabs)
+  const displayMenu = MENU.filter(s => s.items && s.items.length > 0);
+
+  if(displayMenu.length === 0){
+    tabsWrap.innerHTML = '';
+    grid.innerHTML = '<div class="text-paper/30 text-sm py-8 text-center">Menu coming soon.</div>';
+    return;
+  }
+
   // ── Tab nav (goes ABOVE the gold divider) ──────────────
   tabsWrap.innerHTML = `
   <div id="menu-tabs" class="flex items-end gap-0 border-b border-paper/15 overflow-x-auto no-scrollbar mb-0">
-    ${MENU.map((s,i)=>`
+    ${displayMenu.map((s,i)=>`
       <button data-tab="${i}" class="menu-tab group relative flex flex-col items-start gap-1 px-6 py-4 cursor-pointer shrink-0" style="background:none;border:none;outline:none">
-        <span class="tab-jp font-jp text-[9px] tracking-[.25em] transition-colors duration-300 ${i===0?'text-gold':'text-paper/20'}">${s.ja}</span>
-        <span class="tab-label font-display text-[15px] font-light transition-colors duration-300 ${i===0?'text-paper':'text-paper/35'}">${s.cat}</span>
+        <span class="tab-jp font-jp text-[9px] tracking-[.25em] transition-colors duration-300 ${i===0?'text-gold':'text-paper/20'}">${escHtml(s.ja)}</span>
+        <span class="tab-label font-display text-[15px] font-light transition-colors duration-300 ${i===0?'text-paper':'text-paper/35'}">${escHtml(s.cat)}</span>
         <span class="tab-line absolute bottom-0 left-0 right-0 h-[1.5px] transition-all duration-300 ${i===0?'opacity-100':'opacity-0'}" style="background:${i===0?'#B8935A':'transparent'}"></span>
       </button>`).join('')}
   </div>`;
 
   // ── Panels (go below divider) ─────────────────────────
-  grid.innerHTML = MENU.map((s,i)=>`
+  grid.innerHTML = displayMenu.map((s,i)=>`
     <div id="panel-${i}" class="menu-panel ${i!==0?'hidden':''}">
       <div class="grid sm:grid-cols-2 gap-x-14 gap-y-0">
         ${s.items.map(it=>`
           <div class="menu-item flex items-center justify-between gap-6 py-3.5 border-b border-paper/8">
-            <span class="font-sans text-[13px] font-light text-paper/75 leading-snug">${it.name}</span>
+            <span class="font-sans text-[13px] font-light text-paper/75 leading-snug">${escHtml(it.name)}</span>
             <span class="font-display text-[17px] font-light text-gold shrink-0 tabular-nums">&#8369;${it.price ?? it.p}</span>
           </div>`).join('')}
       </div>

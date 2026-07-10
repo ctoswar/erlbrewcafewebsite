@@ -106,6 +106,17 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .pill-new{background:rgba(122,59,40,.12);color:#7a3b28;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
 .pill-best{background:rgba(184,147,90,.15);color:#7a5c2a;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
 
+/* ── Events Form ── */
+.ev-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ev-form .full{grid-column:1/-1}
+.ev-form label{display:block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(24,23,20,.4);margin-bottom:4px}
+.ev-form input,.ev-form select,.ev-form textarea{width:100%;padding:10px 14px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid rgba(24,23,20,.12);border-radius:3px;background:#fff;color:#181714;outline:none;transition:border-color .2s}
+.ev-form input:focus,.ev-form select:focus,.ev-form textarea:focus{border-color:#B8935A}
+.ev-form textarea{resize:vertical;min-height:100px}
+.ev-form input.error,.ev-form textarea.error{border-color:#7A3B28}
+.ev-success{display:none;padding:20px 24px;background:rgba(77,107,72,.08);border:1px solid rgba(77,107,72,.2);border-radius:3px;color:#3a5136;font-size:14px;text-align:center}
+.ev-success.show{display:block}
+
 /* ── Hours ── */
 .hr-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(24,23,20,.07);font-size:13.5px}
 .hr-row:last-child{border-bottom:none}
@@ -156,6 +167,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
       <a href="#about"   class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">About</a>
       <a href="#menu"    class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Menu</a>
       <a href="#gallery" class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Gallery</a>
+      <a href="#events"  class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Coffee Cart</a>
       <a href="#visit"   class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Visit</a>
       <a href="#visit" id="nav-cta" class="nav-cta font-sans text-[11px] font-medium tracking-[.1em] uppercase py-2.5 px-5 border transition-colors duration-300 no-underline">Find us</a>
     </nav>
@@ -174,6 +186,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
   <a href="#about"   class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">About</a>
   <a href="#menu"    class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Menu</a>
   <a href="#gallery" class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Gallery</a>
+  <a href="#events"  class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Coffee Cart</a>
   <a href="#visit"   class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Visit</a>
   <div class="mt-auto pt-8 border-t border-ink-15">
     <p class="font-sans text-[11px] text-ink-40 tracking-widest uppercase mb-4">Follow us</p>
@@ -506,6 +519,107 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 
 
 <!-- ╔══════════════════════════════════════════════╗
+     ║  MOBILE COFFEE CART                          ║
+     ╚══════════════════════════════════════════════╝ -->
+<section id="events" class="py-28 bg-cream relative">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="reveal mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <p class="sec-label mb-3">We come to you</p>
+        <h2 class="font-display text-5xl lg:text-6xl font-light text-ink leading-none tracking-tight">
+          Mobile Coffee Cart
+        </h2>
+      </div>
+      <p class="font-jp text-sm text-gold/50 tracking-[.25em]">出張コーヒーカー</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-16 items-start">
+      <!-- Left: info -->
+      <div class="reveal">
+        <p class="font-sans text-[14px] text-ink leading-[1.8] font-light mb-6">
+          We bring the café to you. Whether it's a wedding, corporate event,
+          market, or private party — Erlbrew's mobile coffee cart serves
+          specialty coffee, matcha, and craft drinks on-site.
+        </p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
+            <span class="text-gold shrink-0 mt-0.5">—</span>
+            <span>Weddings &amp; engagement parties</span>
+          </li>
+          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
+            <span class="text-gold shrink-0 mt-0.5">—</span>
+            <span>Corporate events &amp; office gatherings</span>
+          </li>
+          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
+            <span class="text-gold shrink-0 mt-0.5">—</span>
+            <span>Markets, bazaars &amp; pop-ups</span>
+          </li>
+          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
+            <span class="text-gold shrink-0 mt-0.5">—</span>
+            <span>Private parties &amp; celebrations</span>
+          </li>
+        </ul>
+        <div class="border-t border-ink-15 pt-6">
+          <p class="font-sans text-[11px] text-ink-40 tracking-wide leading-relaxed">
+            Fill out the form and we'll get back to you within 24 hours.<br/>
+            Or reach us on <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="text-sage hover:text-ink transition-colors">Instagram</a> or <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="text-sage hover:text-ink transition-colors">Facebook</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="reveal" style="transition-delay:.12s">
+        <div class="ev-success" id="ev-success">
+          <p class="font-display text-xl font-light text-sage mb-1">Thank you!</p>
+          <p class="font-sans text-[13px] text-sage/80">Your inquiry has been sent. We'll be in touch soon.</p>
+        </div>
+        <form id="ev-form" class="ev-form" novalidate>
+          <div>
+            <label for="ev-name">Name</label>
+            <input type="text" id="ev-name" required placeholder="Your name"/>
+          </div>
+          <div>
+            <label for="ev-email">Email</label>
+            <input type="email" id="ev-email" required placeholder="you@example.com"/>
+          </div>
+          <div>
+            <label for="ev-type">Event type</label>
+            <select id="ev-type">
+              <option value="">Select…</option>
+              <option value="Wedding">Wedding / Engagement</option>
+              <option value="Corporate">Corporate / Office</option>
+              <option value="Market">Market / Bazaar / Pop-up</option>
+              <option value="Private Party">Private Party</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="ev-date">Event date</label>
+            <input type="date" id="ev-date"/>
+          </div>
+          <div class="full">
+            <label for="ev-message">Tell us about your event</label>
+            <textarea id="ev-message" required placeholder="Location, estimated number of guests, and anything else we should know."></textarea>
+          </div>
+          <div class="full">
+            <button type="submit" id="ev-submit" class="btn-dark w-full justify-center">
+              Send Inquiry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom motif -->
+    <div class="mt-16 pt-10 border-t border-ink/8 reveal">
+      <p class="font-jp text-[11px] tracking-[.4em] text-gold/30 text-center">出張 · ケータリング · イベント</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════════════╗
      ║  VISIT                                       ║
      ╚══════════════════════════════════════════════╝ -->
 <section id="visit" class="py-28 bg-cream relative">
@@ -630,6 +744,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
         <a href="#about"   class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">About</a>
         <a href="#menu"    class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Menu</a>
         <a href="#gallery" class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Gallery</a>
+        <a href="#events"  class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Coffee Cart</a>
         <a href="#visit"   class="font-sans text-[13px] text-paper/50 hover:text-paper transition-colors no-underline font-light">Visit</a>
       </div>
 
@@ -1042,6 +1157,51 @@ async function loadGalleryPhotos(){
     inner.appendChild(img);
   }
 }
+
+/* ── Events form ────────────────────────────────────── */
+document.getElementById('ev-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('ev-submit');
+  const form = document.getElementById('ev-form');
+  const success = document.getElementById('ev-success');
+
+  // Basic validation styling
+  form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+  let valid = true;
+  const name = document.getElementById('ev-name');
+  const email = document.getElementById('ev-email');
+  const message = document.getElementById('ev-message');
+  if (!name.value.trim()) { name.classList.add('error'); valid = false; }
+  if (!email.value.trim() || !email.value.includes('@')) { email.classList.add('error'); valid = false; }
+  if (!message.value.trim()) { message.classList.add('error'); valid = false; }
+  if (!valid) return;
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/events/inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name.value.trim(),
+        email: email.value.trim(),
+        event_type: document.getElementById('ev-type').value,
+        event_date: document.getElementById('ev-date').value || null,
+        message: message.value.trim(),
+      }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to send');
+    form.style.display = 'none';
+    success.classList.add('show');
+  } catch(err) {
+    alert('Something went wrong: ' + err.message);
+  } finally {
+    btn.textContent = 'Send Inquiry';
+    btn.disabled = false;
+  }
+});
 
 /* ── Init ──────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{

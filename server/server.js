@@ -18,6 +18,7 @@ const galleryRoutes = require('./routes/gallery');
 const aboutRoutes   = require('./routes/about');
 const hoursRoutes   = require('./routes/hours');
 const menuRoutes    = require('./routes/menu');
+const eventRoutes   = require('./routes/events');
 
 const app = express();
 
@@ -99,6 +100,7 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/hours', hoursRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/api/events', eventRoutes);
 
 // ── Health check ───────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

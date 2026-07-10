@@ -148,6 +148,20 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
 .menu-cat-add-card .menu-new-cat-ja{flex:1;min-width:100px;font-family:'Noto Serif JP',serif;font-size:11px}
 .menu-btn-add-cat{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:2px;cursor:pointer;border:1px solid rgba(77,107,72,.3);color:#3a5136;background:none;transition:all .15s;flex-shrink:0}
 .menu-btn-add-cat:hover{background:#4D6B48;border-color:#4D6B48;color:#fff}
+
+/* ── Event Inquiries ── */
+.ev-card{border:1px solid rgba(24,23,20,.08);border-radius:3px;background:#fff;margin-bottom:12px;padding:14px 16px;transition:border-color .2s}
+.ev-card.unread{border-left:3px solid #B8935A;background:#FBF9F5}
+.ev-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.ev-card-name{font-size:14px;font-weight:600;color:#181714}
+.ev-card-email{font-size:11px;color:rgba(24,23,20,.4)}
+.ev-card-date{font-size:10px;color:rgba(24,23,20,.3);white-space:nowrap}
+.ev-card-meta{display:flex;gap:16px;margin-bottom:8px;font-size:11px;color:rgba(24,23,20,.45)}
+.ev-card-meta span{display:flex;align-items:center;gap:4px}
+.ev-card-meta .ev-label{color:rgba(24,23,20,.25);font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.ev-card-msg{font-size:13px;color:rgba(24,23,20,.65);line-height:1.6;white-space:pre-wrap;margin-top:6px;padding-top:10px;border-top:1px solid rgba(24,23,20,.06)}
+.ev-card-actions{display:flex;gap:8px;margin-top:10px}
+.ev-empty{padding:32px;text-align:center;font-size:13px;color:rgba(24,23,20,.3)}
 </style>
 </head>
 <body>
@@ -176,6 +190,11 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
   <button class="sb-item" data-panel="menu">
     <span class="sb-dot"></span>
     <span class="sb-label">Menu Prices</span>
+  </button>
+  <button class="sb-item" data-panel="events">
+    <span class="sb-dot"></span>
+    <span class="sb-label">Coffee Cart</span>
+    <span class="sb-badge" id="sb-ev-badge">0</span>
   </button>
 
   <div class="sb-section">Coming soon</div>
@@ -346,6 +365,17 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
       </div>
       <div id="menu-admin-wrap" style="max-width:800px"></div>
       <button id="menu-save-btn" class="action-btn" style="margin-top:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 24px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.6);background:none;display:none">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Events Inquiries Panel -->
+  <div class="panel" id="panel-events">
+    <div class="gal-wrap">
+      <div class="gal-heading">
+        <h2>Mobile Coffee Cart Inquiries</h2>
+        <p>Inquiries from customers who want Erlbrew at their event.</p>
+      </div>
+      <div id="ev-admin-wrap" style="max-width:900px"></div>
     </div>
   </div>
 </div>
@@ -911,6 +941,93 @@ document.querySelectorAll('.gal-slot').forEach(slot=>{
   });
 });
 
+/* ══════════════════════════════════════════════════════════════════════════
+   EVENT INQUIRIES
+   ══════════════════════════════════════════════════════════════════════════ */
+let INQUIRIES = [];
+
+async function loadEventsFromServer(){
+  try {
+    const res = await fetch('/api/events/inquiries');
+    const data = await res.json();
+    INQUIRIES = data.inquiries || [];
+    renderEventsAdmin();
+  } catch(e) {
+    console.error('Failed to load inquiries:', e);
+  }
+}
+
+function renderEventsAdmin(){
+  const container = document.getElementById('ev-admin-wrap');
+  if(!container) return;
+
+  if(INQUIRIES.length === 0){
+    container.innerHTML = '<div class="ev-empty">No inquiries yet.</div>';
+    document.getElementById('sb-ev-badge').textContent = '0';
+    return;
+  }
+
+  const unreadCount = INQUIRIES.filter(i => !i.is_read).length;
+  document.getElementById('sb-ev-badge').textContent = unreadCount > 0 ? unreadCount : '0';
+
+  container.innerHTML = INQUIRIES.map(inq => `
+    <div class="ev-card${inq.is_read ? '' : ' unread'}" data-id="${inq.id}">
+      <div class="ev-card-head">
+        <div>
+          <span class="ev-card-name">${escHtml(inq.name)}</span>
+          <span class="ev-card-email"> &middot; ${escHtml(inq.email)}</span>
+        </div>
+        <span class="ev-card-date">${formatDate(inq.created_at)}</span>
+      </div>
+      <div class="ev-card-meta">
+        ${inq.event_type ? `<span><span class="ev-label">Event</span> ${escHtml(inq.event_type)}</span>` : ''}
+        ${inq.event_date ? `<span><span class="ev-label">Date</span> ${inq.event_date}</span>` : ''}
+      </div>
+      <div class="ev-card-msg">${escHtml(inq.message)}</div>
+      <div class="ev-card-actions">
+        ${!inq.is_read ? `<button class="action-btn action-upload" data-action="mark-read" data-id="${inq.id}">Mark Read</button>` : ''}
+        <button class="action-btn action-remove" data-action="del-inquiry" data-id="${inq.id}">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Mark as read
+  container.querySelectorAll('[data-action="mark-read"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = parseInt(btn.dataset.id, 10);
+      try {
+        await fetch('/api/events/inquiries/' + id + '/read', { method: 'PUT' });
+        await loadEventsFromServer();
+      } catch(e) {
+        toast('Failed to mark as read', false);
+      }
+    });
+  });
+
+  // Delete
+  container.querySelectorAll('[data-action="del-inquiry"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Delete this inquiry?')) return;
+      const id = parseInt(btn.dataset.id, 10);
+      try {
+        const res = await fetch('/api/events/inquiries/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Delete failed');
+        toast('Inquiry deleted');
+        await loadEventsFromServer();
+      } catch(e) {
+        toast('Delete failed: ' + e.message, false);
+      }
+    });
+  });
+}
+
+function formatDate(d){
+  if(!d) return '';
+  const date = new Date(d);
+  return date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
 /* ── Init ── */
 (async function init(){
   await Promise.all([
@@ -918,6 +1035,7 @@ document.querySelectorAll('.gal-slot').forEach(slot=>{
     loadAboutFromServer(),
     loadHoursFromServer(),
     loadMenuFromServer(),
+    loadEventsFromServer(),
   ]);
   const photos = getPhotos();
   for(let i=0;i<5;i++){

@@ -99,6 +99,21 @@ async function ensureTable() {
       console.log('[DB] business_hours seeded with defaults');
     }
     console.log('[DB] business_hours table ready');
+
+    // Event inquiries table
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS event_inquiries (
+        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(200) NOT NULL,
+        email VARCHAR(200) NOT NULL,
+        event_type VARCHAR(100) NOT NULL DEFAULT '',
+        event_date DATE DEFAULT NULL,
+        message TEXT NOT NULL,
+        is_read TINYINT(1) NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    console.log('[DB] event_inquiries table ready');
   } catch (err) {
     // Non-fatal: the table must already exist from init.sql.
     // The erlbrew user may not have CREATE privilege.
@@ -228,6 +243,47 @@ async function updateHour(id, dayLabel, hoursText, isHighlighted) {
   );
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// EVENT INQUIRIES
+// ═════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Create a new event inquiry.
+ */
+async function createInquiry(name, email, eventType, eventDate, message) {
+  const [result] = await getPool().execute(
+    `INSERT INTO event_inquiries (name, email, event_type, event_date, message)
+     VALUES (?, ?, ?, ?, ?)`,
+    [name, email, eventType, eventDate || null, message]
+  );
+  return result.insertId;
+}
+
+/**
+ * Get all event inquiries, newest first.
+ */
+async function getAllInquiries() {
+  const [rows] = await getPool().execute(
+    'SELECT id, name, email, event_type, event_date, message, is_read, created_at FROM event_inquiries ORDER BY created_at DESC'
+  );
+  return rows;
+}
+
+/**
+ * Delete an event inquiry.
+ */
+async function deleteInquiry(id) {
+  const [result] = await getPool().execute('DELETE FROM event_inquiries WHERE id = ?', [id]);
+  return result.affectedRows > 0;
+}
+
+/**
+ * Mark an inquiry as read.
+ */
+async function markInquiryRead(id) {
+  await getPool().execute('UPDATE event_inquiries SET is_read = 1 WHERE id = ?', [id]);
+}
+
 module.exports = {
   getPool,
   testConnection,
@@ -240,4 +296,8 @@ module.exports = {
   deleteAboutPhoto,
   getAllHours,
   updateHour,
+  createInquiry,
+  getAllInquiries,
+  deleteInquiry,
+  markInquiryRead,
 };

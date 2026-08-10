@@ -146,6 +146,9 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 /* ── Map ── */
 .map-wrap{border:1px solid rgba(24,23,20,.1);overflow:hidden}
 .map-frame{width:100%;height:360px;border:none;display:block}
+.google-rating{margin-top:14px;padding:10px 12px;border:1px solid rgba(24,23,20,.12);background:rgba(255,255,255,.55)}
+.google-rating-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.google-rating-stars{letter-spacing:.05em;color:#B8935A}
 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
@@ -666,6 +669,17 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             Open in Maps
           </a>
+          <div class="google-rating">
+            <div class="google-rating-line">
+              <span class="font-sans text-[11px] tracking-[.15em] uppercase text-ink-40">Google Rating</span>
+              <span class="font-sans text-[14px] text-ink font-medium">5.0</span>
+              <span class="google-rating-stars" aria-label="5 out of 5 stars">★★★★★</span>
+              <span class="font-sans text-[12px] text-ink-40">(1 review)</span>
+            </div>
+            <a href="https://www.google.com/maps/place/Erlbrew+Cafe/@14.4102928,120.8984602,17z/data=!4m6!3m5!1s0x3397d3103effdf7f:0xf3ef84de2c1de928!8m2!3d14.4102928!4d120.9010351!16s%2Fg%2F11npkr_p12?entry=ttu" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-2 font-sans text-[11px] font-medium tracking-[.08em] uppercase text-sage hover:text-ink transition-colors no-underline">
+              View reviews on Google
+            </a>
+          </div>
         </div>
 
         <!-- Social -->
@@ -697,7 +711,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
           -->
           <iframe
             class="map-frame"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3864.292531966692!2d120.89846017598799!3d14.410292786053866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d3103effdf7f%3Axf3ef84de2c1de928!2sErlbrew%20Cafe!5e0!3m2!1sen!2sph!4v1782271458436!5m2!1sen!2sph"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3864.292531966692!2d120.89846017598799!3d14.410292786053866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d3103effdf7f%3A0xf3ef84de2c1de928!2sErlbrew%20Cafe!5e0!3m2!1sen!2sph!4v1782271458436!5m2!1sen!2sph"
             allowfullscreen=""
             loading="lazy"
             referrerpolicy="strict-origin-when-cross-origin"

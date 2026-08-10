@@ -352,7 +352,7 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
         <p>Edit the operating hours displayed on the website. Changes appear immediately.</p>
       </div>
       <div id="hours-form" style="max-width:600px"></div>
-      <button id="hours-save-btn" class="action-btn" style="margin-top:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 24px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.6);background:none;display:none" onclick="saveHours()">Save Changes</button>
+      <button id="hours-save-btn" type="button" class="action-btn" style="margin-top:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 24px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.6);background:none;display:none">Save Changes</button>
     </div>
   </div>
 
@@ -618,7 +618,10 @@ function renderHoursForm(){
       <label for="hl-${h.id}" class="hr-hl-label">Highlight</label>
     </div>
   `).join('');
-  if(saveBtn) saveBtn.style.display = 'block';
+  if(saveBtn){
+    saveBtn.style.display = 'block';
+    saveBtn.disabled = false;
+  }
 }
 
 function escHtml(s){
@@ -629,6 +632,7 @@ function escHtml(s){
 
 async function saveHours(){
   const saveBtn = document.getElementById('hours-save-btn');
+  if(!saveBtn) return;
   saveBtn.textContent = 'Saving...';
   saveBtn.disabled = true;
   try {
@@ -652,7 +656,16 @@ async function saveHours(){
         })
       );
     });
-    await Promise.all(promises);
+    const responses = await Promise.all(promises);
+    for(const response of responses){
+      if(!response.ok){
+        throw new Error('Unable to save one or more rows');
+      }
+      const payload = await response.json();
+      if(!payload.success){
+        throw new Error(payload.message || 'Unable to save one or more rows');
+      }
+    }
     toast('Hours saved');
     await loadHoursFromServer();
   } catch(e) {
@@ -662,6 +675,8 @@ async function saveHours(){
     saveBtn.disabled = false;
   }
 }
+
+document.getElementById('hours-save-btn')?.addEventListener('click', saveHours);
 
 /* ══════════════════════════════════════════════════════════════════════════
    MENU PRICES — Full CRUD

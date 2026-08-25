@@ -191,6 +191,11 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
     <span class="sb-dot"></span>
     <span class="sb-label">Menu Prices</span>
   </button>
+  <button class="sb-item" data-panel="seasonal">
+    <span class="sb-dot"></span>
+    <span class="sb-label">Seasonal Items</span>
+    <span class="sb-badge" id="sb-seasonal-badge">0</span>
+  </button>
   <button class="sb-item" data-panel="events">
     <span class="sb-dot"></span>
     <span class="sb-label">Coffee Cart</span>
@@ -365,6 +370,60 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
       </div>
       <div id="menu-admin-wrap" style="max-width:800px"></div>
       <button id="menu-save-btn" class="action-btn" style="margin-top:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 24px;border-radius:2px;cursor:pointer;border:1px solid rgba(24,23,20,.2);color:rgba(24,23,20,.6);background:none;display:none">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Seasonal Items Panel -->
+  <div class="panel" id="panel-seasonal">
+    <div class="gal-wrap">
+      <div class="gal-heading">
+        <h2>Seasonal Items</h2>
+        <p>Create and manage limited-time seasonal items tied to menu entries. Add dates, tags, descriptions, and images.</p>
+      </div>
+
+      <div id="seasonal-admin-wrap" style="max-width:900px">
+        <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button id="seasonal-add-toggle" class="menu-btn-add-sm">Add seasonal item</button>
+          <div style="color:rgba(24,23,20,.45);font-size:13px">Use existing menu items as the base product.</div>
+        </div>
+
+        <div id="seasonal-add-form" style="display:none;border:1px solid rgba(24,23,20,.06);background:#fff;padding:12px;border-radius:4px;margin-bottom:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+            <div>
+              <label style="font-size:11px">Menu item</label>
+              <select id="seasonal-menu-select" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px"></select>
+            </div>
+            <div>
+              <label style="font-size:11px">Season name</label>
+              <input id="seasonal-name" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px" placeholder="e.g., Matcha Season" />
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+            <div>
+              <label style="font-size:11px">Start date</label>
+              <input id="seasonal-start" type="date" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px" />
+            </div>
+            <div>
+              <label style="font-size:11px">End date</label>
+              <input id="seasonal-end" type="date" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px" />
+            </div>
+          </div>
+          <div style="margin-bottom:8px">
+            <label style="font-size:11px">Tags (comma-separated)</label>
+            <input id="seasonal-tags" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px" placeholder="matcha,iced,seasonal" />
+          </div>
+          <div style="margin-bottom:8px">
+            <label style="font-size:11px">Description</label>
+            <input id="seasonal-desc" style="width:100%;padding:8px;border:1px solid rgba(24,23,20,.12);border-radius:4px" placeholder="Short blurb shown on the site" />
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button id="seasonal-add-cancel" class="action-btn" style="background:none;border-color:rgba(24,23,20,.2);">Cancel</button>
+            <button id="seasonal-add-save" class="menu-btn-add-sm">Save</button>
+          </div>
+        </div>
+
+        <div id="seasonal-list-wrap"></div>
+      </div>
     </div>
   </div>
 
@@ -972,6 +1031,154 @@ async function loadEventsFromServer(){
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   SEASONAL ADMIN
+   ══════════════════════════════════════════════════════════════════════════ */
+let SEASONAL_DATA = [];
+
+async function loadSeasonalFromServer(){
+  try {
+    const res = await fetch('/api/seasonal');
+    const data = await res.json();
+    SEASONAL_DATA = data.seasonal || [];
+    renderSeasonalAdmin();
+  } catch(e) {
+    console.error('Failed to load seasonal items:', e);
+    SEASONAL_DATA = [];
+    renderSeasonalAdmin();
+  }
+}
+
+function renderSeasonalAdmin(){
+  const container = document.getElementById('seasonal-list-wrap');
+  const badge = document.getElementById('sb-seasonal-badge');
+  if(!container) return;
+  if(SEASONAL_DATA.length === 0){
+    container.innerHTML = '<div class="ev-empty">No seasonal items configured.</div>';
+    if(badge) badge.textContent = '0';
+    return;
+  }
+
+  container.innerHTML = SEASONAL_DATA.map(it => `
+    <div class="ev-card" data-id="${it.id}">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="width:120px;flex-shrink:0">
+          ${it.image_url ? `<img src="${it.image_url}" style="width:120px;height:90px;object-fit:cover;border-radius:4px"/>` : `<div style="width:120px;height:90px;background:#efe7d8;border-radius:4px;display:flex;align-items:center;justify-content:center;color:rgba(24,23,20,0.4)">No image</div>`}
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <label class="menu-btn-add-sm" style="cursor:pointer">Upload<input type="file" accept="image/*" style="display:none" data-id="${it.id}" onchange="handleSeasonalImage(this.files[0],${it.id})"/></label>
+            <button class="action-btn action-remove" data-action="del-seasonal" data-id="${it.id}">Delete</button>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+            <div style="font-weight:600">${escHtml(it.name || '')} <span style="font-weight:400;color:rgba(24,23,20,0.45);font-size:13px">(${escHtml(it.season_name || '')})</span></div>
+            <div style="font-weight:600;color:#B8935A">₱${it.price ?? ''}</div>
+          </div>
+          <div style="margin-top:6px;color:rgba(24,23,20,0.6)">${escHtml(it.description || '')}</div>
+          <div style="margin-top:8px;font-size:12px;color:rgba(24,23,20,0.45)">Dates: ${escHtml(it.start_date || '')} → ${escHtml(it.end_date || '')}</div>
+          <div style="margin-top:6px;font-size:12px;color:rgba(24,23,20,0.45)">Tags: ${(it.tags||[]).map(t=>escHtml(t)).join(', ')}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  if(badge) badge.textContent = String(SEASONAL_DATA.length);
+
+  // Wire delete buttons
+  container.querySelectorAll('[data-action="del-seasonal"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('Delete this seasonal item?')) return;
+      const id = parseInt(btn.dataset.id,10);
+      try {
+        const res = await fetch('/api/seasonal/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if(!data.success) throw new Error(data.message || 'Delete failed');
+        toast('Seasonal item deleted');
+        await loadSeasonalFromServer();
+      } catch(e) {
+        toast('Delete failed: '+e.message, false);
+      }
+    });
+  });
+
+  // Attach change listeners to any file inputs rendered inside seasonal list (handles dynamic HTML)
+  container.querySelectorAll('input[type="file"][data-id]').forEach(inp => {
+    inp.addEventListener('change', (e) => {
+      const id = parseInt(inp.dataset.id, 10);
+      if (!inp.files || inp.files.length === 0) return;
+      handleSeasonalImage(inp.files[0], id);
+    });
+  });
+}
+
+
+async function handleSeasonalImage(file, id){
+  if(!file || !file.type.startsWith('image/')) return toast('Please choose an image file', false);
+  const fd = new FormData(); fd.append('photo', file);
+  try {
+    const res = await fetch('/api/seasonal/'+id+'/image', { method: 'POST', body: fd, credentials: 'same-origin' });
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(e) { throw new Error('Invalid JSON response: ' + text); }
+    if(!data.success) throw new Error(data.message||'Upload failed');
+    toast('Image uploaded');
+    await loadSeasonalFromServer();
+  } catch(e) { toast('Upload failed: '+e.message, false); }
+}
+
+// Add form handlers
+document.getElementById('seasonal-add-toggle')?.addEventListener('click', ()=>{
+  const f = document.getElementById('seasonal-add-form'); if(f) f.style.display = f.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('seasonal-add-cancel')?.addEventListener('click', ()=>{
+  const f = document.getElementById('seasonal-add-form'); if(f) f.style.display='none';
+});
+document.getElementById('seasonal-add-save')?.addEventListener('click', async ()=>{
+  const sel = document.getElementById('seasonal-menu-select');
+  const name = document.getElementById('seasonal-name');
+  const start = document.getElementById('seasonal-start');
+  const end = document.getElementById('seasonal-end');
+  const tags = document.getElementById('seasonal-tags');
+  const desc = document.getElementById('seasonal-desc');
+  if(!sel||!name||!start||!end) return toast('Please fill required fields', false);
+  const payload = {
+    menu_item_id: parseInt(sel.value,10),
+    season_name: name.value.trim(),
+    start_date: start.value,
+    end_date: end.value,
+    tags: tags.value.trim(),
+    description: desc.value.trim(),
+  };
+  try {
+    const res = await fetch('/api/seasonal', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(!data.success) throw new Error(data.message||'Save failed');
+    toast('Seasonal item added');
+    // reset form
+    name.value=''; start.value=''; end.value=''; tags.value=''; desc.value=''; sel.value='';
+    document.getElementById('seasonal-add-form').style.display='none';
+    await loadSeasonalFromServer();
+  } catch(e) { toast('Save failed: '+e.message, false); }
+});
+
+// Populate menu select when menu data loads
+function populateSeasonalMenuSelect(){
+  const sel = document.getElementById('seasonal-menu-select');
+  if(!sel) return;
+  // Build flat list from MENU_DATA
+  const options = [];
+  MENU_DATA.forEach(cat=>{
+    (cat.items||[]).forEach(it=>{
+      options.push({ id: it.id, label: `${cat.cat} — ${it.name} (₱${it.price ?? ''})` });
+    });
+  });
+  sel.innerHTML = options.map(o=>`<option value="${o.id}">${escHtml(o.label)}</option>`).join('');
+}
+
+// Call populateSeasonalMenuSelect whenever menu loads
+const origRenderMenuAdmin = renderMenuAdmin;
+renderMenuAdmin = function(){ origRenderMenuAdmin(); populateSeasonalMenuSelect(); };
+
 function renderEventsAdmin(){
   const container = document.getElementById('ev-admin-wrap');
   if(!container) return;
@@ -1050,6 +1257,7 @@ function formatDate(d){
     loadAboutFromServer(),
     loadHoursFromServer(),
     loadMenuFromServer(),
+    loadSeasonalFromServer(),
     loadEventsFromServer(),
   ]);
   const photos = getPhotos();

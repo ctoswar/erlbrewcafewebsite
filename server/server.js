@@ -18,6 +18,8 @@ const galleryRoutes = require('./routes/gallery');
 const aboutRoutes   = require('./routes/about');
 const hoursRoutes   = require('./routes/hours');
 const menuRoutes    = require('./routes/menu');
+const recommendationsRoutes = require('./routes/recommendations');
+const seasonalRoutes = require('./routes/seasonal');
 const eventRoutes   = require('./routes/events');
 
 const app = express();
@@ -80,7 +82,7 @@ app.post('/api/admin/login', loginUser);
 
 // ── Admin page routes (session required, redirects to /admin/login) ────────
 const rootDir = path.join(__dirname, '..');
-app.get('/', (req, res) => res.sendFile(path.join(rootDir, 'erlbrew-cafe-website.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'erlbrew-cafe-website.html')));
 app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/erlbrew-cafe-website.html', (req, res) => res.redirect(301, '/'));
 app.get('/admin', requireSession, (req, res) => res.sendFile(path.join(rootDir, 'erlbrew-admin.html')));
@@ -100,6 +102,8 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/hours', hoursRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/seasonal', seasonalRoutes);
 app.use('/api/events', eventRoutes);
 
 // ── Health check ───────────────────────────────────────────────────────────

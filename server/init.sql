@@ -71,7 +71,39 @@ CREATE TABLE IF NOT EXISTS menu_items (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Seasonal items table (for temporary / limited-time menu entries)
+CREATE TABLE IF NOT EXISTS seasonal_items (
+  id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  menu_item_id INT UNSIGNED NOT NULL,
+  season_name VARCHAR(100) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  tags VARCHAR(255) DEFAULT '', -- comma-separated tags like 'pumpkin,iced,vegan'
+  description TEXT DEFAULT NULL,
+  image_filename VARCHAR(255) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (menu_item_id),
+  INDEX (start_date, end_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Create a dedicated user with full DML + CREATE for auto-setup (change password in production)
 CREATE USER IF NOT EXISTS 'erlbrew'@'%' IDENTIFIED BY 'erlbrew_prod_2026';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE ON erlbrew.* TO 'erlbrew'@'%';
 FLUSH PRIVILEGES;
+
+-- ── Seed: create a Seasonal category, a sample seasonal menu item, and a seasonal_items row (idempotent)
+INSERT INTO menu_categories (cat, ja, sort_order)
+SELECT 'Seasonal', '季節', 99 FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM menu_categories WHERE cat = 'Seasonal');
+
+INSERT INTO menu_items (category_id, name, price, sort_order)
+SELECT (SELECT id FROM menu_categories WHERE cat='Seasonal' LIMIT 1), 'Matcha Strawberry Latte (Seasonal)', 159, 1
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name = 'Matcha Strawberry Latte (Seasonal)');
+
+INSERT INTO seasonal_items (menu_item_id, season_name, start_date, end_date, tags, description, image_filename)
+SELECT mi.id, 'Matcha Season', '2026-08-01', '2026-09-30', 'matcha,iced,seasonal', 'Limited-time matcha strawberry latte — bright, creamy, and iced.', NULL
+FROM menu_items mi
+JOIN menu_categories mc ON mc.id = mi.category_id
+WHERE mc.cat='Seasonal' AND mi.name='Matcha Strawberry Latte (Seasonal)'
+  AND NOT EXISTS (SELECT 1 FROM seasonal_items si WHERE si.menu_item_id = mi.id AND si.season_name='Matcha Season');

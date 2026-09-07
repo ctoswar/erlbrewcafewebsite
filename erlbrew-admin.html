@@ -460,7 +460,6 @@ async function loadPhotosFromServer(){
     const data = await res.json();
     PHOTOS_CACHE = data.photos || {};
   } catch(e) {
-    console.error('Failed to load gallery photos:', e);
     PHOTOS_CACHE = {};
   }
 }
@@ -478,7 +477,9 @@ async function uploadPhoto(i, file){
 }
 
 async function deletePhoto(i){
-  await fetch('/api/gallery/'+i, { method:'DELETE' });
+  const res = await fetch('/api/gallery/'+i, { method:'DELETE' });
+  const data = await res.json();
+  if(!data.success) throw new Error(data.message||'Delete failed');
   delete PHOTOS_CACHE[i];
 }
 
@@ -547,7 +548,7 @@ function buildSlotList(){
     return `
     <div class="gal-slot-row${has?' has-img':''}">
       <div class="gal-slot-thumb">
-        <img src="${url}" class="${has?'show':''}" alt="${s.name}" id="limg-${i}"/>
+        <img src="${escHtml(url)}" class="${has?'show':''}" alt="${escHtml(s.name)}" id="limg-${i}"/>
         ${!has?`<span class="gal-thumb-kanji">${s.kanji}</span>`:''}
       </div>
       <div class="gal-slot-info">
@@ -585,7 +586,6 @@ async function loadAboutFromServer(){
     const data = await res.json();
     ABOUT_CACHE = data.photo || null;
   } catch(e) {
-    console.error('Failed to load about photo:', e);
     ABOUT_CACHE = null;
   }
 }
@@ -655,9 +655,7 @@ async function loadHoursFromServer(){
     const data = await res.json();
     HOURS_DATA = data.hours || [];
     renderHoursForm();
-  } catch(e) {
-    console.error('Failed to load hours:', e);
-  }
+  } catch(e) { /* silent */ }
 }
 
 function renderHoursForm(){
@@ -716,16 +714,20 @@ async function saveHours(){
       );
     });
     const responses = await Promise.all(promises);
+    let failed = 0;
     for(const response of responses){
       if(!response.ok){
-        throw new Error('Unable to save one or more rows');
+        failed++;
+        continue;
       }
       const payload = await response.json();
-      if(!payload.success){
-        throw new Error(payload.message || 'Unable to save one or more rows');
-      }
+      if(!payload.success) failed++;
     }
-    toast('Hours saved');
+    if(failed > 0){
+      toast(`${failed} row${failed>1?'s':''} failed to save`, false);
+    } else {
+      toast('Hours saved');
+    }
     await loadHoursFromServer();
   } catch(e) {
     toast('Save failed: '+e.message, false);
@@ -748,9 +750,7 @@ async function loadMenuFromServer(){
     const data = await res.json();
     MENU_DATA = data.menu || [];
     renderMenuAdmin();
-  } catch(e) {
-    console.error('Failed to load menu:', e);
-  }
+  } catch(e) { /* silent */ }
 }
 
 function renderMenuAdmin(){
@@ -936,6 +936,7 @@ document.getElementById('menu-save-btn')?.addEventListener('click', async () => 
     });
 
     // Collect item name/price changes
+    let skipped = 0;
     document.querySelectorAll('.menu-item-name').forEach(input => {
       const id = parseInt(input.dataset.itemId, 10);
       const priceInput = document.querySelector(`.menu-item-price[data-item-id="${id}"]`);
@@ -949,11 +950,13 @@ document.getElementById('menu-save-btn')?.addEventListener('click', async () => 
             body: JSON.stringify({ name, price }),
           })
         );
+      } else {
+        skipped++;
       }
     });
 
     await Promise.all(promises);
-    toast('Menu saved');
+    toast(skipped > 0 ? `Menu saved (${skipped} item${skipped>1?'s':''} skipped — check name/price)` : 'Menu saved');
     await loadMenuFromServer();
   } catch(e) {
     toast('Save failed: ' + e.message, false);
@@ -990,29 +993,12 @@ if(aboutInput){
 
 /* ── Drag and drop on about slot ── */
 const aboutSlot = document.getElementById('about-slot');
-if(aboutSlot){
-  aboutSlot.addEventListener('dragover', e=>{e.preventDefault();aboutSlot.style.outline='2px solid #B8935A'});
-  aboutSlot.addEventListener('dragleave', ()=>aboutSlot.style.outline='');
-  aboutSlot.addEventListener('drop', e=>{
-    e.preventDefault(); aboutSlot.style.outline='';
-    const file = e.dataTransfer.files[0];
-    if(file&&file.type.startsWith('image/')) handleAboutFile(file);
-  });
-}
-
-/* ── About drag and drop on about-slot (fallback to click) ── */
-// Click is already handled by the hidden file input inside the slot
+if(aboutSlot) enableDropZone(aboutSlot, handleAboutFile);
 
 /* ── Drag and drop on grid slots ── */
 document.querySelectorAll('.gal-slot').forEach(slot=>{
-  slot.addEventListener('dragover', e=>{e.preventDefault();slot.style.outline='2px solid #B8935A'});
-  slot.addEventListener('dragleave', ()=>slot.style.outline='');
-  slot.addEventListener('drop', e=>{
-    e.preventDefault(); slot.style.outline='';
-    const i = parseInt(slot.id.replace('gslot-',''));
-    const file = e.dataTransfer.files[0];
-    if(file&&file.type.startsWith('image/')) handleFile(i,file);
-  });
+  const i = parseInt(slot.id.replace('gslot-',''));
+  enableDropZone(slot, file=>handleFile(i,file));
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1026,9 +1012,7 @@ async function loadEventsFromServer(){
     const data = await res.json();
     INQUIRIES = data.inquiries || [];
     renderEventsAdmin();
-  } catch(e) {
-    console.error('Failed to load inquiries:', e);
-  }
+  } catch(e) { /* silent */ }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1042,11 +1026,7 @@ async function loadSeasonalFromServer(){
     const data = await res.json();
     SEASONAL_DATA = data.seasonal || [];
     renderSeasonalAdmin();
-  } catch(e) {
-    console.error('Failed to load seasonal items:', e);
-    SEASONAL_DATA = [];
-    renderSeasonalAdmin();
-  }
+  } catch(e) { /* silent */ }
 }
 
 function renderSeasonalAdmin(){
@@ -1063,7 +1043,7 @@ function renderSeasonalAdmin(){
     <div class="ev-card" data-id="${it.id}">
       <div style="display:flex;gap:12px;align-items:flex-start">
         <div style="width:120px;flex-shrink:0">
-          ${it.image_url ? `<img src="${it.image_url}" style="width:120px;height:90px;object-fit:cover;border-radius:4px"/>` : `<div style="width:120px;height:90px;background:#efe7d8;border-radius:4px;display:flex;align-items:center;justify-content:center;color:rgba(24,23,20,0.4)">No image</div>`}
+          ${it.image_url ? `<img src="${escHtml(it.image_url)}" style="width:120px;height:90px;object-fit:cover;border-radius:4px"/>` : `<div style="width:120px;height:90px;background:#efe7d8;border-radius:4px;display:flex;align-items:center;justify-content:center;color:rgba(24,23,20,0.4)">No image</div>`}
           <div style="margin-top:8px;display:flex;gap:8px">
             <label class="menu-btn-add-sm" style="cursor:pointer">Upload<input type="file" accept="image/*" style="display:none" data-id="${it.id}" onchange="handleSeasonalImage(this.files[0],${it.id})"/></label>
             <button class="action-btn action-remove" data-action="del-seasonal" data-id="${it.id}">Delete</button>
@@ -1250,8 +1230,29 @@ function formatDate(d){
   return date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 
+/* ── Session check ── */
+async function checkSession(){
+  try {
+    const res = await fetch('/api/hours', { credentials: 'same-origin' });
+    if(res.status === 401) { window.location.href = '/admin/login'; return false; }
+  } catch(e) { /* network error — let user continue */ }
+  return true;
+}
+
+/* ── Drag & Drop helper ── */
+function enableDropZone(el, onFile){
+  el.addEventListener('dragover', e=>{e.preventDefault();el.style.outline='2px solid #B8935A'});
+  el.addEventListener('dragleave', ()=>el.style.outline='');
+  el.addEventListener('drop', e=>{
+    e.preventDefault(); el.style.outline='';
+    const file = e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')) onFile(file);
+  });
+}
+
 /* ── Init ── */
 (async function init(){
+  if(!(await checkSession())) return;
   await Promise.all([
     loadPhotosFromServer(),
     loadAboutFromServer(),

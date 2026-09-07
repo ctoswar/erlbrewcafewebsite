@@ -169,9 +169,7 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      // Redirect to the admin secret path (current path without /login)
-      const adminPath = window.location.pathname.replace(/\/login\/?$/, '');
-      window.location.href = adminPath;
+      window.location.href = '/admin';
     } else {
       error.textContent = data.message || 'Invalid credentials';
       error.classList.add('show');

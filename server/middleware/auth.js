@@ -1,6 +1,7 @@
 // ─── Session-based Auth Middleware ──────────────────────────────────────────
-// Login page at /admin/login → POST /api/admin/login → session cookie.
+// Login page at {ADMIN_SECRET_PATH}/login → POST /api/admin/login → session cookie.
 // Protects admin pages (redirect to login) and write API endpoints (401).
+// Admin path is hidden via ADMIN_SECRET_PATH env var (default: /x7k9m2p).
 // ────────────────────────────────────────────────────────────────────────────
 
 const crypto = require('crypto');
@@ -175,7 +176,7 @@ async function verifyCredentials(username, password) {
 
 /**
  * requireSession — protects admin page routes.
- * Redirects to /admin/login if no valid session cookie.
+ * Redirects to {ADMIN_SECRET_PATH}/login if no valid session cookie.
  */
 function requireSession(req, res, next) {
   const cookies = parseCookies(req);
@@ -187,8 +188,9 @@ function requireSession(req, res, next) {
     if (req.xhr || req.headers.accept?.includes('json')) {
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
-    // Page requests get redirected
-    return res.redirect('/admin/login');
+    // Page requests get redirected to hidden admin login
+    const adminPath = process.env.ADMIN_SECRET_PATH || '/x7k9m2p';
+    return res.redirect(`${adminPath}/login`);
   }
 
   req.session = session; // attach for downstream use

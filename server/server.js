@@ -73,13 +73,18 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   lastModified: true,
 }));
 
+// ── Homepage routes ────────────────────────────────────────────────────────
+const rootDir = path.join(__dirname, '..');
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'erlbrew-cafe-website.html')));
+app.get('/index.html', (req, res) => res.redirect(301, '/'));
+app.get('/erlbrew-cafe-website.html', (req, res) => res.redirect(301, '/'));
+
 // ── Admin security: hidden path + secret token ─────────────────────────────
 // Admin is accessible only via a secret path (e.g., /x7k9m2p)
 // Set ADMIN_SECRET_PATH env var to change the path (default: /x7k9m2p)
 // Set ADMIN_ACCESS_TOKEN env var for additional token-based access control
 const ADMIN_SECRET_PATH = process.env.ADMIN_SECRET_PATH || '/x7k9m2p';
 const ADMIN_ACCESS_TOKEN = process.env.ADMIN_ACCESS_TOKEN || '';
-const rootDir = path.join(__dirname, '..');
 
 // Block the old /admin path — return 404 to hide its existence
 app.get('/admin', (req, res) => {

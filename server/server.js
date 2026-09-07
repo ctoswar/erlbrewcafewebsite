@@ -79,43 +79,16 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'erlbrew-cafe-websi
 app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/erlbrew-cafe-website.html', (req, res) => res.redirect(301, '/'));
 
-// ── Admin security: hidden path + secret token ─────────────────────────────
-// Admin is accessible only via a secret path (e.g., /x7k9m2p)
-// Set ADMIN_SECRET_PATH env var to change the path (default: /x7k9m2p)
-// Set ADMIN_ACCESS_TOKEN env var for additional token-based access control
-const ADMIN_SECRET_PATH = process.env.ADMIN_SECRET_PATH || '/x7k9m2p';
-const ADMIN_ACCESS_TOKEN = process.env.ADMIN_ACCESS_TOKEN || '';
-
-// Block the old /admin path — return 404 to hide its existence
-app.get('/admin', (req, res) => {
-  res.status(404).json({ success: false, message: 'Not found' });
-});
-app.get('/admin/*', (req, res) => {
-  res.status(404).json({ success: false, message: 'Not found' });
-});
-app.get('/erlbrew-admin.html', (req, res) => {
-  res.status(404).json({ success: false, message: 'Not found' });
-});
-
-// Admin login via secret path (no auth required)
-app.get(`${ADMIN_SECRET_PATH}/login`, (req, res) => {
-  // If ADMIN_ACCESS_TOKEN is set, verify it from query string
-  if (ADMIN_ACCESS_TOKEN && req.query.token !== ADMIN_ACCESS_TOKEN) {
-    return res.status(404).json({ success: false, message: 'Not found' });
-  }
+// ── Admin login (no auth required) ─────────────────────────────────────────
+app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
 });
 
 app.post('/api/admin/login', loginUser);
 
-// Admin page route via secret path (session required)
-app.get(ADMIN_SECRET_PATH, requireSession, (req, res) => {
-  // If ADMIN_ACCESS_TOKEN is set, verify it from query string
-  if (ADMIN_ACCESS_TOKEN && req.query.token !== ADMIN_ACCESS_TOKEN) {
-    return res.status(404).json({ success: false, message: 'Not found' });
-  }
-  res.sendFile(path.join(rootDir, 'erlbrew-admin.html'));
-});
+// ── Admin page routes (session required, redirects to /admin/login) ────────
+app.get('/admin', requireSession, (req, res) => res.sendFile(path.join(rootDir, 'erlbrew-admin.html')));
+app.get('/erlbrew-admin.html', requireSession, (req, res) => res.redirect(301, '/admin'));
 
 // Admin logout
 app.post('/api/admin/logout', requireSessionAPI, logoutUser);

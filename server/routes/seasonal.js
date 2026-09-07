@@ -109,28 +109,23 @@ router.delete('/:id', async (req, res, next) => {
 router.post('/:id/image', (req, res, next) => {
   upload.single('photo')(req, res, async (err) => {
     if (err) {
-      console.error('[SEASONAL] upload error:', err && err.message);
       return res.status(400).json({ success: false, message: err.message });
     }
     if (!req.file) {
-      console.warn('[SEASONAL] no file in request');
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    (async () => {
-      try {
-        const id = parseInt(req.params.id, 10);
-        const pool = db.getPool();
-        // Delete old file if present
-        const [rows] = await pool.execute('SELECT image_filename FROM seasonal_items WHERE id = ?', [id]);
-        if (rows && rows[0] && rows[0].image_filename) {
-          const old = path.join(UPLOAD_DIR, rows[0].image_filename);
-          if (fs.existsSync(old)) fs.unlinkSync(old);
-        }
-        await pool.execute('UPDATE seasonal_items SET image_filename = ? WHERE id = ?', [req.file.filename, id]);
-        console.log(`[SEASONAL] uploaded ${req.file.filename} for id=${id}`);
-        res.json({ success: true, url: '/uploads/' + req.file.filename });
-      } catch (e) { next(e); }
-    })();
+    try {
+      const id = parseInt(req.params.id, 10);
+      const pool = db.getPool();
+      // Delete old file if present
+      const [rows] = await pool.execute('SELECT image_filename FROM seasonal_items WHERE id = ?', [id]);
+      if (rows && rows[0] && rows[0].image_filename) {
+        const old = path.join(UPLOAD_DIR, rows[0].image_filename);
+        if (fs.existsSync(old)) fs.unlinkSync(old);
+      }
+      await pool.execute('UPDATE seasonal_items SET image_filename = ? WHERE id = ?', [req.file.filename, id]);
+      res.json({ success: true, url: '/uploads/' + req.file.filename });
+    } catch (e) { next(e); }
   });
 });
 

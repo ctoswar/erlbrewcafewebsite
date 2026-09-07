@@ -9,12 +9,22 @@ let pool = null;
  */
 function getPool() {
   if (!pool) {
+    // Require environment variables for database connection
+    const dbHost = process.env.DB_HOST;
+    const dbUser = process.env.DB_USER;
+    const dbPassword = process.env.DB_PASSWORD;
+    const dbName = process.env.DB_NAME;
+
+    if (!dbHost || !dbUser || !dbPassword || !dbName) {
+      throw new Error('Missing required database environment variables: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME');
+    }
+
     pool = mysql.createPool({
-      host: process.env.DB_HOST || '192.168.75.101',
+      host: dbHost,
       port: parseInt(process.env.DB_PORT || '3306', 10),
-      user: process.env.DB_USER || 'erlbrew',
-      password: process.env.DB_PASSWORD || 'erlbrew_prod_2026',
-      database: process.env.DB_NAME || 'erlbrew',
+      user: dbUser,
+      password: dbPassword,
+      database: dbName,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -59,7 +69,6 @@ async function ensureTable() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
-    console.log('[DB] gallery_photos table ready');
 
     // About photo table
     await conn.execute(`
@@ -73,7 +82,6 @@ async function ensureTable() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
-    console.log('[DB] about_photo table ready');
 
     // Business hours table
     await conn.execute(`
@@ -96,9 +104,7 @@ async function ensureTable() {
         ('Sunday',         '8:00 AM – 7:00 PM', 0, 3),
         ('Holidays',       'Check our socials',  1, 4)
       `);
-      console.log('[DB] business_hours seeded with defaults');
     }
-    console.log('[DB] business_hours table ready');
 
     // Event inquiries table
     await conn.execute(`
@@ -113,12 +119,9 @@ async function ensureTable() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
-    console.log('[DB] event_inquiries table ready');
   } catch (err) {
     // Non-fatal: the table must already exist from init.sql.
     // The erlbrew user may not have CREATE privilege.
-    console.warn('[DB] Could not auto-create table (expected if app user lacks CREATE).');
-    console.warn('[DB] Ensure init.sql was run as root. Error:', err.message);
   } finally {
     if (conn) conn.release();
   }

@@ -29,7 +29,10 @@ router.get('/menu', async (req, res, next) => {
     }
 
     const csv = rows.map(row =>
-      row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      row.map(cell => {
+        const val = String(cell).replace(/\r?\n/g, ' ').replace(/"/g, '""');
+        return `"${/^[=+\-@\t\r]/.test(val) ? "'" : ''}${val}"`;
+      }).join(',')
     ).join('\n');
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
@@ -60,7 +63,10 @@ router.get('/hours', async (req, res, next) => {
     }
 
     const csv = rows.map(row =>
-      row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      row.map(cell => {
+        const val = String(cell).replace(/\r?\n/g, ' ').replace(/"/g, '""');
+        return `"${/^[=+\-@\t\r]/.test(val) ? "'" : ''}${val}"`;
+      }).join(',')
     ).join('\n');
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');

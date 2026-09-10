@@ -17,6 +17,7 @@ const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // Multer for seasonal images
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -26,7 +27,14 @@ const storage = multer.diskStorage({
     cb(null, `seasonal-${id}-${unique}${ext}`);
   },
 });
-const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
+const fileFilter = (req, file, cb) => {
+  if (ALLOWED_TYPES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error(`Unsupported file type: ${file.mimetype}. Allowed: JPEG, PNG, WebP, GIF, AVIF`), false);
+  }
+};
+const upload = multer({ storage, fileFilter, limits: { fileSize: 20 * 1024 * 1024 } });
 
 // GET all seasonal items (admin list)
 router.get('/', async (req, res, next) => {
@@ -79,6 +87,13 @@ router.put('/:id', async (req, res, next) => {
     const { menu_item_id, season_name, start_date, end_date, tags, description } = req.body || {};
     if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid id' });
     const pool = db.getPool();
+
+    // Validate menu_item_id exists
+    const [itemCheck] = await pool.execute('SELECT id FROM menu_items WHERE id = ?', [menu_item_id]);
+    if (itemCheck.length === 0) {
+      return res.status(404).json({ success: false, message: 'Menu item not found' });
+    }
+
     const [result] = await pool.execute(
       `UPDATE seasonal_items SET menu_item_id = ?, season_name = ?, start_date = ?, end_date = ?, tags = ?, description = ? WHERE id = ?`,
       [menu_item_id, season_name, start_date, end_date, (tags || '').toString(), description || null, id]

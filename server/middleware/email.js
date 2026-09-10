@@ -45,12 +45,15 @@ function getTransporter() {
  */
 async function sendInquiryNotification(inquiry) {
   const transport = getTransporter();
-  if (!transport) return; // SMTP not configured, skip silently
+  if (!transport) {
+    console.warn('[Email] SMTP not configured — notification skipped');
+    return { sent: false, reason: 'SMTP not configured' };
+  }
 
   const notificationEmail = process.env.NOTIFICATION_EMAIL;
   if (!notificationEmail) {
     console.warn('[Email] NOTIFICATION_EMAIL not set — skipping notification');
-    return;
+    return { sent: false, reason: 'NOTIFICATION_EMAIL not set' };
   }
 
   const subject = `New Event Inquiry from ${inquiry.name}`;
@@ -102,9 +105,10 @@ async function sendInquiryNotification(inquiry) {
       replyTo: inquiry.email,
     });
     console.log(`[Email] Notification sent for inquiry from ${inquiry.name}`);
+    return { sent: true };
   } catch (err) {
     console.error('[Email] Failed to send notification:', err.message);
-    // Don't throw — email failure shouldn't break the inquiry submission
+    return { sent: false, reason: err.message };
   }
 }
 

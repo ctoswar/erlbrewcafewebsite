@@ -175,6 +175,9 @@ router.post('/items', async (req, res, next) => {
 router.put('/items/:id', async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid id' });
+    }
     const { name, price } = req.body;
 
     // Build dynamic UPDATE

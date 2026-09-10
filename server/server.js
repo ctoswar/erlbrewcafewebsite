@@ -46,8 +46,12 @@ app.use(helmet({
   },
 }));
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || '*';
+if (allowedOrigins === '*' && isProd) {
+  console.warn('[Security] ALLOWED_ORIGINS not set — CORS is wide open in production');
+}
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   exposedHeaders: [],

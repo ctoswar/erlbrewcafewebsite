@@ -4,6 +4,7 @@ const multer  = require('multer');
 const path    = require('path');
 const crypto  = require('crypto');
 const fs      = require('fs');
+const sharp   = require('sharp');
 const db      = require('../db');
 
 const router = express.Router();
@@ -86,18 +87,31 @@ router.post('/:slot', (req, res, next) => {
         }
       }
 
+      // Convert to WebP using sharp for optimization
+      const webpFilename = `slot-${slot}-${crypto.randomBytes(6).toString('hex')}.webp`;
+      const webpPath = path.join(UPLOAD_DIR, webpFilename);
+      
+      await sharp(req.file.path)
+        .webp({ quality: 85 })
+        .toFile(webpPath);
+
+      // Remove original file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+
       await db.upsertPhoto(
         slot,
-        req.file.filename,
+        webpFilename,
         req.file.originalname,
-        req.file.mimetype,
-        req.file.size
+        'image/webp',
+        fs.statSync(webpPath).size
       );
 
       res.json({
         success: true,
         slot,
-        url: `/uploads/${req.file.filename}`,
+        url: `/uploads/${webpFilename}`,
       });
     } catch (dbErr) {
       next(dbErr);

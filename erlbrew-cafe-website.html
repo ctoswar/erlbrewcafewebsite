@@ -1490,6 +1490,7 @@ async function loadGalleryPhotos(){
     img.src = photo.url;
     img.alt = 'Gallery photo '+(i+1);
     img.className = 'gal-real-img';
+    img.loading = 'lazy';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
     inner.appendChild(img);
   }
@@ -1562,7 +1563,7 @@ async function loadSeasonal(limit = 3){
             <span class="sp-corner tl"></span>
             <span class="sp-corner tr"></span>
             ${it.image_url
-              ? `<img src="${it.image_url}" alt="${escHtml(it.name)}">`
+              ? `<img src="${it.image_url}" alt="${escHtml(it.name)}" loading="lazy">`
               : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🍰</div>`}
             <span class="sp-sweep"></span>
           </div>
@@ -1597,7 +1598,7 @@ async function loadSeasonal(limit = 3){
         <div class="seasonal-img">\
           <span class="seasonal-badge">Seasonal</span>\
           ${it.price != null ? `<span class="seasonal-price-tag">₱${it.price}</span>` : ''}\
-          ${it.image_url ? `<img src="${it.image_url}" alt="${escHtml(it.name)}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px">🍰</div>`}\
+          ${it.image_url ? `<img src="${it.image_url}" alt="${escHtml(it.name)}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px">🍰</div>`}\
         </div>\
         <div class="seasonal-body">\
           <h3 class="seasonal-title">${escHtml(it.name)}</h3>\

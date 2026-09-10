@@ -287,6 +287,92 @@ async function markInquiryRead(id) {
   await getPool().execute('UPDATE event_inquiries SET is_read = 1 WHERE id = ?', [id]);
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// ANALYTICS COUNTS
+// ═════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Get total gallery photos count.
+ */
+async function getGalleryCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM gallery_photos');
+  return rows[0].count;
+}
+
+/**
+ * Get total menu categories count.
+ */
+async function getMenuCategoriesCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM menu_categories');
+  return rows[0].count;
+}
+
+/**
+ * Get total menu items count.
+ */
+async function getMenuItemsCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM menu_items');
+  return rows[0].count;
+}
+
+/**
+ * Get total inquiries count.
+ */
+async function getInquiriesCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM event_inquiries');
+  return rows[0].count;
+}
+
+/**
+ * Get unread inquiries count.
+ */
+async function getUnreadInquiriesCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM event_inquiries WHERE is_read = 0');
+  return rows[0].count;
+}
+
+/**
+ * Get total seasonal items count.
+ */
+async function getSeasonalCount() {
+  const [rows] = await getPool().execute('SELECT COUNT(*) AS count FROM seasonal_items');
+  return rows[0].count;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// MENU (for export)
+// ═════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Get full menu with categories and items.
+ */
+async function getFullMenu() {
+  const [categories] = await getPool().execute(
+    'SELECT id, cat, ja FROM menu_categories ORDER BY sort_order ASC'
+  );
+  const [items] = await getPool().execute(
+    'SELECT id, category_id, name, price, sort_order FROM menu_items ORDER BY sort_order ASC'
+  );
+
+  // Group items by category_id
+  const itemsByCat = {};
+  for (const item of items) {
+    if (!itemsByCat[item.category_id]) itemsByCat[item.category_id] = [];
+    itemsByCat[item.category_id].push({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+    });
+  }
+
+  return categories.map(c => ({
+    id: c.id,
+    cat: c.cat,
+    ja: c.ja,
+    items: itemsByCat[c.id] || [],
+  }));
+}
+
 module.exports = {
   getPool,
   testConnection,
@@ -303,4 +389,11 @@ module.exports = {
   getAllInquiries,
   deleteInquiry,
   markInquiryRead,
+  getGalleryCount,
+  getMenuCategoriesCount,
+  getMenuItemsCount,
+  getInquiriesCount,
+  getUnreadInquiriesCount,
+  getSeasonalCount,
+  getFullMenu,
 };

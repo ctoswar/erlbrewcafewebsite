@@ -7,6 +7,7 @@
 
 const express = require('express');
 const db      = require('../db');
+const { sendInquiryNotification } = require('../middleware/email');
 const router  = express.Router();
 
 // ── POST /api/events/inquiries ──────────────────────────────────────────────
@@ -33,6 +34,15 @@ router.post('/inquiries', async (req, res, next) => {
       event_date || null,
       message.trim()
     );
+
+    // Send email notification (non-blocking, fails silently)
+    sendInquiryNotification({
+      name: name.trim(),
+      email: email.trim(),
+      event_type: (event_type || '').trim(),
+      event_date: event_date || null,
+      message: message.trim(),
+    }).catch(err => console.error('[Events] Email notification failed:', err.message));
 
     res.status(201).json({
       success: true,

@@ -21,6 +21,7 @@ const menuRoutes    = require('./routes/menu');
 const recommendationsRoutes = require('./routes/recommendations');
 const seasonalRoutes = require('./routes/seasonal');
 const eventRoutes   = require('./routes/events');
+const exportRoutes  = require('./routes/export');
 
 const app = express();
 
@@ -107,10 +108,37 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/seasonal', seasonalRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/export', exportRoutes);
 
 // ── Health check ───────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ── Analytics (admin) ─────────────────────────────────────────────────────
+app.get('/api/analytics', requireSessionAPI, async (req, res) => {
+  try {
+    const [galleryCount, menuCatsCount, menuItemsCount, inquiriesCount, unreadCount, seasonalCount] = await Promise.all([
+      db.getGalleryCount(),
+      db.getMenuCategoriesCount(),
+      db.getMenuItemsCount(),
+      db.getInquiriesCount(),
+      db.getUnreadInquiriesCount(),
+      db.getSeasonalCount(),
+    ]);
+
+    res.json({
+      success: true,
+      analytics: {
+        gallery: { used: galleryCount, total: 5 },
+        menu: { categories: menuCatsCount, items: menuItemsCount },
+        inquiries: { total: inquiriesCount, unread: unreadCount },
+        seasonal: seasonalCount,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // ── Error handler ──────────────────────────────────────────────────────────

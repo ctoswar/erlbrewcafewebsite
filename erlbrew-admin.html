@@ -258,21 +258,21 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:#181714">Quick Actions</h3>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-          <button class="dash-action-btn" onclick="switchPanel('gallery')">
+          <button class="dash-action-btn" type="button" data-panel="gallery">
             <div style="width:36px;height:36px;border-radius:8px;background:rgba(77,107,72,.08);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4D6B48" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             </div>
             <span style="font-size:12px;font-weight:500;color:#181714">Manage Gallery</span>
             <span style="font-size:10px;color:rgba(24,23,20,.35);margin-top:2px">Upload & organize photos</span>
           </button>
-          <button class="dash-action-btn" onclick="switchPanel('menu')">
+          <button class="dash-action-btn" type="button" data-panel="menu">
             <div style="width:36px;height:36px;border-radius:8px;background:rgba(184,147,90,.08);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B8935A" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
             </div>
             <span style="font-size:12px;font-weight:500;color:#181714">Edit Menu</span>
             <span style="font-size:10px;color:rgba(24,23,20,.35);margin-top:2px">Categories & pricing</span>
           </button>
-          <button class="dash-action-btn" onclick="switchPanel('events')">
+          <button class="dash-action-btn" type="button" data-panel="events">
             <div style="width:36px;height:36px;border-radius:8px;background:rgba(122,59,40,.08);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A3B28" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             </div>
@@ -293,7 +293,7 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
             <span style="font-size:12px;font-weight:500;color:#181714">Export Hours</span>
             <span style="font-size:10px;color:rgba(24,23,20,.35);margin-top:2px">Download as CSV</span>
           </a>
-          <button class="dash-action-btn" onclick="switchPanel('seasonal')">
+          <button class="dash-action-btn" type="button" data-panel="seasonal">
             <div style="width:36px;height:36px;border-radius:8px;background:rgba(122,59,40,.08);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A3B28" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
@@ -1061,6 +1061,15 @@ function switchPanel(target) {
   // Load analytics when switching to dashboard
   if (target === 'dashboard') loadAnalytics();
 }
+
+/* ── Quick action buttons ── */
+document.querySelectorAll('.dash-action-btn[data-panel]').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = this.dataset.panel;
+    if (target) switchPanel(target);
+  });
+});
 
 /* ── Sidebar panel switching ── */
 document.querySelectorAll('.sb-item[data-panel]').forEach(btn=>{

@@ -44,7 +44,12 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
 
 /* ── Panels ── */
 .panel{display:none;flex:1;overflow-y:auto}
-.panel.active{display:block}
+.panel.active{display:block;animation:panelIn .28s ease both}
+
+@keyframes panelIn{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
 /* ════════════════════════════
    GALLERY PANEL
@@ -168,6 +173,7 @@ body{background:#F0EBE2;color:#181714;font-family:'Inter',sans-serif;min-height:
 .dash-card:hover{border-color:rgba(184,147,90,.2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(24,23,20,.04)}
 .dash-action-btn{display:flex;flex-direction:column;align-items:flex-start;padding:16px;background:#fff;border:1px solid rgba(24,23,20,.06);border-radius:8px;cursor:pointer;transition:all .2s;text-align:left}
 .dash-action-btn:hover{border-color:rgba(184,147,90,.25);background:#FDFCF9;transform:translateY(-1px);box-shadow:0 4px 12px rgba(24,23,20,.04)}
+.dash-action-btn:active{transform:translateY(0);box-shadow:0 1px 4px rgba(24,23,20,.06);transition-duration:.08s}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 </style>
 </head>

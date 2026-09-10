@@ -1063,26 +1063,15 @@ const PANEL_TITLES = {
 
 /* ── Switch panel programmatically ── */
 function switchPanel(target) {
-  console.log('[switchPanel] Called with target:', target);
   // Deactivate all sidebar items
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
   // Activate the target sidebar item
   const sidebarBtn = document.querySelector(`.sb-item[data-panel="${target}"]`);
-  if (sidebarBtn) {
-    sidebarBtn.classList.add('active');
-    console.log('[switchPanel] Sidebar button found:', sidebarBtn.dataset.panel);
-  } else {
-    console.warn('[switchPanel] No sidebar button found for:', target);
-  }
+  if (sidebarBtn) sidebarBtn.classList.add('active');
   // Show target panel, hide others
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById('panel-' + target);
-  if (panel) {
-    panel.classList.add('active');
-    console.log('[switchPanel] Panel activated:', panel.id);
-  } else {
-    console.warn('[switchPanel] No panel found for:', 'panel-' + target);
-  }
+  if (panel) panel.classList.add('active');
   // Update topbar title
   const titles = PANEL_TITLES[target] || { en: target, jp: '' };
   document.querySelector('.topbar-title').innerHTML = `${titles.en} <span class="topbar-jp">${titles.jp}</span>`;

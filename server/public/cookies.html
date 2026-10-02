@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Cookie Policy — which cookies the Erlbrew Café website uses and how to control them."/>
+<title>Cookie Policy — Erlbrew Café</title>
+<link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#181714; --paper:#F4EFE6; --cream:#FBF7F1;
+    --gold:#B8935A; --gold2:#D4AA6E; --sage:#4D6B48;
+    --muted:rgba(24,23,20,.58); --hair:rgba(24,23,20,.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-weight:300;line-height:1.8;font-size:15px;overflow-x:hidden}
+  ::selection{background:var(--sage);color:var(--paper)}
+  a{color:inherit}
+  .wrap{max-width:820px;margin:0 auto;padding:0 26px}
+
+  /* ── Top bar ── */
+  .lg-top{position:sticky;top:0;z-index:50;background:rgba(244,239,230,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+  .lg-top-in{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px}
+  .lg-brand{display:flex;align-items:flex-end;gap:9px;text-decoration:none}
+  .lg-brand b{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:400;letter-spacing:-.01em;line-height:1}
+  .lg-brand i{font-family:'Noto Serif JP',serif;font-style:normal;font-size:9px;color:var(--gold);letter-spacing:.25em;line-height:1;margin-bottom:2px}
+  .lg-nav{display:flex;gap:26px}
+  .lg-nav a{font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:rgba(24,23,20,.45);padding-bottom:4px;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+  .lg-nav a:hover{color:var(--ink)}
+  .lg-nav a.on{color:var(--ink);border-bottom-color:var(--gold)}
+  @media(max-width:640px){.lg-nav{gap:16px}.lg-nav a{font-size:10px;letter-spacing:.08em}}
+
+  /* ── Content ── */
+  .lg-main{padding:70px 0 90px}
+  .kicker{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,147,90,.9);margin-bottom:16px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(38px,7vw,58px);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+  .lede{font-size:16px;line-height:1.85;color:var(--muted);max-width:62ch}
+  .updated{margin-top:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.38)}
+  .rule{height:1px;background:linear-gradient(90deg,var(--gold),rgba(184,147,90,0));margin:44px 0 46px;opacity:.55}
+
+  h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:400;line-height:1.25;margin:42px 0 14px;letter-spacing:-.01em}
+  h2 .n{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.16em;color:var(--gold);vertical-align:middle;margin-right:12px;transform:translateY(-3px)}
+  h3{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.7);margin:28px 0 8px}
+  p{margin-bottom:16px;color:rgba(24,23,20,.72);max-width:66ch}
+  ul{list-style:none;margin:0 0 18px;padding:0;max-width:66ch}
+  li{position:relative;padding-left:22px;margin-bottom:9px;color:rgba(24,23,20,.72)}
+  li::before{content:'';position:absolute;left:2px;top:.72em;width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.75}
+  strong{font-weight:500;color:var(--ink)}
+  .lg-main a.ln{color:var(--sage);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;transition:color .25s}
+  .lg-main a.ln:hover{color:var(--ink)}
+
+  .card{background:var(--cream);border:1px solid var(--hair);border-left:2px solid rgba(184,147,90,.5);padding:22px 26px;margin:26px 0;border-radius:0 12px 12px 0}
+  .card p:last-child{margin-bottom:0}
+
+  .lg-btn{display:inline-flex;align-items:center;gap:9px;background:#181714;color:#F4EFE6;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:14px 30px;border:1px solid #181714;cursor:pointer;transition:background .3s,color .3s;text-decoration:none;margin-top:8px}
+  .lg-btn:hover{background:var(--gold);border-color:var(--gold);color:#181714}
+  .lg-btn-ghost{background:transparent;color:#181714;border:1px solid rgba(24,23,20,.28);margin-left:10px}
+  .lg-btn-ghost:hover{background:#181714;border-color:#181714;color:#F4EFE6}
+  @media(max-width:520px){.lg-btn,.lg-btn-ghost{display:flex;width:100%;justify-content:center;margin:8px 0 0}}
+
+  table{width:100%;border-collapse:collapse;margin:22px 0 26px;font-size:13.5px}
+  th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:rgba(24,23,20,.45);border-bottom-color:rgba(24,23,20,.2)}
+  td{color:rgba(24,23,20,.72)}
+  td code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:rgba(184,147,90,.12);padding:2px 6px;border-radius:4px;white-space:nowrap}
+  @media(max-width:640px){
+    table,thead,tbody,tr,th,td{display:block}
+    thead{display:none}
+    tr{border-bottom:1px solid var(--hair);padding:10px 0}
+    td{border:none;padding:5px 0}
+    td::before{content:attr(data-l);display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.4);margin-bottom:2px}
+  }
+
+  /* ── Footer ── */
+  .lg-foot{background:#181714;color:var(--paper);padding:56px 0 40px}
+  .lg-foot-nav{display:flex;flex-wrap:wrap;gap:12px 28px;padding-bottom:26px;margin-bottom:24px;border-bottom:1px solid rgba(244,239,230,.1)}
+  .lg-foot-nav a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:rgba(244,239,230,.45);transition:color .3s}
+  .lg-foot-nav a:hover{color:var(--paper)}
+  .lg-foot-nav a.on{color:var(--gold)}
+  .lg-foot-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+  .lg-foot-bot p{font-size:11px;color:rgba(244,239,230,.3);margin:0;max-width:none}
+  .lg-back{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,239,230,.55);text-decoration:none;transition:color .3s}
+  .lg-back:hover{color:var(--gold)}
+  .lg-jp{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;color:rgba(244,239,230,.2)}
+</style>
+</head>
+<body>
+
+<header class="lg-top">
+  <div class="wrap lg-top-in">
+    <a class="lg-brand" href="/"><b>Erlbrew</b><i>カフェ</i></a>
+    <nav class="lg-nav">
+      <a href="/privacy">Privacy</a>
+      <a href="/cookies" class="on">Cookies</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap lg-main">
+  <p class="kicker">Legal · クッキー</p>
+  <h1>Cookie Policy</h1>
+  <p class="lede">The short version: this website does not use advertising cookies, tracking pixels or analytics. It uses two essential technical pieces of storage, and here is exactly what they are.</p>
+  <p class="updated">Last updated: 3 October 2026</p>
+
+  <div class="rule"></div>
+
+  <h2><span class="n">01</span>What cookies are</h2>
+  <p>Cookies are small text files a website asks your browser to store on your device. They let the site remember something between page loads — a login, a language, or your choices.</p>
+  <p>There is also <strong>local storage</strong>, a similar browser feature. It keeps data on your device for this site only, and it is not sent to our server with every request. We use one entry of it, and we flag that clearly below so nothing is hidden behind fine print.</p>
+
+  <h2><span class="n">02</span>Cookies and storage we use</h2>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Type</th><th>Duration</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-l="Name"><code>erlbrew_cookie_consent</code></td>
+        <td data-l="Type">Local storage — essential</td>
+        <td data-l="Duration">Until you clear it</td>
+        <td data-l="Purpose">Remembers whether you accepted cookies or chose essential only, so we do not ask you every time.</td>
+      </tr>
+      <tr>
+        <td data-l="Name"><code>erlbrew_session</code></td>
+        <td data-l="Type">Cookie — essential, strictly necessary</td>
+        <td data-l="Duration">Session (deleted when the browser closes)</td>
+        <td data-l="Purpose">Keeps a staff member signed in to the private admin area. <strong>It is only ever set after someone logs in to the admin area</strong> — ordinary visitors to the public site never receive it.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Neither of these is used for advertising, cross-site tracking, analytics, or to profile you in any way. We do not run Google Analytics, Meta Pixel, or any similar tool on this website.</p>
+
+  <h2><span class="n">03</span>Storage set by other companies</h2>
+  <p>Some content on this site comes from third parties, and their servers may set their own cookies when your browser loads that content:</p>
+  <ul>
+    <li><strong>Google Fonts</strong> — our fonts are served from Google's servers, so your browser connects to Google and Google may record your IP address under its own <a class="ln" href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a>.</li>
+    <li><strong>Google Maps</strong> — the map in our Visit section is a Google Maps embed. Google may set cookies and collect usage data when it loads. Google's cookie controls are at <a class="ln" href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">policies.google.com/technologies/cookies</a>.</li>
+    <li><strong>Instagram and Facebook</strong> — we only link out to our profiles. These sites receive nothing from us until you click the link and visit them yourself.</li>
+  </ul>
+  <div class="card">
+    <p><strong>We cannot control cookies set by other companies</strong> on their own domains. You can block them entirely through your browser settings — see section 05.</p>
+  </div>
+
+  <h2><span class="n">04</span>Your choices</h2>
+  <p>When you first visit this site, a banner asks whether you accept cookies or would like essential ones only. Whichever you pick, the choice is stored on your device and we will not ask again until you reset it.</p>
+  <p>Because the only cookies we set are essential to the site working, choosing <strong>"Essential only"</strong> does not switch anything off for you — the site behaves exactly the same either way. It simply records your preference honestly.</p>
+  <p>You can change your mind at any time:</p>
+  <div>
+    <button class="lg-btn" id="reset-consent" type="button">Review cookie choices</button>
+    <a class="lg-btn lg-btn-ghost" href="/privacy">Read the Privacy Policy</a>
+  </div>
+
+  <h2><span class="n">05</span>Managing cookies in your browser</h2>
+  <p>Every browser lets you view, block and delete cookies. The exact menus differ, but the setting is usually under "Privacy" or "Site settings":</p>
+  <ul>
+    <li><strong>Chrome</strong> — Settings &rsaquo; Privacy and security &rsaquo; Third-party cookies</li>
+    <li><strong>Firefox</strong> — Settings &rsaquo; Privacy &amp; Security &rsaquo; Cookies and Site Data</li>
+    <li><strong>Safari</strong> — Settings &rsaquo; Privacy &rsaquo; Manage Website Data</li>
+    <li><strong>Edge</strong> — Settings &rsaquo; Cookies and site permissions</li>
+  </ul>
+  <p>You can also use private or incognito browsing, which discards cookies when you close the window.</p>
+  <p><strong>If you block essential cookies,</strong> the public site will still work normally, but signing in to the admin area will not — the login cannot be maintained without it.</p>
+
+  <h2><span class="n">06</span>Changes to this policy</h2>
+  <p>If we ever add a cookie that is not essential, or start using analytics or marketing tools, we will update this page first and ask for consent again before it runs. The date at the top shows when this policy last changed.</p>
+
+  <h2><span class="n">07</span>Contact</h2>
+  <p>Questions about cookies or your personal information? Email <a class="ln" href="mailto:delacruz.duncan@gmail.com">delacruz.duncan@gmail.com</a> or reach us on <a class="ln" href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener">Instagram</a>.</p>
+  <p>See also our <a class="ln" href="/privacy">Privacy Policy</a> and <a class="ln" href="/terms">Terms of Service</a>.</p>
+</main>
+
+<footer class="lg-foot">
+  <div class="wrap">
+    <nav class="lg-foot-nav">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/cookies" class="on">Cookie Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+    <div class="lg-foot-bot">
+      <p>© 2026 Erlbrew Café. All rights reserved.</p>
+      <a class="lg-back" href="/">&larr; Back to the café</a>
+      <span class="lg-jp">珈琲と静寂の空間</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var btn = document.getElementById('reset-consent');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      try{ localStorage.removeItem('erlbrew_cookie_consent'); }catch(e){}
+      btn.textContent = 'Choice cleared — taking you back';
+      window.location.href = '/';
+    });
+  })();
+</script>
+</body>
+</html>

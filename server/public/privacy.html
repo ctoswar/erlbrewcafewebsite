@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Privacy Policy — how Erlbrew Café collects, uses and protects your personal information."/>
+<title>Privacy Policy — Erlbrew Café</title>
+<link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#181714; --paper:#F4EFE6; --cream:#FBF7F1;
+    --gold:#B8935A; --gold2:#D4AA6E; --sage:#4D6B48;
+    --muted:rgba(24,23,20,.58); --hair:rgba(24,23,20,.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-weight:300;line-height:1.8;font-size:15px;overflow-x:hidden}
+  ::selection{background:var(--sage);color:var(--paper)}
+  a{color:inherit}
+  .wrap{max-width:820px;margin:0 auto;padding:0 26px}
+
+  /* ── Top bar ── */
+  .lg-top{position:sticky;top:0;z-index:50;background:rgba(244,239,230,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+  .lg-top-in{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px}
+  .lg-brand{display:flex;align-items:flex-end;gap:9px;text-decoration:none}
+  .lg-brand b{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:400;letter-spacing:-.01em;line-height:1}
+  .lg-brand i{font-family:'Noto Serif JP',serif;font-style:normal;font-size:9px;color:var(--gold);letter-spacing:.25em;line-height:1;margin-bottom:2px}
+  .lg-nav{display:flex;gap:26px}
+  .lg-nav a{font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:rgba(24,23,20,.45);padding-bottom:4px;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+  .lg-nav a:hover{color:var(--ink)}
+  .lg-nav a.on{color:var(--ink);border-bottom-color:var(--gold)}
+  @media(max-width:640px){.lg-nav{gap:16px}.lg-nav a{font-size:10px;letter-spacing:.08em}}
+
+  /* ── Content ── */
+  .lg-main{padding:70px 0 90px}
+  .kicker{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,147,90,.9);margin-bottom:16px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(38px,7vw,58px);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+  .lede{font-size:16px;line-height:1.85;color:var(--muted);max-width:62ch}
+  .updated{margin-top:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.38)}
+  .rule{height:1px;background:linear-gradient(90deg,var(--gold),rgba(184,147,90,0));margin:44px 0 46px;opacity:.55}
+
+  h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:400;line-height:1.25;margin:42px 0 14px;letter-spacing:-.01em}
+  h2 .n{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.16em;color:var(--gold);vertical-align:middle;margin-right:12px;transform:translateY(-3px)}
+  h3{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.7);margin:28px 0 8px}
+  p{margin-bottom:16px;color:rgba(24,23,20,.72);max-width:66ch}
+  ul{list-style:none;margin:0 0 18px;padding:0;max-width:66ch}
+  li{position:relative;padding-left:22px;margin-bottom:9px;color:rgba(24,23,20,.72)}
+  li::before{content:'';position:absolute;left:2px;top:.72em;width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.75}
+  strong{font-weight:500;color:var(--ink)}
+  .lg-main a.ln{color:var(--sage);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;transition:color .25s}
+  .lg-main a.ln:hover{color:var(--ink)}
+
+  .card{background:var(--cream);border:1px solid var(--hair);border-left:2px solid rgba(184,147,90,.5);padding:22px 26px;margin:26px 0;border-radius:0 12px 12px 0}
+  .card p:last-child{margin-bottom:0}
+
+  table{width:100%;border-collapse:collapse;margin:22px 0 26px;font-size:13.5px}
+  th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:rgba(24,23,20,.45);border-bottom-color:rgba(24,23,20,.2)}
+  td{color:rgba(24,23,20,.72)}
+  td code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:rgba(184,147,90,.12);padding:2px 6px;border-radius:4px}
+  @media(max-width:640px){
+    table,thead,tbody,tr,th,td{display:block}
+    thead{display:none}
+    tr{border-bottom:1px solid var(--hair);padding:10px 0}
+    td{border:none;padding:5px 0}
+    td::before{content:attr(data-l);display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.4);margin-bottom:2px}
+  }
+
+  /* ── Footer ── */
+  .lg-foot{background:#181714;color:var(--paper);padding:56px 0 40px}
+  .lg-foot-nav{display:flex;flex-wrap:wrap;gap:12px 28px;padding-bottom:26px;margin-bottom:24px;border-bottom:1px solid rgba(244,239,230,.1)}
+  .lg-foot-nav a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:rgba(244,239,230,.45);transition:color .3s}
+  .lg-foot-nav a:hover{color:var(--paper)}
+  .lg-foot-nav a.on{color:var(--gold)}
+  .lg-foot-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+  .lg-foot-bot p{font-size:11px;color:rgba(244,239,230,.3);margin:0;max-width:none}
+  .lg-back{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,239,230,.55);text-decoration:none;transition:color .3s}
+  .lg-back:hover{color:var(--gold)}
+  .lg-jp{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;color:rgba(244,239,230,.2)}
+</style>
+</head>
+<body>
+
+<header class="lg-top">
+  <div class="wrap lg-top-in">
+    <a class="lg-brand" href="/"><b>Erlbrew</b><i>カフェ</i></a>
+    <nav class="lg-nav">
+      <a href="/privacy" class="on">Privacy</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap lg-main">
+  <p class="kicker">Legal · ポリシー</p>
+  <h1>Privacy Policy</h1>
+  <p class="lede">This policy explains what personal information Erlbrew Café collects when you use this website, why we collect it, how long we keep it, and the choices you have.</p>
+  <p class="updated">Last updated: 3 October 2026</p>
+
+  <div class="rule"></div>
+
+  <h2><span class="n">01</span>Who we are</h2>
+  <p>Erlbrew Café is a specialty coffee and matcha café located at Unit 1C, Wash 'n Spices Auto Oasis, Lot 4 Azalea St. corner Advincula Ave., San Sebastian, Kawit, Cavite, Philippines. In this policy, "we", "us" and "our" refer to Erlbrew Café.</p>
+  <p>For any question about this policy or about your personal information, contact us at <a class="ln" href="mailto:delacruz.duncan@gmail.com">delacruz.duncan@gmail.com</a> or through our <a class="ln" href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener">Instagram</a> or <a class="ln" href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener">Facebook</a> page.</p>
+
+  <h2><span class="n">02</span>What we collect</h2>
+
+  <h3>Information you give us</h3>
+  <p>When you send us an event or coffee cart inquiry through the website form, we collect:</p>
+  <ul>
+    <li><strong>Your name</strong></li>
+    <li><strong>Your email address</strong></li>
+    <li><strong>Event type</strong> (wedding, corporate, market, private party, or other)</li>
+    <li><strong>Preferred event date</strong>, if you provide one</li>
+    <li><strong>Your message</strong> — anything you choose to tell us about the event</li>
+  </ul>
+  <p>We collect only what you type into the form. There are no other forms, accounts, mailing lists or newsletter sign-ups on this website.</p>
+
+  <h3>Information collected automatically</h3>
+  <p>Like nearly every website, the server that hosts this site automatically records standard technical details of each request, such as your IP address, browser and device type, the page requested, and the date and time. These server logs exist so the site can function and so we can diagnose problems and abuse. They are not used to build a profile of you.</p>
+
+  <h3>Cookies and local storage</h3>
+  <p>This website does not use advertising or analytics cookies. It uses a small number of essential technical cookies and one local storage entry — all described in our <a class="ln" href="/cookies">Cookie Policy</a>.</p>
+
+  <h2><span class="n">03</span>How we use your information</h2>
+  <p>We use the information you submit to:</p>
+  <ul>
+    <li>Read your inquiry and reply to you about your event — this is the whole reason we ask for it;</li>
+    <li>Send an internal notification to our team so your inquiry reaches the right person promptly;</li>
+    <li>Keep a record of correspondence if you contact us more than once;</li>
+    <li>Operate, secure and troubleshoot this website;</li>
+    <li>Comply with legal obligations that apply to us as a business.</li>
+  </ul>
+  <p>We do <strong>not</strong> use your information for automated decision-making, profiling, behavioural advertising, or to send you marketing messages. We do not operate a newsletter, and we will not add you to one because you sent an inquiry.</p>
+
+  <h2><span class="n">04</span>Our legal basis for handling your data</h2>
+  <p>Under the Philippine <strong>Data Privacy Act of 2012 (Republic Act No. 10173)</strong>, we must have a lawful basis for processing personal data. For this website:</p>
+  <ul>
+    <li><strong>Consent</strong> — you choose to fill in and submit the inquiry form. You may decline to give any information, and withdrawing that consent is as simple as telling us.</li>
+    <li><strong>Legitimate interest</strong> — responding to prospective customers, and keeping the website secure and working, are interests we and our visitors share.</li>
+    <li><strong>Legal obligation</strong> — where the law requires us to retain certain business records.</li>
+  </ul>
+
+  <h2><span class="n">05</span>Who we share it with</h2>
+  <p>We do not sell, rent, trade or share your personal information with advertisers or data brokers. It is never sold. We only disclose it to:</p>
+  <ul>
+    <li><strong>Our hosting and infrastructure provider</strong>, which runs the server and database this site sits on;</li>
+    <li><strong>Our email provider</strong>, which delivers the notification email when you send an inquiry;</li>
+    <li><strong>Professional advisers or authorities</strong>, where we are legally required to disclose it.</li>
+  </ul>
+  <p>Everyone we work with is expected to keep your information confidential and secure.</p>
+
+  <h2><span class="n">06</span>Third-party services on this page</h2>
+  <p>Some content on this site is served by third parties, who may collect data from you under their own policies:</p>
+  <ul>
+    <li><strong>Google Fonts</strong> — our typefaces are loaded from Google's servers, which sees your IP address when the page loads. See Google's <a class="ln" href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a>.</li>
+    <li><strong>Google Maps</strong> — the map in our Visit section is a Google Maps embed, which may set cookies and collect usage data. See the <a class="ln" href="/cookies">Cookie Policy</a> and Google's policy above.</li>
+    <li><strong>Instagram and Facebook</strong> — we link to our profiles. Nothing is shared with them unless you click through and use those services yourself.</li>
+  </ul>
+
+  <h2><span class="n">07</span>How long we keep it</h2>
+  <ul>
+    <li><strong>Inquiry records</strong> are kept for as long as we need them to handle your request, and for up to <strong>12 months</strong> afterwards in case of follow-up, unless you ask us to delete them sooner.</li>
+    <li><strong>Server logs</strong> are kept only for as long as they are useful for security and troubleshooting.</li>
+    <li>When the retention period ends, the data is deleted or irreversibly anonymised.</li>
+  </ul>
+
+  <h2><span class="n">08</span>Your rights</h2>
+  <p>Under the Data Privacy Act you have the right to:</p>
+  <ul>
+    <li><strong>Be informed</strong> — which is what this policy is for;</li>
+    <li><strong>Access</strong> the personal data we hold about you;</li>
+    <li><strong>Correct</strong> data that is inaccurate, incomplete or outdated;</li>
+    <li><strong>Erase or block</strong> data you no longer wish us to keep;</li>
+    <li><strong>Object</strong> to processing, including profiling and direct marketing;</li>
+    <li><strong>Data portability</strong>, in a commonly used electronic format;</li>
+    <li><strong>Damages</strong> for violations of your data privacy rights.</li>
+  </ul>
+  <div class="card">
+    <p><strong>To exercise any of these rights,</strong> email <a class="ln" href="mailto:delacruz.duncan@gmail.com">delacruz.duncan@gmail.com</a> with the subject line "Data request". We will respond within 15 working days. We may need to verify your identity first — this protects you from someone else claiming to be you.</p>
+  </div>
+  <p>If you are unsatisfied with our response, you may lodge a complaint with the <strong>National Privacy Commission</strong> of the Philippines (<a class="ln" href="https://privacy.gov.ph" target="_blank" rel="noopener">privacy.gov.ph</a>).</p>
+
+  <h2><span class="n">09</span>How we protect it</h2>
+  <ul>
+    <li>The site is served over <strong>HTTPS</strong>, so data in transit is encrypted;</li>
+    <li>Admin access is protected by password <strong>hashed with bcrypt</strong> and an expiring session cookie;</li>
+    <li>Access to the database and the admin area is limited to the people who run the café;</li>
+    <li>Security headers restrict what scripts, styles and frames the browser will allow.</li>
+  </ul>
+  <p>No method of transmission or storage is completely secure. If we ever become aware of a breach that affects your personal data, we will notify you and the National Privacy Commission as the law requires.</p>
+
+  <h2><span class="n">10</span>Children</h2>
+  <p>This website is not directed at children under 13, and we do not knowingly collect personal information from them. If you believe a child has submitted information to us, contact us and we will delete it.</p>
+
+  <h2><span class="n">11</span>Changes to this policy</h2>
+  <p>We may update this policy from time to time. The date at the top of the page always shows when it last changed. If a change is significant, we will note it prominently on this page.</p>
+
+  <h2><span class="n">12</span>Contact</h2>
+  <p>Erlbrew Café<br/>
+     Unit 1C, Wash 'n Spices Auto Oasis, Lot 4 Azalea St. corner Advincula Ave.,<br/>
+     San Sebastian, Kawit, Cavite, Philippines</p>
+  <p>Privacy questions: <a class="ln" href="mailto:delacruz.duncan@gmail.com">delacruz.duncan@gmail.com</a></p>
+  <p>See also our <a class="ln" href="/cookies">Cookie Policy</a> and <a class="ln" href="/terms">Terms of Service</a>.</p>
+</main>
+
+<footer class="lg-foot">
+  <div class="wrap">
+    <nav class="lg-foot-nav">
+      <a href="/privacy" class="on">Privacy Policy</a>
+      <a href="/cookies">Cookie Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+    <div class="lg-foot-bot">
+      <p>© 2026 Erlbrew Café. All rights reserved.</p>
+      <a class="lg-back" href="/">&larr; Back to the café</a>
+      <span class="lg-jp">珈琲と静寂の空間</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

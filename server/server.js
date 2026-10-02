@@ -84,6 +84,12 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'erlbrew-cafe-websi
 app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/erlbrew-cafe-website.html', (req, res) => res.redirect(301, '/'));
 
+// ── Legal pages ─────────────────────────────────────────────────────────────
+const legalPage = (file) => (req, res) => res.sendFile(path.join(__dirname, 'public', file));
+app.get('/privacy', legalPage('privacy.html'));
+app.get('/cookies', legalPage('cookies.html'));
+app.get('/terms',   legalPage('terms.html'));
+
 // ── Admin login (no auth required) ─────────────────────────────────────────
 app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));

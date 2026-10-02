@@ -99,6 +99,13 @@ erlbrewcafewebsite/
 - `GET /api/recommendations` - Get seasonal recommendations
 - `POST /api/events/inquiries` - Submit event inquiry
 
+### Legal pages
+- `GET /privacy` - Privacy Policy (`server/public/privacy.html`)
+- `GET /cookies` - Cookie Policy (`server/public/cookies.html`)
+- `GET /terms` - Terms of Service (`server/public/terms.html`)
+
+The public site also shows a cookie consent banner; the visitor's choice is stored in `localStorage` under `erlbrew_cookie_consent`.
+
 ### Admin (requires session)
 - `POST /api/admin/login` - Admin login
 - `POST /api/admin/logout` - Admin logout

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Terms of Service — the terms on which Erlbrew Café provides this website."/>
+<title>Terms of Service — Erlbrew Café</title>
+<link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#181714; --paper:#F4EFE6; --cream:#FBF7F1;
+    --gold:#B8935A; --gold2:#D4AA6E; --sage:#4D6B48;
+    --muted:rgba(24,23,20,.58); --hair:rgba(24,23,20,.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-weight:300;line-height:1.8;font-size:15px;overflow-x:hidden}
+  ::selection{background:var(--sage);color:var(--paper)}
+  a{color:inherit}
+  .wrap{max-width:820px;margin:0 auto;padding:0 26px}
+
+  /* ── Top bar ── */
+  .lg-top{position:sticky;top:0;z-index:50;background:rgba(244,239,230,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+  .lg-top-in{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px}
+  .lg-brand{display:flex;align-items:flex-end;gap:9px;text-decoration:none}
+  .lg-brand b{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:400;letter-spacing:-.01em;line-height:1}
+  .lg-brand i{font-family:'Noto Serif JP',serif;font-style:normal;font-size:9px;color:var(--gold);letter-spacing:.25em;line-height:1;margin-bottom:2px}
+  .lg-nav{display:flex;gap:26px}
+  .lg-nav a{font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:rgba(24,23,20,.45);padding-bottom:4px;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+  .lg-nav a:hover{color:var(--ink)}
+  .lg-nav a.on{color:var(--ink);border-bottom-color:var(--gold)}
+  @media(max-width:640px){.lg-nav{gap:16px}.lg-nav a{font-size:10px;letter-spacing:.08em}}
+
+  /* ── Content ── */
+  .lg-main{padding:70px 0 90px}
+  .kicker{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,147,90,.9);margin-bottom:16px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(38px,7vw,58px);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+  .lede{font-size:16px;line-height:1.85;color:var(--muted);max-width:62ch}
+  .updated{margin-top:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.38)}
+  .rule{height:1px;background:linear-gradient(90deg,var(--gold),rgba(184,147,90,0));margin:44px 0 46px;opacity:.55}
+
+  h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:400;line-height:1.25;margin:42px 0 14px;letter-spacing:-.01em}
+  h2 .n{display:inline-block;font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.16em;color:var(--gold);vertical-align:middle;margin-right:12px;transform:translateY(-3px)}
+  h3{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.7);margin:28px 0 8px}
+  p{margin-bottom:16px;color:rgba(24,23,20,.72);max-width:66ch}
+  ul{list-style:none;margin:0 0 18px;padding:0;max-width:66ch}
+  li{position:relative;padding-left:22px;margin-bottom:9px;color:rgba(24,23,20,.72)}
+  li::before{content:'';position:absolute;left:2px;top:.72em;width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.75}
+  strong{font-weight:500;color:var(--ink)}
+  .lg-main a.ln{color:var(--sage);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;transition:color .25s}
+  .lg-main a.ln:hover{color:var(--ink)}
+
+  .card{background:var(--cream);border:1px solid var(--hair);border-left:2px solid rgba(184,147,90,.5);padding:22px 26px;margin:26px 0;border-radius:0 12px 12px 0}
+  .card p:last-child{margin-bottom:0}
+
+  table{width:100%;border-collapse:collapse;margin:22px 0 26px;font-size:13.5px}
+  th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:rgba(24,23,20,.45);border-bottom-color:rgba(24,23,20,.2)}
+  td{color:rgba(24,23,20,.72)}
+  @media(max-width:640px){
+    table,thead,tbody,tr,th,td{display:block}
+    thead{display:none}
+    tr{border-bottom:1px solid var(--hair);padding:10px 0}
+    td{border:none;padding:5px 0}
+    td::before{content:attr(data-l);display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(24,23,20,.4);margin-bottom:2px}
+  }
+
+  /* ── Footer ── */
+  .lg-foot{background:#181714;color:var(--paper);padding:56px 0 40px}
+  .lg-foot-nav{display:flex;flex-wrap:wrap;gap:12px 28px;padding-bottom:26px;margin-bottom:24px;border-bottom:1px solid rgba(244,239,230,.1)}
+  .lg-foot-nav a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:rgba(244,239,230,.45);transition:color .3s}
+  .lg-foot-nav a:hover{color:var(--paper)}
+  .lg-foot-nav a.on{color:var(--gold)}
+  .lg-foot-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+  .lg-foot-bot p{font-size:11px;color:rgba(244,239,230,.3);margin:0;max-width:none}
+  .lg-back{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,239,230,.55);text-decoration:none;transition:color .3s}
+  .lg-back:hover{color:var(--gold)}
+  .lg-jp{font-family:'Noto Serif JP',serif;font-size:10px;letter-spacing:.3em;color:rgba(244,239,230,.2)}
+</style>
+</head>
+<body>
+
+<header class="lg-top">
+  <div class="wrap lg-top-in">
+    <a class="lg-brand" href="/"><b>Erlbrew</b><i>カフェ</i></a>
+    <nav class="lg-nav">
+      <a href="/privacy">Privacy</a>
+      <a href="/cookies">Cookies</a>
+      <a href="/terms" class="on">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap lg-main">
+  <p class="kicker">Legal · 利用規約</p>
+  <h1>Terms of Service</h1>
+  <p class="lede">These terms govern your use of the Erlbrew Café website. By using this site you agree to them — please read them, they are short.</p>
+  <p class="updated">Last updated: 3 October 2026</p>
+
+  <div class="rule"></div>
+
+  <h2><span class="n">01</span>About this website</h2>
+  <p>This site is operated by <strong>Erlbrew Café</strong>, a specialty coffee and matcha café at Unit 1C, Wash 'n Spices Auto Oasis, Lot 4 Azalea St. corner Advincula Ave., San Sebastian, Kawit, Cavite, Philippines.</p>
+  <p>The site exists to introduce the café, show our menu and gallery, list events, and let people send us an inquiry about the coffee cart. It is an informational website — there is no online store, no checkout, and no account registration.</p>
+
+  <h2><span class="n">02</span>Menu, prices and availability</h2>
+  <p>Menus, prices, seasonal items and opening hours shown on this site are provided in good faith and are routinely updated. They may change without notice, and there may be occasional errors or delays in getting them online.</p>
+  <ul>
+    <li>Prices on the website are indicative and in Philippine Pesos (₱); the price displayed in the café or on our ordering materials is the one that applies;</li>
+    <li>Seasonal and limited items sell out and are not guaranteed to be available;</li>
+    <li>Opening hours may change on holidays and for private events — a quick message to us will confirm.</li>
+  </ul>
+  <p>Nothing on this website is an offer capable of being accepted — it is information about what we generally serve.</p>
+
+  <h2><span class="n">03</span>Inquiries, bookings and the coffee cart</h2>
+  <p>Sending an inquiry through this website <strong>does not create a booking, reservation or contract</strong>. A booking exists only once we have confirmed it with you in writing and any agreed deposit has been received.</p>
+  <ul>
+    <li>We aim to reply within 24 hours, but sending an inquiry does not oblige us to accept it;</li>
+    <li>Availability, pricing and scope for coffee cart and catering services are confirmed separately and may be subject to a separate agreement;</li>
+    <li>You are responsible for the accuracy of the information you submit.</li>
+  </ul>
+
+  <h2><span class="n">04</span>Acceptable use</h2>
+  <p>You agree not to use this website to:</p>
+  <ul>
+    <li>Attempt to gain unauthorised access to any part of the site, its server, or its database;</li>
+    <li>Probe, scan or test the vulnerability of the site, or circumvent its security controls;</li>
+    <li>Interfere with or disrupt the site, including through flooding, scraping at abusive rates, or introducing malicious code;</li>
+    <li>Submit false, misleading or unlawful information through the inquiry form;</li>
+    <li>Use the site in any way that violates applicable law, or infringes the rights of others.</li>
+  </ul>
+  <p>We may restrict or block access from any address that breaches these terms.</p>
+
+  <h2><span class="n">05</span>Intellectual property</h2>
+  <p>Unless stated otherwise, everything on this website — the Erlbrew name and logo, photography, menu descriptions, written copy, artwork and design — belongs to Erlbrew Café or is used with permission.</p>
+  <p>You may view, and save copies of, pages for your own personal, non-commercial use. You may not reproduce, republish, scrape, sell, distribute or adapt any part of this site for commercial purposes without our written permission. You are welcome to share links to the site, and to share our menu with friends.</p>
+
+  <h2><span class="n">06</span>Information you submit</h2>
+  <p>Anything you send through the inquiry form is handled under our <a class="ln" href="/privacy">Privacy Policy</a>. By submitting it, you confirm that:</p>
+  <ul>
+    <li>The information is yours to give and is accurate to the best of your knowledge;</li>
+    <li>You have the right to share it with us for the purpose of handling your inquiry.</li>
+  </ul>
+  <p>We will not use your submission for anything other than responding to you and running the café — see the Privacy Policy for the detail.</p>
+
+  <h2><span class="n">07</span>Links to other websites</h2>
+  <p>This site links to our Instagram and Facebook profiles, and embeds a Google Map. These are provided for convenience. We do not control those services and are not responsible for their content, their availability, or what they do with your data. Visiting them is subject to their own terms and privacy policies.</p>
+
+  <h2><span class="n">08</span>Disclaimer and limitation of liability</h2>
+  <div class="card">
+    <p><strong>The website is provided "as is" and "as available".</strong> To the fullest extent permitted by law, we make no warranties that it will be uninterrupted, error-free, or that the information on it will always be complete or current.</p>
+  </div>
+  <p>To the fullest extent permitted by law, Erlbrew Café will not be liable for any indirect, incidental or consequential loss arising out of your use of, or inability to use, this website — including loss of data, loss of profits, or business interruption. Nothing in these terms limits liability for fraud, for death or personal injury caused by negligence, or any other liability that cannot lawfully be excluded, including under the Consumer Act of the Philippines.</p>
+
+  <h2><span class="n">09</span>Indemnity</h2>
+  <p>You agree to indemnify and hold harmless Erlbrew Café against any claim, demand, loss or expense arising from your breach of these terms or your misuse of this website.</p>
+
+  <h2><span class="n">10</span>Changes to the site or these terms</h2>
+  <p>We may update the website and these terms at any time. The date at the top of this page shows when the terms last changed. Your continued use of the site after a change means you accept the revised terms. If you do not agree with them, please stop using the site.</p>
+
+  <h2><span class="n">11</span>Governing law</h2>
+  <p>These terms are governed by the laws of the <strong>Republic of the Philippines</strong>. Any dispute arising from them or from your use of this website will be subject to the exclusive jurisdiction of the courts of Cavite, Philippines.</p>
+  <p>If any part of these terms is found unenforceable, the remaining provisions stay in effect.</p>
+
+  <h2><span class="n">12</span>Contact</h2>
+  <p>Questions about these terms? Email <a class="ln" href="mailto:delacruz.duncan@gmail.com">delacruz.duncan@gmail.com</a>, or find us at:</p>
+  <p>Erlbrew Café<br/>
+     Unit 1C, Wash 'n Spices Auto Oasis, Lot 4 Azalea St. corner Advincula Ave.,<br/>
+     San Sebastian, Kawit, Cavite, Philippines</p>
+  <p>See also our <a class="ln" href="/privacy">Privacy Policy</a> and <a class="ln" href="/cookies">Cookie Policy</a>.</p>
+</main>
+
+<footer class="lg-foot">
+  <div class="wrap">
+    <nav class="lg-foot-nav">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/cookies">Cookie Policy</a>
+      <a href="/terms" class="on">Terms of Service</a>
+      <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+    <div class="lg-foot-bot">
+      <p>© 2026 Erlbrew Café. All rights reserved.</p>
+      <a class="lg-back" href="/">&larr; Back to the café</a>
+      <span class="lg-jp">珈琲と静寂の空間</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

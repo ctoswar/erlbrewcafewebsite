@@ -129,6 +129,32 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .btn-outline-dark{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#181714;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:13px 28px;border:1px solid rgba(24,23,20,.25);transition:all .3s;text-decoration:none}
 .btn-outline-dark:hover{background:#181714;color:#F4EFE6;border-color:#181714}
 
+/* ── Cookie consent ── */
+.ck-bar{position:fixed;left:0;right:0;bottom:0;z-index:9990;padding:0 16px 18px;transform:translateY(130%);transition:transform .55s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.ck-bar.show{transform:none;pointer-events:auto}
+.ck-in{max-width:1000px;margin:0 auto;background:#181714;border:1px solid rgba(184,147,90,.28);box-shadow:0 24px 60px rgba(24,23,20,.45);padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.ck-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:400;color:#F4EFE6;margin-bottom:5px;letter-spacing:.01em}
+.ck-text{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:300;line-height:1.75;color:rgba(244,239,230,.6);max-width:62ch;margin:0}
+.ck-text a{color:#B8935A;text-decoration:underline;text-underline-offset:3px;transition:color .25s}
+.ck-text a:hover{color:#D4AA6E}
+.ck-acts{display:flex;gap:10px;flex-shrink:0}
+.ck-btn{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:13px 22px;border:1px solid transparent;cursor:pointer;transition:background .3s,color .3s,border-color .3s;white-space:nowrap}
+.ck-ghost{background:transparent;color:rgba(244,239,230,.65);border-color:rgba(244,239,230,.25)}
+.ck-ghost:hover{color:#F4EFE6;border-color:#F4EFE6}
+.ck-solid{background:#B8935A;color:#181714}
+.ck-solid:hover{background:#F4EFE6}
+@media(max-width:760px){
+  .ck-in{flex-direction:column;align-items:stretch;padding:20px}
+  .ck-acts{width:100%}
+  .ck-btn{flex:1;text-align:center;padding:13px 12px}
+}
+@media(prefers-reduced-motion:reduce){.ck-bar{transition:none}}
+
+/* ── Footer legal links ── */
+.ft-legal{display:flex;flex-wrap:wrap;gap:10px 24px;margin-bottom:20px}
+.ft-lnk{font-family:'Inter',sans-serif;font-size:11px;font-weight:300;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;padding:0;cursor:pointer;color:rgba(244,239,230,.28);text-decoration:none;transition:color .3s}
+.ft-lnk:hover{color:rgba(244,239,230,.75)}
+
 /* ── Mobile drawer ── */
 #drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
 #drawer.open{transform:none}
@@ -1101,12 +1127,40 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
       </div>
     </div>
 
-    <div class="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-      <p class="font-sans text-[11px] text-paper/20 font-light">© 2026 Erlbrew Café. All rights reserved.</p>
-      <p class="font-jp text-[10px] text-paper/15 tracking-[.3em]">珈琲と静寂の空間</p>
+    <div class="pt-8">
+      <div class="ft-legal">
+        <a href="/privacy" class="ft-lnk">Privacy Policy</a>
+        <a href="/cookies" class="ft-lnk">Cookie Policy</a>
+        <a href="/terms"   class="ft-lnk">Terms of Service</a>
+        <button type="button" class="ft-lnk" data-cookie-settings>Cookie settings</button>
+      </div>
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <p class="font-sans text-[11px] text-paper/20 font-light">© 2026 Erlbrew Café. All rights reserved.</p>
+        <p class="font-jp text-[10px] text-paper/15 tracking-[.3em]">珈琲と静寂の空間</p>
+      </div>
     </div>
   </div>
 </footer>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  COOKIE CONSENT                              ║
+     ╚══════════════════════════════════════════════╝ -->
+<div id="cookie-bar" class="ck-bar" role="region" aria-label="Cookie consent" aria-live="polite" hidden>
+  <div class="ck-in">
+    <div>
+      <p class="ck-title">A quiet word about cookies</p>
+      <p class="ck-text">
+        We only use the handful of cookies needed to keep this site running — no ads, no analytics, no tracking.
+        Read our <a href="/cookies">Cookie Policy</a> or our <a href="/privacy">Privacy Policy</a> for the detail.
+      </p>
+    </div>
+    <div class="ck-acts">
+      <button type="button" class="ck-btn ck-ghost" id="ck-essential">Essential only</button>
+      <button type="button" class="ck-btn ck-solid" id="ck-accept">Accept</button>
+    </div>
+  </div>
+</div>
 
 
 <!-- ╔══════════════════════════════════════════════╗
@@ -1849,12 +1903,48 @@ function initGalleryParallax(){
   }, { passive:true });
 }
 
+/* ── Cookie consent ─────────────────────────────── */
+const CK_KEY = 'erlbrew_cookie_consent';
+
+function ckRead(){ try{ return localStorage.getItem(CK_KEY); }catch(e){ return null; } }
+function ckWrite(v){ try{ localStorage.setItem(CK_KEY, v); }catch(e){} }
+
+function showCookieBar(force){
+  const bar = document.getElementById('cookie-bar');
+  if(!bar) return;
+  if(!force && ckRead()) return;          // already answered — stay quiet
+  bar.hidden = false;
+  // Let the intro curtain clear before the bar slides in
+  setTimeout(()=>bar.classList.add('show'), force ? 60 : 1600);
+}
+
+function hideCookieBar(){
+  const bar = document.getElementById('cookie-bar');
+  if(!bar) return;
+  bar.classList.remove('show');
+  setTimeout(()=>{ bar.hidden = true; }, 600);
+}
+
+function setConsent(value){ ckWrite(value); hideCookieBar(); }
+
+function initCookieBar(){
+  const accept    = document.getElementById('ck-accept');
+  const essential = document.getElementById('ck-essential');
+  if(accept)    accept.addEventListener('click', ()=>setConsent('accepted'));
+  if(essential) essential.addEventListener('click', ()=>setConsent('essential'));
+  document.querySelectorAll('[data-cookie-settings]').forEach(btn=>{
+    btn.addEventListener('click', ()=>showCookieBar(true));
+  });
+  showCookieBar(false);
+}
+
 /* ── Init ──────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{
   initReveal();
   initNav();
   initActiveNav();
   initDrawer();
+  initCookieBar();
   initScroll();
   // Cinematic layer
   initCurtain();

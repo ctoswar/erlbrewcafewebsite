@@ -8,6 +8,8 @@
 <link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link href="/tailwind.css" rel="stylesheet"/>
 <style>
@@ -372,9 +374,9 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
   box-shadow:inset 0 0 18vw rgba(0,0,0,.28);opacity:.5}
 
 /* ── Scroll progress line ── */
-#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:9999;
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:100%;z-index:9999;
   background:linear-gradient(90deg,#B8935A,#4D6B48);transform-origin:left;
-  transition:width .08s linear;pointer-events:none}
+  transform:scaleX(0);pointer-events:none;will-change:transform}
 
 /* ── Intro curtain ── */
 #curtain{position:fixed;inset:0;z-index:9998;background:#181714;display:flex;align-items:center;justify-content:center;
@@ -448,6 +450,22 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 @media(prefers-reduced-motion:reduce){
   .mask-reveal .mask-inner,.hero-word span{transition:none!important;transform:none!important;opacity:1!important;filter:none!important}
 }
+
+/* ══════════════════════════════════════════════════════════
+   MOTION STACK — Lenis · GSAP ScrollTrigger · Three.js
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Lenis smooth scroll ── */
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+
+/* ── WebGL hero atmosphere (particle steam + ensō rings) ── */
+#hero-webgl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;
+  opacity:0;transition:opacity 1.6s ease .2s}
+#hero-webgl.is-ready{opacity:1}
+@media(prefers-reduced-motion:reduce){#hero-webgl{display:none}}
 </style>
 </head>
 <body>
@@ -542,6 +560,9 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
     <circle cx="1050" cy="450" r="280" fill="none" stroke="rgba(184,147,90,0.06)" stroke-width="1.5"/>
     <circle cx="1050" cy="450" r="320" fill="none" stroke="rgba(184,147,90,0.04)" stroke-width="1"/>
   </svg>
+
+  <!-- Three.js atmosphere: particle steam + slowly rotating ensō rings -->
+  <canvas id="hero-webgl" aria-hidden="true"></canvas>
 
   <!-- Vertical JP text — signature element, right side -->
   <div class="absolute right-0 top-0 bottom-0 w-16 hidden lg:flex flex-col items-center justify-center gap-0 select-none pointer-events-none border-l border-paper/5 parallax-el" data-depth="26" aria-hidden="true">
@@ -685,7 +706,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
             </svg>
           </div>
           <!-- Offset accent -->
-          <div class="absolute -bottom-5 -right-5 w-28 h-28 border border-gold/25 -z-10 hidden md:block"></div>
+          <div id="about-accent" class="absolute -bottom-5 -right-5 w-28 h-28 border border-gold/25 -z-10 hidden md:block"></div>
         </div>
       </div>
 
@@ -1166,6 +1187,15 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 <!-- ╔══════════════════════════════════════════════╗
      ║  SCRIPTS                                     ║
      ╚══════════════════════════════════════════════╝ -->
+<!-- ── Motion stack: Lenis smooth scroll · GSAP ScrollTrigger · Three.js ──
+     Plain (non-deferred) tags at the end of <body>: they block only after the
+     page has painted, and guarantee the globals exist before the inline
+     script below boots. Each init function degrades gracefully if a CDN
+     request fails. -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <script>
 /* ── Menu data ─────────────────────────────────────── */
 let MENU = [];
@@ -1265,6 +1295,7 @@ function renderMenu(){
   if(displayMenu.length === 0){
     tabsWrap.innerHTML = '';
     grid.innerHTML = '<div class="text-paper/30 text-sm py-8 text-center">Menu coming soon.</div>';
+    refreshMotion();
     return;
   }
 
@@ -1344,14 +1375,83 @@ function renderMenu(){
   // Trigger fade-in on first panel immediately
   const firstPanel = document.getElementById('panel-0');
   if(firstPanel){ void firstPanel.offsetWidth; firstPanel.classList.add('fade-in'); }
+
+  // Menu height changed — keep scroll triggers honest
+  refreshMotion();
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOTION STACK — Lenis smooth scrolling (GSAP-synced)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Lenis: inertial smooth scroll driven by GSAP's ticker ── */
+let lenis = null;
+
+function initLenis(){
+  if(!window.Lenis) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  try{
+    lenis = new Lenis({
+      autoRaf: false,                  // we drive the raf loop ourselves
+      duration: 1.1,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo-ish
+      wheelMultiplier: 1,
+      touchMultiplier: 1.6,
+      smoothWheel: true,
+    });
+  }catch(e){ lenis = null; return; }
+
+  window.__erlenLenis = lenis;
+
+  if(window.gsap && window.ScrollTrigger){
+    // Recommended integration: Lenis scrolls natively, ScrollTrigger just listens
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(time => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    const raf = time => { lenis.raf(time); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+}
+
+/* Re-measure ScrollTriggers after async content (menu, seasonal items) changes the page height */
+function refreshMotion(){
+  if(window.gsap && window.ScrollTrigger) ScrollTrigger.refresh();
 }
 
 /* ── Scroll reveal ─────────────────────────────────── */
+/* GSAP ScrollTrigger-batched reveals with a 0.09s stagger.
+   Falls back to the original IntersectionObserver if the CDN fails. */
 function initReveal(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');obs.unobserve(e.target)}});
-  },{threshold:.08,rootMargin:'0px 0px -30px 0px'});
-  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+  const els    = Array.from(document.querySelectorAll('.reveal,.reveal-l,.reveal-r'));
+  // Hero items are revealed by the intro curtain, not by scroll
+  const targets = els.filter(el => !el.closest('#hero'));
+
+  if(window.gsap && window.ScrollTrigger){
+    // Strip CSS transitions so GSAP fully owns the motion
+    targets.forEach(el => { el.style.transition = 'none'; });
+    ScrollTrigger.batch(targets, {
+      start: 'top 92%',
+      once: true,
+      onEnter: batch => {
+        gsap.to(batch, {
+          opacity: 1, x: 0, y: 0,
+          duration: 1.05,
+          ease: 'power3.out',
+          stagger: 0.09,
+          overwrite: 'auto',
+        });
+      }
+    });
+    return;
+  }
+
+  // Fallback: original IntersectionObserver behavior
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); obs.unobserve(e.target); } });
+  }, { threshold: .08, rootMargin: '0px 0px -30px 0px' });
+  els.forEach(el => obs.observe(el));
 }
 
 /* ── Nav stick ─────────────────────────────────────── */
@@ -1435,6 +1535,7 @@ function initDrawer(){
     drawer.classList.add('open');
     overlay.classList.add('open');
     document.body.style.overflow='hidden';
+    if(window.__erlenLenis) window.__erlenLenis.stop();
     if(h1){h1.style.transform='rotate(45deg) translate(4px,4px)'}
     if(h2){h2.style.opacity='0'}
     if(h3){h3.style.transform='rotate(-45deg) translate(4px,-4px)';h3.style.width='22px'}
@@ -1443,6 +1544,7 @@ function initDrawer(){
     drawer.classList.remove('open');
     overlay.classList.remove('open');
     document.body.style.overflow='';
+    if(window.__erlenLenis) window.__erlenLenis.start();
     if(h1){h1.style.transform=''}
     if(h2){h2.style.opacity=''}
     if(h3){h3.style.transform='';h3.style.width=''}
@@ -1454,12 +1556,24 @@ function initDrawer(){
   document.querySelectorAll('.mob-lnk').forEach(l=>l.addEventListener('click',shut));
 }
 
-/* ── Smooth scroll ─────────────────────────────────── */
+/* ── Smooth scroll (Lenis-driven, native fallback) ─── */
 function initScroll(){
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click',e=>{
-      const t=document.querySelector(a.getAttribute('href'));
-      if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+    a.addEventListener('click', e=>{
+      const href = a.getAttribute('href');
+      if(!href || href === '#') return;
+      const t = document.querySelector(href);
+      if(!t) return;
+      e.preventDefault();
+      if(lenis){
+        lenis.scrollTo(t, {
+          offset: -64,                      // clear the fixed nav
+          duration: 1.5,
+          easing: t => 1 - Math.pow(1 - t, 4), // easeOutQuart glide
+        });
+      } else {
+        t.scrollIntoView({behavior:'smooth',block:'start'});
+      }
     });
   });
 }
@@ -1637,6 +1751,7 @@ async function loadSeasonal(limit = 3){
         </div>`;
       initSpotlightTilt();
       initSpotlightReveal();
+      refreshMotion();
       return;
     }
 
@@ -1660,6 +1775,7 @@ async function loadSeasonal(limit = 3){
         </div>\
       </article>\
     `).join('');
+    refreshMotion();
   } catch (e){
     console.warn('Could not load seasonal items', e);
   }
@@ -1682,21 +1798,42 @@ function initCurtain(){
 
   if(reduced || !curtain){ reveal(); if(curtain) curtain.style.display='none'; return; }
 
+  // Hold the page still while the curtain is up
+  if(window.__erlenLenis) window.__erlenLenis.stop();
+
   window.addEventListener('load', () => {
     setTimeout(() => {
       curtain.classList.add('hide');
       reveal();
+      if(window.__erlenLenis) window.__erlenLenis.start();
     }, 500);
   }, { once:true });
 
   // Safety fallback in case 'load' is slow
-  setTimeout(() => { curtain.classList.add('hide'); reveal(); }, 2400);
+  setTimeout(() => {
+    if(curtain.classList.contains('hide')) return;   // already revealed
+    curtain.classList.add('hide');
+    reveal();
+    if(window.__erlenLenis) window.__erlenLenis.start();
+  }, 2400);
 }
 
-/* ── Scroll progress bar ── */
+/* ── Scroll progress bar (GSAP scrub, native fallback) ── */
 function initScrollProgress(){
   const bar = document.getElementById('scroll-progress');
   if(!bar) return;
+
+  if(window.gsap && window.ScrollTrigger){
+    gsap.to(bar, {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: { start: 0, end: 'max', scrub: 0.4 }
+    });
+    return;
+  }
+
+  // Fallback: switch back to width-driven updates
+  bar.style.transform = 'none';
   const update = () => {
     const h = document.documentElement;
     const scrolled = h.scrollTop;
@@ -1743,27 +1880,50 @@ function initCursor(){
   document.addEventListener('mouseleave', () => { dot.style.opacity='0'; ring.style.opacity='0'; });
 }
 
-/* ── Hero mouse parallax ── */
+/* ── Hero mouse + scroll parallax ────────────────── */
+/* Mouse parallax and the scroll-driven drift are composed into a single
+   transform per layer (single writer — no fighting between tweens). */
 function initHeroParallax(){
   const hero = document.getElementById('hero');
-  if(!hero || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  const els = hero.querySelectorAll('.parallax-el');
-  hero.addEventListener('mousemove', e => {
-    const r = hero.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width  - 0.5;
-    const py = (e.clientY - r.top)  / r.height - 0.5;
-    els.forEach(el => {
-      const depth = parseFloat(el.dataset.depth || 10);
-      el.style.transform = `translate3d(${px*depth}px, ${py*depth}px, 0)`;
-    });
-  });
-  hero.addEventListener('mouseleave', () => {
-    els.forEach(el => { el.style.transform = 'translate3d(0,0,0)'; });
+  if(!hero) return;
+
+  const els     = Array.from(hero.querySelectorAll('.parallax-el'));
+  const content = document.getElementById('hero-content');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasST   = !!(window.gsap && window.ScrollTrigger);
+
+  let mx = 0, my = 0, scrollProg = 0;
+
+  const apply = () => els.forEach(el => {
+    const depth = parseFloat(el.dataset.depth || 10);
+    const x = mx * depth;
+    const y = (my + scrollProg * 0.55) * depth;
+    el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
   });
 
-  // Scroll-linked fade/lift for hero content
-  const content = document.getElementById('hero-content');
-  if(content){
+  if(hasST && !reduced){
+    /* Scroll-linked fade/lift for the hero copy — scrubbed, Lenis-aware */
+    if(content){
+      gsap.to(content, {
+        y: () => window.innerHeight * 0.28,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom 55%',
+          scrub: true,
+          invalidateOnRefresh: true,
+        }
+      });
+    }
+    /* Background layers drift softly as the hero exits */
+    ScrollTrigger.create({
+      trigger: hero, start: 'top top', end: 'bottom top', scrub: true,
+      onUpdate: self => { scrollProg = self.progress; apply(); }
+    });
+  } else if(content){
+    /* Original lightweight fallback */
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       if(y < window.innerHeight){
@@ -1772,6 +1932,15 @@ function initHeroParallax(){
       }
     }, { passive:true });
   }
+
+  if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches || reduced) return;
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    mx = (e.clientX - r.left) / r.width  - 0.5;
+    my = (e.clientY - r.top)  / r.height - 0.5;
+    apply();
+  });
+  hero.addEventListener('mouseleave', () => { mx = 0; my = 0; apply(); });
 }
 
 /* ── Seasonal spotlight entrance (stagger reveal on scroll) ── */
@@ -1860,11 +2029,13 @@ function initLightbox(){
     lb.classList.add('open');
     lb.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
+    if(window.__erlenLenis) window.__erlenLenis.stop();
   };
   const close = () => {
     lb.classList.remove('open');
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
+    if(window.__erlenLenis) window.__erlenLenis.start();
   };
 
   document.querySelectorAll('.gal-img').forEach(slot=>{
@@ -1889,19 +2060,32 @@ function initMagneticButtons(){
   });
 }
 
-/* ── Gallery large-slot parallax on scroll ── */
+/* ── Gallery large-slot parallax on scroll (GSAP scrub) ── */
 function initGalleryParallax(){
-  const slot = document.getElementById('gal-slot-0');
-  if(!slot || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const slot  = document.getElementById('gal-slot-0');
   const inner = document.getElementById('gal-inner-0');
-  window.addEventListener('scroll', () => {
-    const r = slot.getBoundingClientRect();
-    if(r.top < window.innerHeight && r.bottom > 0){
-      const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height);
-      const shift = (progress - 0.5) * 40;
-      if(inner) inner.style.transform = `translateY(${shift}px) scale(1.08)`;
-    }
-  }, { passive:true });
+  if(!slot || !inner) return;
+
+  if(window.gsap && window.ScrollTrigger){
+    // The class ships with a 0.7s transform transition — GSAP scrub writes must not lag behind it
+    inner.style.transition = 'none';
+    // Parallax inside the cropped slot — inner image drifts ±5% while easing out of its zoom
+    gsap.fromTo(inner,
+      { yPercent: -5, scale: 1.13 },
+      { yPercent:  5, scale: 1.03, ease: 'none',
+        scrollTrigger: { trigger: slot, start: 'top bottom', end: 'bottom top', scrub: true } });
+  } else {
+    // Original lightweight fallback (desktop only)
+    if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    window.addEventListener('scroll', () => {
+      const r = slot.getBoundingClientRect();
+      if(r.top < window.innerHeight && r.bottom > 0){
+        const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height);
+        const shift = (progress - 0.5) * 40;
+        inner.style.transform = `translateY(${shift}px) scale(1.08)`;
+      }
+    }, { passive:true });
+  }
 }
 
 /* ── Cookie consent ─────────────────────────────── */
@@ -1939,8 +2123,311 @@ function initCookieBar(){
   showCookieBar(false);
 }
 
+/* ── Deep-layer scroll atmosphere (GSAP scrubs) ───── */
+function initAtmosphere(){
+  if(!window.gsap || !window.ScrollTrigger) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Oversized watermark kanji drift vertically against the scroll (About 醸 / Menu メニュー)
+  gsap.utils.toArray('#about .font-jp.font-bold, #menu .font-jp.font-bold').forEach(el => {
+    const sec = el.closest('section');
+    if(!sec) return;
+    gsap.fromTo(el,
+      { yPercent: 14 },
+      { yPercent: -14, ease: 'none',
+        scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+  // Gold rules draw themselves across the page
+  gsap.utils.toArray('.h-line').forEach(el => {
+    gsap.fromTo(el,
+      { scaleX: 0 },
+      { scaleX: 1, transformOrigin: 'left center', ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 62%', scrub: true } });
+  });
+
+  // About accent square — rotates in tandem with the scroll
+  const accent = document.getElementById('about-accent');
+  if(accent){
+    gsap.fromTo(accent,
+      { rotate: 0, scale: 0.85, opacity: 0 },
+      { rotate: 10, scale: 1, opacity: 1, ease: 'none',
+        scrollTrigger: { trigger: '#about', start: 'top 80%', end: 'center 45%', scrub: true } });
+  }
+}
+
+/* ── Three.js — hero atmosphere: particle steam + ensō rings ── */
+/* A quiet, painterly cloud of cafe-steam particles rises through the hero,
+   tinted in the site's cream/gold/sage palette, plus two slowly rotating
+   wireframe "ensō" (zen circle) rings floating beside the headline.
+   Paused entirely while the hero is offscreen. */
+function initThreeHero(){
+  const canvas = document.getElementById('hero-webgl');
+  const hero   = document.getElementById('hero');
+  if(!canvas || !hero || !window.THREE) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ canvas.style.display='none'; return; }
+
+  // Feature-detect WebGL before committing
+  const gl = (function(){
+    try{ return document.createElement('canvas').getContext('webgl') ||
+                document.createElement('canvas').getContext('experimental-webgl'); }
+    catch(e){ return null; }
+  })();
+  if(!gl){ canvas.style.display='none'; return; }
+
+  let renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'high-performance' });
+  }catch(e){ canvas.style.display='none'; return; }
+  renderer.setClearColor(0x000000, 0);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(DPR);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 240);
+  camera.position.set(0, 0, 42);
+
+  /* ── Particle field (custom shader — per-particle color, size, twinkle) ── */
+  const small  = window.innerWidth < 720;
+  const COUNT  = small ? 260 : Math.min(720, Math.max(340, Math.round(window.innerWidth * window.innerHeight / 1700)));
+  const SPAN_H = 44; // world units across the hero at z=0 (recomputed on resize)
+
+  const posArr   = new Float32Array(COUNT * 3);
+  const seedArr  = new Float32Array(COUNT * 4);
+  const miscArr  = new Float32Array(COUNT * 4);
+  const tintArr  = new Float32Array(COUNT * 3);
+  const alphaArr = new Float32Array(COUNT);
+
+  // cream / soft gold / sage / ember — additive on the ink-dark hero
+  const palette = [
+    { c:[0.957, 0.937, 0.902], a:0.52, w:0.56 },
+    { c:[0.769, 0.635, 0.443], a:0.46, w:0.24 },
+    { c:[0.596, 0.702, 0.576], a:0.34, w:0.13 },
+    { c:[0.478, 0.353, 0.227], a:0.30, w:0.07 },
+  ];
+  const pickTint = () => {
+    let r = Math.random(), i = 0;
+    while(i < palette.length - 1 && r > palette[i].w){ r -= palette[i].w; i++; }
+    const p = palette[i];
+    const j = 0.85 + Math.random() * 0.3;   // brightness jitter
+    return {
+      c: [p.c[0]*j, p.c[1]*j, p.c[2]*j],
+      a: p.a * (0.7 + Math.random() * 0.5),
+    };
+  };
+
+  for(let i = 0; i < COUNT; i++){
+    posArr[i*3+0] = (Math.random() - 0.5) * 80;   // wide horizontal band, no wrapping needed
+    posArr[i*3+1] = (Math.random() - 0.5) * SPAN_H;
+    posArr[i*3+2] = -14 + Math.random() * 24;     // -14..10
+
+    seedArr[i*4+0] = 0.5 + Math.random() * 1.6;                // rise speed (units/s)
+    seedArr[i*4+1] = 0.5 + Math.random() * 1.8;                // sway amplitude
+    seedArr[i*4+2] = 0.12 + Math.random() * 0.4;               // sway frequency
+    seedArr[i*4+3] = 4 + 9 * Math.pow(Math.random(), 1.9);     // point size (more small than large)
+
+    miscArr[i*4+0] = Math.random();               // phase
+    miscArr[i*4+1] = Math.random();               // scroll spread bias
+    miscArr[i*4+2] = 0.5 + Math.random() * 1.8;   // twinkle frequency
+    miscArr[i*4+3] = Math.random();               // depth factor (parallax weight)
+
+    const tint = pickTint();
+    tintArr[i*3]   = tint.c[0];
+    tintArr[i*3+1] = tint.c[1];
+    tintArr[i*3+2] = tint.c[2];
+    alphaArr[i]    = Math.min(1, tint.a);
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+  geo.setAttribute('aSeed',    new THREE.BufferAttribute(seedArr, 4));
+  geo.setAttribute('aMisc',    new THREE.BufferAttribute(miscArr, 4));
+  geo.setAttribute('aTint',    new THREE.BufferAttribute(tintArr, 3));
+  geo.setAttribute('aAlpha',   new THREE.BufferAttribute(alphaArr, 1));
+
+  const uniforms = {
+    uTime:       { value: 0 },
+    uScroll:     { value: 0 },
+    uMouseX:     { value: 0 },
+    uMouseY:     { value: 0 },
+    uSpanH:      { value: SPAN_H },
+    uPixelRatio: { value: DPR },
+  };
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader: `
+      precision highp float;
+      attribute vec4 aSeed;    // rise speed, sway amplitude, sway frequency, point size
+      attribute vec4 aMisc;    // phase, spread bias, twinkle frequency, depth factor
+      attribute vec3 aTint;
+      attribute float aAlpha;
+      uniform float uTime, uScroll, uMouseX, uMouseY, uSpanH, uPixelRatio;
+      varying vec3 vColor;
+      varying float vAlpha;
+
+      void main(){
+        vec3 p = position;
+
+        // slow ascent with wrap-around inside the hero band
+        p.y = mod(p.y + uTime * aSeed.x, uSpanH) - uSpanH * 0.5;
+
+        // gentle lateral sway
+        p.x += sin(uTime * aSeed.z + aMisc.x * 6.2831) * aSeed.y;
+
+        // pointer parallax — nearer particles drift further
+        p.x += uMouseX * (0.6 + aMisc.w * 1.9);
+        p.y += uMouseY * (0.4 + aMisc.w * 1.2);
+
+        // dispersion as the hero scrolls away
+        float s = uScroll;
+        p.x += (aMisc.y - 0.5) * 34.0 * s;
+        p.z += (fract(aMisc.z * 4.37) - 0.5) * 46.0 * s;
+        p.y += (aMisc.x - 0.5) * 12.0 * s;
+
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+
+        float dist = max(0.001, -mv.z);
+        gl_PointSize = min(aSeed.w * (160.0 / dist), 52.0) * uPixelRatio;
+
+        float tw = 0.72 + 0.28 * sin(uTime * aMisc.z + aMisc.x * 12.566);
+        vColor = aTint;
+        vAlpha = aAlpha * tw * pow(max(0.0, 1.0 - s), 1.6);
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying vec3 vColor;
+      varying float vAlpha;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5));
+        float a = smoothstep(0.5, 0.05, d) * vAlpha;
+        if(a < 0.004) discard;
+        gl_FragColor = vec4(vColor, a);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    depthTest: false,
+    blending: THREE.AdditiveBlending,
+  });
+  scene.add(new THREE.Points(geo, mat));
+
+  /* ── Ensō rings — slowly rotating zen-circle motif in gold ── */
+  function makeRing(radius, opacity){
+    const pts = [];
+    const seg = 180;
+    for(let i = 0; i <= seg; i++){
+      const a = (i / seg) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0));
+    }
+    const g = new THREE.BufferGeometry().setFromPoints(pts);
+    const m = new THREE.LineBasicMaterial({
+      color: new THREE.Color('#B8935A'),
+      transparent: true, opacity,
+      blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false,
+    });
+    return new THREE.LineLoop(g, m);
+  }
+  const ringA = makeRing(9.2, 0.22);
+  const ringB = makeRing(6.6, 0.10);
+  ringB.position.z = -1.5;
+  const ringGroup = new THREE.Group();
+  ringGroup.add(ringA, ringB);
+  ringGroup.rotation.set(0.55, -0.35, -0.12);
+  ringGroup.position.z = -4;
+  scene.add(ringGroup);
+
+  /* ── Scroll progress + visibility gating ── */
+  let scrollTarget = 0;
+  let visible = true;
+  if(window.gsap && window.ScrollTrigger){
+    ScrollTrigger.create({
+      trigger: hero, start: 'top top', end: 'bottom 25%', scrub: true,
+      onUpdate: self => { scrollTarget = self.progress; }
+    });
+    ScrollTrigger.create({
+      trigger: hero, start: 'top bottom', end: 'bottom top',
+      onToggle: self => { visible = self.isActive; }
+    });
+  }
+
+  /* ── Pointer (desktop only) ── */
+  const ptr = { tx: 0, ty: 0, x: 0, y: 0 };
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    hero.addEventListener('mousemove', e => {
+      const r = hero.getBoundingClientRect();
+      ptr.tx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+      ptr.ty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+    });
+    hero.addEventListener('mouseleave', () => { ptr.tx = 0; ptr.ty = 0; });
+  }
+
+  /* ── Fit to hero box ── */
+  function fit(){
+    const w = hero.clientWidth  || window.innerWidth;
+    const h = hero.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+
+    const spanH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+    uniforms.uSpanH.value = spanH;
+    const spanW = spanH * camera.aspect;
+    if(spanW >= 78){   // wide screens — ring floats beside the headline
+      ringGroup.position.x = spanW * 0.22;
+      ringGroup.position.y = 1.5;
+      ringGroup.scale.setScalar(1);
+    } else {           // narrow screens — centre it above the fold
+      ringGroup.position.x = spanW * 0.1;
+      ringGroup.position.y = spanH * 0.14;
+      ringGroup.scale.setScalar(0.72);
+    }
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  /* ── Render loop ── */
+  const clock = new THREE.Clock();
+  let elapsed = 0, scrollCur = 0, started = false;
+
+  function tick(){
+    requestAnimationFrame(tick);
+    if(!visible || document.hidden) return;   // fully paused offscreen
+    const dt = Math.min(clock.getDelta(), 0.05);
+    elapsed += dt;
+
+    ptr.x += (ptr.tx - ptr.x) * 0.05;         // eased pointer
+    ptr.y += (ptr.ty - ptr.y) * 0.05;
+    scrollCur += (scrollTarget - scrollCur) * 0.07;
+
+    uniforms.uTime.value   = elapsed;
+    uniforms.uScroll.value = scrollCur;
+    uniforms.uMouseX.value = ptr.x * 1.6;
+    uniforms.uMouseY.value = -ptr.y * 1.1;
+
+    ringGroup.rotation.z += dt * 0.05;
+    ringGroup.rotation.y = -0.35 + Math.sin(elapsed * 0.22) * 0.07;
+    ringA.rotation.z += dt * 0.028;
+    ringB.rotation.z -= dt * 0.04;
+    ringA.material.opacity = 0.22 * (1 - scrollCur) + 0.02;
+    ringB.material.opacity = 0.10 * (1 - scrollCur);
+
+    if(!started){ started = true; canvas.classList.add('is-ready'); }
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+}
+
 /* ── Init ──────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{
+  // Register GSAP plugins before any motion boots
+  if(window.gsap && window.ScrollTrigger){ gsap.registerPlugin(ScrollTrigger); }
+
+  // Smooth scrolling first — everything else rides on it
+  initLenis();
+
   initReveal();
   initNav();
   initActiveNav();
@@ -1956,6 +2443,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   initLightbox();
   initMagneticButtons();
   initGalleryParallax();
+  // GSAP scroll atmosphere + Three.js hero
+  initAtmosphere();
+  initThreeHero();
   // Load all data from API
   loadMenuFromServer();
   loadAboutPhoto();

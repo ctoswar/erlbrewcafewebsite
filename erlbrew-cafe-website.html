@@ -2195,7 +2195,7 @@ function initThreeHero(){
 
   /* ── Particle field (custom shader — per-particle color, size, twinkle) ── */
   const small  = window.innerWidth < 720;
-  const COUNT  = small ? 260 : Math.min(720, Math.max(340, Math.round(window.innerWidth * window.innerHeight / 1700)));
+  const COUNT  = small ? 180 : Math.min(520, Math.max(260, Math.round(window.innerWidth * window.innerHeight / 2600)));
   const SPAN_H = 44; // world units across the hero at z=0 (recomputed on resize)
 
   const posArr   = new Float32Array(COUNT * 3);
@@ -2204,12 +2204,12 @@ function initThreeHero(){
   const tintArr  = new Float32Array(COUNT * 3);
   const alphaArr = new Float32Array(COUNT);
 
-  // cream / soft gold / sage / ember — additive on the ink-dark hero
+  // cream / soft gold / sage / ember — additive on the ink-dark hero, kept whisper-quiet
   const palette = [
-    { c:[0.957, 0.937, 0.902], a:0.62, w:0.56 },
-    { c:[0.769, 0.635, 0.443], a:0.55, w:0.24 },
-    { c:[0.596, 0.702, 0.576], a:0.42, w:0.13 },
-    { c:[0.478, 0.353, 0.227], a:0.36, w:0.07 },
+    { c:[0.957, 0.937, 0.902], a:0.38, w:0.56 },
+    { c:[0.769, 0.635, 0.443], a:0.32, w:0.24 },
+    { c:[0.596, 0.702, 0.576], a:0.26, w:0.13 },
+    { c:[0.478, 0.353, 0.227], a:0.22, w:0.07 },
   ];
   const pickTint = () => {
     let r = Math.random(), i = 0;
@@ -2230,7 +2230,7 @@ function initThreeHero(){
     seedArr[i*4+0] = 0.5 + Math.random() * 1.6;                // rise speed (units/s)
     seedArr[i*4+1] = 0.5 + Math.random() * 1.8;                // sway amplitude
     seedArr[i*4+2] = 0.12 + Math.random() * 0.4;               // sway frequency
-    seedArr[i*4+3] = 4 + 9 * Math.pow(Math.random(), 1.9);     // point size (more small than large)
+    seedArr[i*4+3] = 3 + 6 * Math.pow(Math.random(), 1.9);     // point size (more small than large)
 
     miscArr[i*4+0] = Math.random();               // phase
     miscArr[i*4+1] = Math.random();               // scroll spread bias
@@ -2295,7 +2295,7 @@ function initThreeHero(){
         gl_Position = projectionMatrix * mv;
 
         float dist = max(0.001, -mv.z);
-        gl_PointSize = min(aSeed.w * (160.0 / dist), 52.0) * uPixelRatio;
+        gl_PointSize = min(aSeed.w * (110.0 / dist), 34.0) * uPixelRatio;
 
         float tw = 0.72 + 0.28 * sin(uTime * aMisc.z + aMisc.x * 12.566);
         vColor = aTint;
@@ -2371,11 +2371,11 @@ function initThreeHero(){
     roughness: 0.55, metalness: 0.0,
   });
 
-  // cup profile (x = radius, y = height) — hollow bowl turned on a lathe
+  // cup profile (x = radius, y = height) — hollow bowl, near-vertical wall, flared lip
   const cupPts = [
     [0.0, 1.10], [2.2, 1.15], [3.05, 1.9], [3.35, 3.9], [3.5, 6.2],
-    [3.62, 6.75], [3.7, 6.85], [3.95, 6.6], [4.05, 5.9], [4.3, 3.6],
-    [4.15, 1.9], [3.4, 0.8], [2.9, 0.45], [2.2, 0.12], [0.0, 0.0],
+    [3.62, 6.75], [3.7, 6.85], [3.92, 6.6], [3.98, 5.6], [4.0, 4.0],
+    [3.9, 2.2], [3.35, 0.95], [2.9, 0.45], [2.2, 0.12], [0.0, 0.0],
   ].map(p => new THREE.Vector2(p[0], p[1]));
   const cup = new THREE.Mesh(new THREE.LatheGeometry(cupPts, 64), ceramicMat);
   cup.position.y = 0.66;   // rests on the saucer's centre dish
@@ -2383,13 +2383,13 @@ function initThreeHero(){
 
   // saucer — shallow lathe-turned dish
   const saucerPts = [
-    [0, 0], [4.9, 0], [5.4, 0.3], [5.5, 0.75], [4.7, 0.95],
-    [3.4, 0.8], [2.2, 0.7], [0, 0.62],
+    [0, 0], [4.3, 0], [4.8, 0.3], [4.9, 0.75], [4.2, 0.9],
+    [3.0, 0.75], [2.0, 0.65], [0, 0.6],
   ].map(p => new THREE.Vector2(p[0], p[1]));
   cupGroup.add(new THREE.Mesh(new THREE.LatheGeometry(saucerPts, 64), ceramicMat));
 
   // gold rim at the lip
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(3.66, 0.065, 14, 96), goldMat);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(3.64, 0.09, 14, 96), goldMat);
   rim.rotation.x = Math.PI / 2;   // lie flat
   rim.position.y = 0.66 + 6.85;
   cupGroup.add(rim);
@@ -2397,15 +2397,15 @@ function initThreeHero(){
   // glossy coffee + cream rosetta suggestion on the surface
   const coffee = new THREE.Mesh(new THREE.CircleGeometry(3.32, 48), coffeeMat);
   coffee.rotation.x = -Math.PI / 2;
-  coffee.position.y = 0.66 + 6.05;
+  coffee.position.y = 0.66 + 6.45;
   cupGroup.add(coffee);
   const creamRing = new THREE.Mesh(new THREE.RingGeometry(1.15, 2.55, 48), creamMat);
   creamRing.rotation.x = -Math.PI / 2;
-  creamRing.position.y = 0.66 + 6.08;
+  creamRing.position.y = 0.66 + 6.48;
   cupGroup.add(creamRing);
   const creamHeart = new THREE.Mesh(new THREE.CircleGeometry(1.02, 40), creamMat);
   creamHeart.rotation.x = -Math.PI / 2;
-  creamHeart.position.set(0.3, 0.66 + 6.09, 0.25);
+  creamHeart.position.set(0.3, 0.66 + 6.49, 0.25);
   cupGroup.add(creamHeart);
 
   // C handle — partial torus, opening toward the cup wall
@@ -2429,16 +2429,16 @@ function initThreeHero(){
   scene.add(lights);
 
   /* steam — GPU wisps rising off the coffee, rides with the cup */
-  const STEAM = 70;
+  const STEAM = 42;
   const sPos  = new Float32Array(STEAM * 3);   // x0, 0, z0 (mouth radius)
   const sSeed = new Float32Array(STEAM * 4);   // life speed, phase, size, wobble
   for(let i = 0; i < STEAM; i++){
-    const a = Math.random() * Math.PI * 2, r = Math.random() * 1.5;
+    const a = Math.random() * Math.PI * 2, r = Math.random() * 1.1;
     sPos[i*3]     = Math.cos(a) * r;
     sPos[i*3 + 2] = Math.sin(a) * r;
     sSeed[i*4]     = 0.10 + Math.random() * 0.16;
     sSeed[i*4 + 1] = Math.random();
-    sSeed[i*4 + 2] = 14 + Math.random() * 26;
+    sSeed[i*4 + 2] = 8 + Math.random() * 14;
     sSeed[i*4 + 3] = 0.6 + Math.random() * 0.9;
   }
   const steamGeo = new THREE.BufferGeometry();
@@ -2453,14 +2453,14 @@ function initThreeHero(){
       varying float vA;
       void main(){
         float life = fract(uTime * aSeed.x + aSeed.y);
-        float y = 7.1 + life * 7.5;
+        float y = 7.3 + life * 6.0;
         float wob = sin(uTime * 1.1 + aSeed.y * 6.2831) * aSeed.w
                   + sin(uTime * 2.3 + aSeed.y * 12.56) * 0.3;
         vec3 p = vec3(position.x + wob, y, position.z + wob * 0.7);
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
         gl_Position = projectionMatrix * mv;
-        gl_PointSize = aSeed.z * (1.0 + life * 1.6) * (160.0 / max(0.001, -mv.z)) * uPixelRatio;
-        vA = smoothstep(0.0, 0.14, life) * (1.0 - life) * 0.32;
+        gl_PointSize = aSeed.z * (1.0 + life * 1.1) * (110.0 / max(0.001, -mv.z)) * uPixelRatio;
+        vA = smoothstep(0.0, 0.2, life) * (1.0 - life) * 0.13;
       }
     `,
     fragmentShader: `
@@ -2517,14 +2517,14 @@ function initThreeHero(){
     const spanH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     uniforms.uSpanH.value = spanH;
     const spanW = spanH * camera.aspect;
-    if(spanW >= 78){   // wide screens — cup floats beside the headline, rings halo it
+    if(spanW >= 72){   // wide screens (incl. all 16:9 desktops) — cup beside the headline
       cupPlace.x = spanW * 0.17;
       cupPlace.y = -1.2;
       cupPlace.scale = 1.0;
     } else {           // narrow screens — cup sits low, beneath the copy
       cupPlace.x = 0;
-      cupPlace.y = -10.5;
-      cupPlace.scale = 0.55;
+      cupPlace.y = -9.5;
+      cupPlace.scale = 0.6;
     }
     ringGroup.position.set(cupPlace.x, cupPlace.y + 3.2, -7);
     ringGroup.scale.setScalar(cupPlace.scale * 1.15);
@@ -2567,7 +2567,7 @@ function initThreeHero(){
       0
     );
     cupGroup.rotation.y = 0.6 + elapsed * 0.16 + scrollCur * 1.6 + Math.sin(elapsed * 0.5) * 0.05;
-    cupGroup.rotation.x = ptr.y * -0.08;
+    cupGroup.rotation.x = -0.12 + ptr.y * -0.08;   // base tilt peeks at the latte art
     cupGroup.rotation.z = ptr.x * 0.06;
     cupGroup.scale.setScalar(cupPlace.scale * (0.6 + 0.4 * introE));
 

@@ -2156,11 +2156,12 @@ function initAtmosphere(){
   }
 }
 
-/* ── Three.js — hero atmosphere: particle steam + ensō rings ── */
-/* A quiet, painterly cloud of cafe-steam particles rises through the hero,
-   tinted in the site's cream/gold/sage palette, plus two slowly rotating
-   wireframe "ensō" (zen circle) rings floating beside the headline.
-   Paused entirely while the hero is offscreen. */
+/* ── Three.js — hero: rotating ceramic cup, particle steam, ensō halo ── */
+/* The hero centerpiece is a fully procedural 3D espresso set (lathe-turned
+   cup + saucer, gold rim, glossy coffee with a cream rosetta, GPU steam)
+   floating beside the headline. Around it: a mesh-halo of ensō rings and a
+   quiet field of palette-tinted particles. Everything pauses while the hero
+   is offscreen and is skipped for reduced-motion / no-WebGL visitors. */
 function initThreeHero(){
   const canvas = document.getElementById('hero-webgl');
   const hero   = document.getElementById('hero');
@@ -2180,6 +2181,11 @@ function initThreeHero(){
     renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'high-performance' });
   }catch(e){ canvas.style.display='none'; return; }
   renderer.setClearColor(0x000000, 0);
+  // Correct color pipeline for the lit ceramic materials
+  if('outputColorSpace' in renderer)      renderer.outputColorSpace = THREE.SRGBColorSpace;
+  else if('outputEncoding' in renderer)   renderer.outputEncoding   = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   renderer.setPixelRatio(DPR);
 
@@ -2200,10 +2206,10 @@ function initThreeHero(){
 
   // cream / soft gold / sage / ember — additive on the ink-dark hero
   const palette = [
-    { c:[0.957, 0.937, 0.902], a:0.52, w:0.56 },
-    { c:[0.769, 0.635, 0.443], a:0.46, w:0.24 },
-    { c:[0.596, 0.702, 0.576], a:0.34, w:0.13 },
-    { c:[0.478, 0.353, 0.227], a:0.30, w:0.07 },
+    { c:[0.957, 0.937, 0.902], a:0.62, w:0.56 },
+    { c:[0.769, 0.635, 0.443], a:0.55, w:0.24 },
+    { c:[0.596, 0.702, 0.576], a:0.42, w:0.13 },
+    { c:[0.478, 0.353, 0.227], a:0.36, w:0.07 },
   ];
   const pickTint = () => {
     let r = Math.random(), i = 0;
@@ -2339,6 +2345,142 @@ function initThreeHero(){
   ringGroup.position.z = -4;
   scene.add(ringGroup);
 
+  /* ── The cup — procedural ceramic espresso set with gold rim + latte ── */
+  const cupGroup = new THREE.Group();
+  scene.add(cupGroup);
+  const cupPlace = { x: 13, y: -1.5, scale: 1.0 };   // refined in fit()
+
+  const ceramicMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#EFE6D8'),
+    roughness: 0.42, metalness: 0.0,
+    clearcoat: 0.5, clearcoatRoughness: 0.35,
+    side: THREE.DoubleSide,
+  });
+  const goldMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#B8935A'),
+    roughness: 0.28, metalness: 1.0, clearcoat: 0.6,
+    side: THREE.DoubleSide,
+  });
+  const coffeeMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#2A180C'),
+    roughness: 0.12, metalness: 0.0,
+    clearcoat: 0.9, clearcoatRoughness: 0.15,
+  });
+  const creamMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#EADFC6'),
+    roughness: 0.55, metalness: 0.0,
+  });
+
+  // cup profile (x = radius, y = height) — hollow bowl turned on a lathe
+  const cupPts = [
+    [0.0, 1.10], [2.2, 1.15], [3.05, 1.9], [3.35, 3.9], [3.5, 6.2],
+    [3.62, 6.75], [3.7, 6.85], [3.95, 6.6], [4.05, 5.9], [4.3, 3.6],
+    [4.15, 1.9], [3.4, 0.8], [2.9, 0.45], [2.2, 0.12], [0.0, 0.0],
+  ].map(p => new THREE.Vector2(p[0], p[1]));
+  const cup = new THREE.Mesh(new THREE.LatheGeometry(cupPts, 64), ceramicMat);
+  cup.position.y = 0.66;   // rests on the saucer's centre dish
+  cupGroup.add(cup);
+
+  // saucer — shallow lathe-turned dish
+  const saucerPts = [
+    [0, 0], [4.9, 0], [5.4, 0.3], [5.5, 0.75], [4.7, 0.95],
+    [3.4, 0.8], [2.2, 0.7], [0, 0.62],
+  ].map(p => new THREE.Vector2(p[0], p[1]));
+  cupGroup.add(new THREE.Mesh(new THREE.LatheGeometry(saucerPts, 64), ceramicMat));
+
+  // gold rim at the lip
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(3.66, 0.065, 14, 96), goldMat);
+  rim.rotation.x = Math.PI / 2;   // lie flat
+  rim.position.y = 0.66 + 6.85;
+  cupGroup.add(rim);
+
+  // glossy coffee + cream rosetta suggestion on the surface
+  const coffee = new THREE.Mesh(new THREE.CircleGeometry(3.32, 48), coffeeMat);
+  coffee.rotation.x = -Math.PI / 2;
+  coffee.position.y = 0.66 + 6.05;
+  cupGroup.add(coffee);
+  const creamRing = new THREE.Mesh(new THREE.RingGeometry(1.15, 2.55, 48), creamMat);
+  creamRing.rotation.x = -Math.PI / 2;
+  creamRing.position.y = 0.66 + 6.08;
+  cupGroup.add(creamRing);
+  const creamHeart = new THREE.Mesh(new THREE.CircleGeometry(1.02, 40), creamMat);
+  creamHeart.rotation.x = -Math.PI / 2;
+  creamHeart.position.set(0.3, 0.66 + 6.09, 0.25);
+  cupGroup.add(creamHeart);
+
+  // C handle — partial torus, opening toward the cup wall
+  const handle = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.38, 18, 48, Math.PI * 1.1), ceramicMat);
+  handle.position.set(4.6, 0.66 + 3.9, 0);
+  handle.rotation.z = -Math.PI * 0.55;
+  cupGroup.add(handle);
+
+  /* lighting rig — warm key, gold rim from behind, cool whisper fill */
+  const lights = new THREE.Group();
+  lights.add(new THREE.HemisphereLight(0xf4efe6, 0x181714, 0.55));
+  const keyLight = new THREE.DirectionalLight(0xffe8cf, 1.5);
+  keyLight.position.set(-8, 14, 9);
+  lights.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0xb8935a, 1.8);
+  rimLight.position.set(10, 5, -8);
+  lights.add(rimLight);
+  const fillLight = new THREE.DirectionalLight(0x8ea4b8, 0.25);
+  fillLight.position.set(6, 7, 6);
+  lights.add(fillLight);
+  scene.add(lights);
+
+  /* steam — GPU wisps rising off the coffee, rides with the cup */
+  const STEAM = 70;
+  const sPos  = new Float32Array(STEAM * 3);   // x0, 0, z0 (mouth radius)
+  const sSeed = new Float32Array(STEAM * 4);   // life speed, phase, size, wobble
+  for(let i = 0; i < STEAM; i++){
+    const a = Math.random() * Math.PI * 2, r = Math.random() * 1.5;
+    sPos[i*3]     = Math.cos(a) * r;
+    sPos[i*3 + 2] = Math.sin(a) * r;
+    sSeed[i*4]     = 0.10 + Math.random() * 0.16;
+    sSeed[i*4 + 1] = Math.random();
+    sSeed[i*4 + 2] = 14 + Math.random() * 26;
+    sSeed[i*4 + 3] = 0.6 + Math.random() * 0.9;
+  }
+  const steamGeo = new THREE.BufferGeometry();
+  steamGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+  steamGeo.setAttribute('aSeed',    new THREE.BufferAttribute(sSeed, 4));
+  const steamMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: uniforms.uTime, uPixelRatio: uniforms.uPixelRatio }, // shared clock
+    vertexShader: `
+      precision highp float;
+      attribute vec4 aSeed;
+      uniform float uTime, uPixelRatio;
+      varying float vA;
+      void main(){
+        float life = fract(uTime * aSeed.x + aSeed.y);
+        float y = 7.1 + life * 7.5;
+        float wob = sin(uTime * 1.1 + aSeed.y * 6.2831) * aSeed.w
+                  + sin(uTime * 2.3 + aSeed.y * 12.56) * 0.3;
+        vec3 p = vec3(position.x + wob, y, position.z + wob * 0.7);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = aSeed.z * (1.0 + life * 1.6) * (160.0 / max(0.001, -mv.z)) * uPixelRatio;
+        vA = smoothstep(0.0, 0.14, life) * (1.0 - life) * 0.32;
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying float vA;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5));
+        float a = smoothstep(0.5, 0.02, d) * vA;
+        if(a < 0.004) discard;
+        gl_FragColor = vec4(0.957, 0.937, 0.902, a);
+      }
+    `,
+    transparent: true, depthWrite: false, depthTest: false,
+    blending: THREE.NormalBlending,
+  });
+  const steam = new THREE.Points(steamGeo, steamMat);
+  steam.renderOrder = 3;
+  steam.frustumCulled = false;
+  cupGroup.add(steam);
+
   /* ── Scroll progress + visibility gating ── */
   let scrollTarget = 0;
   let visible = true;
@@ -2375,15 +2517,17 @@ function initThreeHero(){
     const spanH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     uniforms.uSpanH.value = spanH;
     const spanW = spanH * camera.aspect;
-    if(spanW >= 78){   // wide screens — ring floats beside the headline
-      ringGroup.position.x = spanW * 0.22;
-      ringGroup.position.y = 1.5;
-      ringGroup.scale.setScalar(1);
-    } else {           // narrow screens — centre it above the fold
-      ringGroup.position.x = spanW * 0.1;
-      ringGroup.position.y = spanH * 0.14;
-      ringGroup.scale.setScalar(0.72);
+    if(spanW >= 78){   // wide screens — cup floats beside the headline, rings halo it
+      cupPlace.x = spanW * 0.17;
+      cupPlace.y = -1.2;
+      cupPlace.scale = 1.0;
+    } else {           // narrow screens — cup sits low, beneath the copy
+      cupPlace.x = 0;
+      cupPlace.y = -10.5;
+      cupPlace.scale = 0.55;
     }
+    ringGroup.position.set(cupPlace.x, cupPlace.y + 3.2, -7);
+    ringGroup.scale.setScalar(cupPlace.scale * 1.15);
   }
   window.addEventListener('resize', fit);
   fit();
@@ -2411,8 +2555,21 @@ function initThreeHero(){
     ringGroup.rotation.y = -0.35 + Math.sin(elapsed * 0.22) * 0.07;
     ringA.rotation.z += dt * 0.028;
     ringB.rotation.z -= dt * 0.04;
-    ringA.material.opacity = 0.22 * (1 - scrollCur) + 0.02;
-    ringB.material.opacity = 0.10 * (1 - scrollCur);
+    ringA.material.opacity = 0.30 * (1 - scrollCur) + 0.02;
+    ringB.material.opacity = 0.14 * (1 - scrollCur);
+
+    /* the cup — ease-in entrance, idle float, scroll spin, pointer sway */
+    const intro  = Math.min(1, elapsed / 1.6);
+    const introE = 1 - Math.pow(1 - intro, 3);
+    cupGroup.position.set(
+      cupPlace.x + Math.sin(elapsed * 0.6) * 0.3 + ptr.x * 0.8,
+      cupPlace.y + Math.sin(elapsed * 0.8) * 0.4 + scrollCur * 7,
+      0
+    );
+    cupGroup.rotation.y = 0.6 + elapsed * 0.16 + scrollCur * 1.6 + Math.sin(elapsed * 0.5) * 0.05;
+    cupGroup.rotation.x = ptr.y * -0.08;
+    cupGroup.rotation.z = ptr.x * 0.06;
+    cupGroup.scale.setScalar(cupPlace.scale * (0.6 + 0.4 * introE));
 
     if(!started){ started = true; canvas.classList.add('is-ready'); }
     renderer.render(scene, camera);

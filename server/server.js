@@ -40,7 +40,8 @@ app.use(helmet({
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
       imgSrc: ["'self'", 'data:'],
       connectSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      // cdn.jsdelivr.net serves the motion stack (Lenis · GSAP ScrollTrigger · Three.js)
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
       frameSrc: ["'self'", 'https://www.google.com'],
     },
   },
@@ -79,8 +80,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 }));
 
 // ── Homepage routes ────────────────────────────────────────────────────────
+// NOTE: the root copy is the single source of truth for the café site
+// (same file the Dockerfile ships to /app). Do not edit server/erlbrew-cafe-website.html.
 const rootDir = path.join(__dirname, '..');
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'erlbrew-cafe-website.html')));
+app.get('/', (req, res) => res.sendFile(path.join(rootDir, 'erlbrew-cafe-website.html')));
 app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/erlbrew-cafe-website.html', (req, res) => res.redirect(301, '/'));
 

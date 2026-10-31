@@ -39,7 +39,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .v-line{width:1px;background:linear-gradient(180deg,transparent,rgba(184,147,90,.4) 30%,rgba(184,147,90,.4) 70%,transparent)}
 
 /* ── Hero ── */
-.hero-bg{background:#181714;position:relative}
+.hero-bg{background:#000;position:relative}
 
 /* ── Menu item ── */
 .menu-item{border-bottom:1px solid rgba(244,239,230,0.07);transition:background .2s}
@@ -461,11 +461,12 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-stopped{overflow:hidden}
 
-/* ── WebGL hero atmosphere (particle steam + ensō rings) ── */
+/* ── WebGL hero: pure-black night scene ── */
 #hero-webgl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;
   opacity:0;transition:opacity 1.6s ease .2s}
 #hero-webgl.is-ready{opacity:1}
-@media(prefers-reduced-motion:reduce){#hero-webgl{display:none}}
+#hero-webgl{-webkit-mask-image:linear-gradient(to bottom,#000 88%,transparent);mask-image:linear-gradient(to bottom,#000 88%,transparent)}
+@media(max-width:1023px){#hero-webgl.is-ready{opacity:.55}}   /* phones: keep the headline readable over the scene */
 </style>
 </head>
 <body>
@@ -546,22 +547,8 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
      ╚══════════════════════════════════════════════╝ -->
 <section id="hero" class="hero-bg min-h-screen flex items-center relative overflow-hidden">
 
-  <!-- Background SVG — ink wash abstraction -->
-  <svg class="absolute inset-0 w-full h-full pointer-events-none select-none parallax-el" data-depth="14" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <!-- Soft ink washes -->
-    <ellipse cx="900" cy="200" rx="500" ry="350" fill="rgba(77,107,72,0.07)"/>
-    <ellipse cx="200" cy="700" rx="380" ry="260" fill="rgba(184,147,90,0.05)"/>
-    <ellipse cx="1200" cy="750" rx="280" ry="200" fill="rgba(244,239,230,0.03)"/>
-    <!-- Vertical Japanese ruled lines — very subtle -->
-    <line x1="1100" y1="0" x2="1100" y2="900" stroke="rgba(244,239,230,0.04)" stroke-width="1"/>
-    <line x1="1140" y1="0" x2="1140" y2="900" stroke="rgba(244,239,230,0.03)" stroke-width="1"/>
-    <line x1="1180" y1="0" x2="1180" y2="900" stroke="rgba(244,239,230,0.025)" stroke-width="1"/>
-    <!-- Brushstroke circle suggestion -->
-    <circle cx="1050" cy="450" r="280" fill="none" stroke="rgba(184,147,90,0.06)" stroke-width="1.5"/>
-    <circle cx="1050" cy="450" r="320" fill="none" stroke="rgba(184,147,90,0.04)" stroke-width="1"/>
-  </svg>
 
-  <!-- Three.js atmosphere: particle steam + slowly rotating ensō rings -->
+  <!-- Three.js hero: black night — moon, sakura branch, drifting petals -->
   <canvas id="hero-webgl" aria-hidden="true"></canvas>
 
   <!-- Vertical JP text — signature element, right side -->
@@ -1195,7 +1182,6 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <script>
 /* ── Menu data ─────────────────────────────────────── */
 let MENU = [];
@@ -2156,426 +2142,7 @@ function initAtmosphere(){
   }
 }
 
-/* ── Three.js — hero: rotating ceramic cup, particle steam, ensō halo ── */
-/* The hero centerpiece is a fully procedural 3D espresso set (lathe-turned
-   cup + saucer, gold rim, glossy coffee with a cream rosetta, GPU steam)
-   floating beside the headline. Around it: a mesh-halo of ensō rings and a
-   quiet field of palette-tinted particles. Everything pauses while the hero
-   is offscreen and is skipped for reduced-motion / no-WebGL visitors. */
-function initThreeHero(){
-  const canvas = document.getElementById('hero-webgl');
-  const hero   = document.getElementById('hero');
-  if(!canvas || !hero || !window.THREE) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ canvas.style.display='none'; return; }
-
-  // Feature-detect WebGL before committing
-  const gl = (function(){
-    try{ return document.createElement('canvas').getContext('webgl') ||
-                document.createElement('canvas').getContext('experimental-webgl'); }
-    catch(e){ return null; }
-  })();
-  if(!gl){ canvas.style.display='none'; return; }
-
-  let renderer;
-  try{
-    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true, powerPreference:'high-performance' });
-  }catch(e){ canvas.style.display='none'; return; }
-  renderer.setClearColor(0x000000, 0);
-  // Correct color pipeline for the lit ceramic materials
-  if('outputColorSpace' in renderer)      renderer.outputColorSpace = THREE.SRGBColorSpace;
-  else if('outputEncoding' in renderer)   renderer.outputEncoding   = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
-  const DPR = Math.min(window.devicePixelRatio || 1, 2);
-  renderer.setPixelRatio(DPR);
-
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 240);
-  camera.position.set(0, 0, 42);
-
-  /* ── Particle field (custom shader — per-particle color, size, twinkle) ── */
-  const small  = window.innerWidth < 720;
-  const COUNT  = small ? 180 : Math.min(520, Math.max(260, Math.round(window.innerWidth * window.innerHeight / 2600)));
-  const SPAN_H = 44; // world units across the hero at z=0 (recomputed on resize)
-
-  const posArr   = new Float32Array(COUNT * 3);
-  const seedArr  = new Float32Array(COUNT * 4);
-  const miscArr  = new Float32Array(COUNT * 4);
-  const tintArr  = new Float32Array(COUNT * 3);
-  const alphaArr = new Float32Array(COUNT);
-
-  // cream / soft gold / sage / ember — additive on the ink-dark hero, kept whisper-quiet
-  const palette = [
-    { c:[0.957, 0.937, 0.902], a:0.38, w:0.56 },
-    { c:[0.769, 0.635, 0.443], a:0.32, w:0.24 },
-    { c:[0.596, 0.702, 0.576], a:0.26, w:0.13 },
-    { c:[0.478, 0.353, 0.227], a:0.22, w:0.07 },
-  ];
-  const pickTint = () => {
-    let r = Math.random(), i = 0;
-    while(i < palette.length - 1 && r > palette[i].w){ r -= palette[i].w; i++; }
-    const p = palette[i];
-    const j = 0.85 + Math.random() * 0.3;   // brightness jitter
-    return {
-      c: [p.c[0]*j, p.c[1]*j, p.c[2]*j],
-      a: p.a * (0.7 + Math.random() * 0.5),
-    };
-  };
-
-  for(let i = 0; i < COUNT; i++){
-    posArr[i*3+0] = (Math.random() - 0.5) * 80;   // wide horizontal band, no wrapping needed
-    posArr[i*3+1] = (Math.random() - 0.5) * SPAN_H;
-    posArr[i*3+2] = -14 + Math.random() * 24;     // -14..10
-
-    seedArr[i*4+0] = 0.5 + Math.random() * 1.6;                // rise speed (units/s)
-    seedArr[i*4+1] = 0.5 + Math.random() * 1.8;                // sway amplitude
-    seedArr[i*4+2] = 0.12 + Math.random() * 0.4;               // sway frequency
-    seedArr[i*4+3] = 3 + 6 * Math.pow(Math.random(), 1.9);     // point size (more small than large)
-
-    miscArr[i*4+0] = Math.random();               // phase
-    miscArr[i*4+1] = Math.random();               // scroll spread bias
-    miscArr[i*4+2] = 0.5 + Math.random() * 1.8;   // twinkle frequency
-    miscArr[i*4+3] = Math.random();               // depth factor (parallax weight)
-
-    const tint = pickTint();
-    tintArr[i*3]   = tint.c[0];
-    tintArr[i*3+1] = tint.c[1];
-    tintArr[i*3+2] = tint.c[2];
-    alphaArr[i]    = Math.min(1, tint.a);
-  }
-
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
-  geo.setAttribute('aSeed',    new THREE.BufferAttribute(seedArr, 4));
-  geo.setAttribute('aMisc',    new THREE.BufferAttribute(miscArr, 4));
-  geo.setAttribute('aTint',    new THREE.BufferAttribute(tintArr, 3));
-  geo.setAttribute('aAlpha',   new THREE.BufferAttribute(alphaArr, 1));
-
-  const uniforms = {
-    uTime:       { value: 0 },
-    uScroll:     { value: 0 },
-    uMouseX:     { value: 0 },
-    uMouseY:     { value: 0 },
-    uSpanH:      { value: SPAN_H },
-    uPixelRatio: { value: DPR },
-  };
-
-  const mat = new THREE.ShaderMaterial({
-    uniforms,
-    vertexShader: `
-      precision highp float;
-      attribute vec4 aSeed;    // rise speed, sway amplitude, sway frequency, point size
-      attribute vec4 aMisc;    // phase, spread bias, twinkle frequency, depth factor
-      attribute vec3 aTint;
-      attribute float aAlpha;
-      uniform float uTime, uScroll, uMouseX, uMouseY, uSpanH, uPixelRatio;
-      varying vec3 vColor;
-      varying float vAlpha;
-
-      void main(){
-        vec3 p = position;
-
-        // slow ascent with wrap-around inside the hero band
-        p.y = mod(p.y + uTime * aSeed.x, uSpanH) - uSpanH * 0.5;
-
-        // gentle lateral sway
-        p.x += sin(uTime * aSeed.z + aMisc.x * 6.2831) * aSeed.y;
-
-        // pointer parallax — nearer particles drift further
-        p.x += uMouseX * (0.6 + aMisc.w * 1.9);
-        p.y += uMouseY * (0.4 + aMisc.w * 1.2);
-
-        // dispersion as the hero scrolls away
-        float s = uScroll;
-        p.x += (aMisc.y - 0.5) * 34.0 * s;
-        p.z += (fract(aMisc.z * 4.37) - 0.5) * 46.0 * s;
-        p.y += (aMisc.x - 0.5) * 12.0 * s;
-
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_Position = projectionMatrix * mv;
-
-        float dist = max(0.001, -mv.z);
-        gl_PointSize = min(aSeed.w * (110.0 / dist), 34.0) * uPixelRatio;
-
-        float tw = 0.72 + 0.28 * sin(uTime * aMisc.z + aMisc.x * 12.566);
-        vColor = aTint;
-        vAlpha = aAlpha * tw * pow(max(0.0, 1.0 - s), 1.6);
-      }
-    `,
-    fragmentShader: `
-      precision highp float;
-      varying vec3 vColor;
-      varying float vAlpha;
-      void main(){
-        float d = length(gl_PointCoord - vec2(0.5));
-        float a = smoothstep(0.5, 0.05, d) * vAlpha;
-        if(a < 0.004) discard;
-        gl_FragColor = vec4(vColor, a);
-      }
-    `,
-    transparent: true,
-    depthWrite: false,
-    depthTest: false,
-    blending: THREE.AdditiveBlending,
-  });
-  scene.add(new THREE.Points(geo, mat));
-
-  /* ── Ensō rings — slowly rotating zen-circle motif in gold ── */
-  function makeRing(radius, opacity){
-    const pts = [];
-    const seg = 180;
-    for(let i = 0; i <= seg; i++){
-      const a = (i / seg) * Math.PI * 2;
-      pts.push(new THREE.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0));
-    }
-    const g = new THREE.BufferGeometry().setFromPoints(pts);
-    const m = new THREE.LineBasicMaterial({
-      color: new THREE.Color('#B8935A'),
-      transparent: true, opacity,
-      blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false,
-    });
-    return new THREE.LineLoop(g, m);
-  }
-  const ringA = makeRing(9.2, 0.22);
-  const ringB = makeRing(6.6, 0.10);
-  ringB.position.z = -1.5;
-  const ringGroup = new THREE.Group();
-  ringGroup.add(ringA, ringB);
-  ringGroup.rotation.set(0.55, -0.35, -0.12);
-  ringGroup.position.z = -4;
-  scene.add(ringGroup);
-
-  /* ── The cup — procedural ceramic espresso set with gold rim + latte ── */
-  const cupGroup = new THREE.Group();
-  scene.add(cupGroup);
-  const cupPlace = { x: 13, y: -1.5, scale: 1.0 };   // refined in fit()
-
-  const ceramicMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#EFE6D8'),
-    roughness: 0.42, metalness: 0.0,
-    clearcoat: 0.5, clearcoatRoughness: 0.35,
-    side: THREE.DoubleSide,
-  });
-  const goldMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#B8935A'),
-    roughness: 0.28, metalness: 1.0, clearcoat: 0.6,
-    side: THREE.DoubleSide,
-  });
-  const coffeeMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#2A180C'),
-    roughness: 0.12, metalness: 0.0,
-    clearcoat: 0.9, clearcoatRoughness: 0.15,
-  });
-  const creamMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color('#EADFC6'),
-    roughness: 0.55, metalness: 0.0,
-  });
-
-  // cup profile (x = radius, y = height) — hollow bowl, near-vertical wall, flared lip
-  const cupPts = [
-    [0.0, 1.10], [2.2, 1.15], [3.05, 1.9], [3.35, 3.9], [3.5, 6.2],
-    [3.62, 6.75], [3.7, 6.85], [3.92, 6.6], [3.98, 5.6], [4.0, 4.0],
-    [3.9, 2.2], [3.35, 0.95], [2.9, 0.45], [2.2, 0.12], [0.0, 0.0],
-  ].map(p => new THREE.Vector2(p[0], p[1]));
-  const cup = new THREE.Mesh(new THREE.LatheGeometry(cupPts, 64), ceramicMat);
-  cup.position.y = 0.66;   // rests on the saucer's centre dish
-  cupGroup.add(cup);
-
-  // saucer — shallow lathe-turned dish
-  const saucerPts = [
-    [0, 0], [4.3, 0], [4.8, 0.3], [4.9, 0.75], [4.2, 0.9],
-    [3.0, 0.75], [2.0, 0.65], [0, 0.6],
-  ].map(p => new THREE.Vector2(p[0], p[1]));
-  cupGroup.add(new THREE.Mesh(new THREE.LatheGeometry(saucerPts, 64), ceramicMat));
-
-  // gold rim at the lip
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(3.64, 0.09, 14, 96), goldMat);
-  rim.rotation.x = Math.PI / 2;   // lie flat
-  rim.position.y = 0.66 + 6.85;
-  cupGroup.add(rim);
-
-  // glossy coffee + cream rosetta suggestion on the surface
-  const coffee = new THREE.Mesh(new THREE.CircleGeometry(3.32, 48), coffeeMat);
-  coffee.rotation.x = -Math.PI / 2;
-  coffee.position.y = 0.66 + 6.45;
-  cupGroup.add(coffee);
-  const creamRing = new THREE.Mesh(new THREE.RingGeometry(1.15, 2.55, 48), creamMat);
-  creamRing.rotation.x = -Math.PI / 2;
-  creamRing.position.y = 0.66 + 6.48;
-  cupGroup.add(creamRing);
-  const creamHeart = new THREE.Mesh(new THREE.CircleGeometry(1.02, 40), creamMat);
-  creamHeart.rotation.x = -Math.PI / 2;
-  creamHeart.position.set(0.3, 0.66 + 6.49, 0.25);
-  cupGroup.add(creamHeart);
-
-  // C handle — partial torus, opening toward the cup wall
-  const handle = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.38, 18, 48, Math.PI * 1.1), ceramicMat);
-  handle.position.set(4.6, 0.66 + 3.9, 0);
-  handle.rotation.z = -Math.PI * 0.55;
-  cupGroup.add(handle);
-
-  /* lighting rig — warm key, gold rim from behind, cool whisper fill */
-  const lights = new THREE.Group();
-  lights.add(new THREE.HemisphereLight(0xf4efe6, 0x181714, 0.55));
-  const keyLight = new THREE.DirectionalLight(0xffe8cf, 1.5);
-  keyLight.position.set(-8, 14, 9);
-  lights.add(keyLight);
-  const rimLight = new THREE.DirectionalLight(0xb8935a, 1.8);
-  rimLight.position.set(10, 5, -8);
-  lights.add(rimLight);
-  const fillLight = new THREE.DirectionalLight(0x8ea4b8, 0.25);
-  fillLight.position.set(6, 7, 6);
-  lights.add(fillLight);
-  scene.add(lights);
-
-  /* steam — GPU wisps rising off the coffee, rides with the cup */
-  const STEAM = 42;
-  const sPos  = new Float32Array(STEAM * 3);   // x0, 0, z0 (mouth radius)
-  const sSeed = new Float32Array(STEAM * 4);   // life speed, phase, size, wobble
-  for(let i = 0; i < STEAM; i++){
-    const a = Math.random() * Math.PI * 2, r = Math.random() * 1.1;
-    sPos[i*3]     = Math.cos(a) * r;
-    sPos[i*3 + 2] = Math.sin(a) * r;
-    sSeed[i*4]     = 0.10 + Math.random() * 0.16;
-    sSeed[i*4 + 1] = Math.random();
-    sSeed[i*4 + 2] = 8 + Math.random() * 14;
-    sSeed[i*4 + 3] = 0.6 + Math.random() * 0.9;
-  }
-  const steamGeo = new THREE.BufferGeometry();
-  steamGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-  steamGeo.setAttribute('aSeed',    new THREE.BufferAttribute(sSeed, 4));
-  const steamMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: uniforms.uTime, uPixelRatio: uniforms.uPixelRatio }, // shared clock
-    vertexShader: `
-      precision highp float;
-      attribute vec4 aSeed;
-      uniform float uTime, uPixelRatio;
-      varying float vA;
-      void main(){
-        float life = fract(uTime * aSeed.x + aSeed.y);
-        float y = 7.3 + life * 6.0;
-        float wob = sin(uTime * 1.1 + aSeed.y * 6.2831) * aSeed.w
-                  + sin(uTime * 2.3 + aSeed.y * 12.56) * 0.3;
-        vec3 p = vec3(position.x + wob, y, position.z + wob * 0.7);
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_Position = projectionMatrix * mv;
-        gl_PointSize = aSeed.z * (1.0 + life * 1.1) * (110.0 / max(0.001, -mv.z)) * uPixelRatio;
-        vA = smoothstep(0.0, 0.2, life) * (1.0 - life) * 0.13;
-      }
-    `,
-    fragmentShader: `
-      precision highp float;
-      varying float vA;
-      void main(){
-        float d = length(gl_PointCoord - vec2(0.5));
-        float a = smoothstep(0.5, 0.02, d) * vA;
-        if(a < 0.004) discard;
-        gl_FragColor = vec4(0.957, 0.937, 0.902, a);
-      }
-    `,
-    transparent: true, depthWrite: false, depthTest: false,
-    blending: THREE.NormalBlending,
-  });
-  const steam = new THREE.Points(steamGeo, steamMat);
-  steam.renderOrder = 3;
-  steam.frustumCulled = false;
-  cupGroup.add(steam);
-
-  /* ── Scroll progress + visibility gating ── */
-  let scrollTarget = 0;
-  let visible = true;
-  if(window.gsap && window.ScrollTrigger){
-    ScrollTrigger.create({
-      trigger: hero, start: 'top top', end: 'bottom 25%', scrub: true,
-      onUpdate: self => { scrollTarget = self.progress; }
-    });
-    ScrollTrigger.create({
-      trigger: hero, start: 'top bottom', end: 'bottom top',
-      onToggle: self => { visible = self.isActive; }
-    });
-  }
-
-  /* ── Pointer (desktop only) ── */
-  const ptr = { tx: 0, ty: 0, x: 0, y: 0 };
-  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
-    hero.addEventListener('mousemove', e => {
-      const r = hero.getBoundingClientRect();
-      ptr.tx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
-      ptr.ty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
-    });
-    hero.addEventListener('mouseleave', () => { ptr.tx = 0; ptr.ty = 0; });
-  }
-
-  /* ── Fit to hero box ── */
-  function fit(){
-    const w = hero.clientWidth  || window.innerWidth;
-    const h = hero.clientHeight || window.innerHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-
-    const spanH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
-    uniforms.uSpanH.value = spanH;
-    const spanW = spanH * camera.aspect;
-    if(spanW >= 72){   // wide screens (incl. all 16:9 desktops) — cup beside the headline
-      cupPlace.x = spanW * 0.17;
-      cupPlace.y = -1.2;
-      cupPlace.scale = 1.0;
-    } else {           // narrow screens — cup sits low, beneath the copy
-      cupPlace.x = 0;
-      cupPlace.y = -9.5;
-      cupPlace.scale = 0.6;
-    }
-    ringGroup.position.set(cupPlace.x, cupPlace.y + 3.2, -7);
-    ringGroup.scale.setScalar(cupPlace.scale * 1.15);
-  }
-  window.addEventListener('resize', fit);
-  fit();
-
-  /* ── Render loop ── */
-  const clock = new THREE.Clock();
-  let elapsed = 0, scrollCur = 0, started = false;
-
-  function tick(){
-    requestAnimationFrame(tick);
-    if(!visible || document.hidden) return;   // fully paused offscreen
-    const dt = Math.min(clock.getDelta(), 0.05);
-    elapsed += dt;
-
-    ptr.x += (ptr.tx - ptr.x) * 0.05;         // eased pointer
-    ptr.y += (ptr.ty - ptr.y) * 0.05;
-    scrollCur += (scrollTarget - scrollCur) * 0.07;
-
-    uniforms.uTime.value   = elapsed;
-    uniforms.uScroll.value = scrollCur;
-    uniforms.uMouseX.value = ptr.x * 1.6;
-    uniforms.uMouseY.value = -ptr.y * 1.1;
-
-    ringGroup.rotation.z += dt * 0.05;
-    ringGroup.rotation.y = -0.35 + Math.sin(elapsed * 0.22) * 0.07;
-    ringA.rotation.z += dt * 0.028;
-    ringB.rotation.z -= dt * 0.04;
-    ringA.material.opacity = 0.30 * (1 - scrollCur) + 0.02;
-    ringB.material.opacity = 0.14 * (1 - scrollCur);
-
-    /* the cup — ease-in entrance, idle float, scroll spin, pointer sway */
-    const intro  = Math.min(1, elapsed / 1.6);
-    const introE = 1 - Math.pow(1 - intro, 3);
-    cupGroup.position.set(
-      cupPlace.x + Math.sin(elapsed * 0.6) * 0.3 + ptr.x * 0.8,
-      cupPlace.y + Math.sin(elapsed * 0.8) * 0.4 + scrollCur * 7,
-      0
-    );
-    cupGroup.rotation.y = 0.6 + elapsed * 0.16 + scrollCur * 1.6 + Math.sin(elapsed * 0.5) * 0.05;
-    cupGroup.rotation.x = -0.12 + ptr.y * -0.08;   // base tilt peeks at the latte art
-    cupGroup.rotation.z = ptr.x * 0.06;
-    cupGroup.scale.setScalar(cupPlace.scale * (0.6 + 0.4 * introE));
-
-    if(!started){ started = true; canvas.classList.add('is-ready'); }
-    renderer.render(scene, camera);
-  }
-  requestAnimationFrame(tick);
-}
+/* ── Three.js hero lives in the <script type="module"> at the end of <body> ── */
 
 /* ── Init ──────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{
@@ -2600,9 +2167,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   initLightbox();
   initMagneticButtons();
   initGalleryParallax();
-  // GSAP scroll atmosphere + Three.js hero
+  // GSAP scroll atmosphere (the Three.js hero boots itself as a module)
   initAtmosphere();
-  initThreeHero();
   // Load all data from API
   loadMenuFromServer();
   loadAboutPhoto();
@@ -2620,6 +2186,355 @@ renderMenu = function(){
 };
 
 function escapeHtml(s){ if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+<!-- ── Three.js r186 (ES modules): EffectComposer + UnrealBloomPass for the hero ── -->
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* ══════════════════════════════════════════════════════════════════════
+   ERLBREW HERO — a quiet night, in real 3D.
+   · a cratered moon SPHERE, lit from one side (you see the terminator)
+   · a cherry-blossom branch: real tube geometry + ~200 instanced 3D flowers
+   · petals that are real curved meshes, tumbling and catching the moonlight
+   · a camera that slowly drifts, so near/far layers genuinely parallax
+   Pure-black sky, faint stars, soft bloom + vignette + grain.
+   ══════════════════════════════════════════════════════════════════════ */
+
+function initHero3D(){
+  const canvas = document.getElementById('hero-webgl');
+  const hero   = document.getElementById('hero');
+  if(!canvas || !hero) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:false, powerPreference:'high-performance' });
+  }catch(e){ canvas.style.display = 'none'; return; }
+  renderer.setClearColor(0x000000, 1);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  const DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+  renderer.setPixelRatio(DPR);
+
+  const FOV = 38, CAM_Z = 56;
+  const scene  = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x000000, 0.0042);          // far things sink into the dark
+  const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 400);
+  camera.position.set(0, 0, CAM_Z);
+
+  const rad = d => d * Math.PI / 180;
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  const smooth = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const mod = (a, n) => ((a % n) + n) % n;
+  function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const spanHAt = z => 2 * Math.tan(rad(FOV / 2)) * (CAM_Z - z);
+
+  const U = { uTime: { value: 0 } };
+
+  /* ══ Post-processing ═════════════════════════════════════════════ */
+  const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
+  const composer = new EffectComposer(renderer, rt);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.42, 0.55, 1.0);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  const finish = new ShaderPass({
+    uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 0.55 }, uGrain: { value: 0.026 } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `
+      uniform sampler2D tDiffuse; uniform float uTime, uVig, uGrain; varying vec2 vUv;
+      float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+      void main(){
+        vec4 c = texture2D(tDiffuse, vUv);
+        vec2 d = (vUv - 0.5) * vec2(1.0, 0.92);
+        c.rgb *= mix(1.0 - uVig, 1.0, smoothstep(0.9, 0.28, length(d)));
+        float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+        float n = h(vUv * vec2(1931.0, 1087.0) + fract(uTime * 0.37) * 91.0) - 0.5;
+        c.rgb += n * uGrain * smoothstep(0.0, 0.2, lum);       // grain only where there is light — blacks stay black
+        c.rgb += (h(vUv * 713.0 + 3.1) - 0.5) / 255.0;          // dither
+        gl_FragColor = vec4(c.rgb, 1.0);
+      }`
+  });
+  composer.addPass(finish);
+
+  /* ══ Lights — one cool moon key, a faint warm fill ═══════════════ */
+  const moonLight = new THREE.DirectionalLight(0xdfe8ff, 4.0); moonLight.position.set(-16, 13, 14);
+  const warmFill  = new THREE.DirectionalLight(0xffd7bd, .7);  warmFill.position.set(14, -4, 18);
+  scene.add(moonLight, warmFill, new THREE.HemisphereLight(0xb9c8ff, 0x1a0d12, .55));
+
+  /* ══ 1 · THE MOON — a real sphere with craters + bump ═════════════ */
+  function makeMoonMaps(){
+    const W = 2048, H = 1024, R = mulberry32(8);
+    const col = document.createElement('canvas'), bmp = document.createElement('canvas');
+    col.width = bmp.width = W; col.height = bmp.height = H;
+    const c = col.getContext('2d'), b = bmp.getContext('2d');
+    c.fillStyle = '#e4dbc6'; c.fillRect(0, 0, W, H);
+    b.fillStyle = '#808080'; b.fillRect(0, 0, W, H);
+    const blob = (ctx, x, y, r, rgba) => {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, rgba); g.addColorStop(1, rgba.replace(/[\d.]+\)$/, '0)'));
+      ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+    };
+    for(let i = 0; i < 26; i++){                           // maria: the dark "seas"
+      const x = R() * W, y = H * (.2 + R() * .6), r = 110 + R() * 300;
+      blob(c, x, y, r, 'rgba(96,88,80,.55)'); blob(b, x, y, r, 'rgba(100,100,100,.2)');
+    }
+    for(let i = 0; i < 500; i++){                          // fine mottling
+      const x = R() * W, y = R() * H, r = 10 + R() * 50;
+      blob(c, x, y, r, R() < .5 ? 'rgba(255,250,238,.07)' : 'rgba(90,84,78,.07)');
+    }
+    const crater = (x, y, r) => {
+      let g = c.createRadialGradient(x, y, r * .15, x, y, r);
+      g.addColorStop(0, 'rgba(80,74,66,.2)'); g.addColorStop(.7, 'rgba(80,74,66,.08)');
+      g.addColorStop(.9, 'rgba(250,245,232,.22)'); g.addColorStop(1, 'rgba(250,245,232,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill();
+      g = b.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, 'rgba(100,100,100,.55)'); g.addColorStop(.7, 'rgba(118,118,118,.35)');
+      g.addColorStop(.9, 'rgba(170,170,170,.55)'); g.addColorStop(1, 'rgba(128,128,128,0)');
+      b.fillStyle = g; b.beginPath(); b.arc(x, y, r, 0, 6.283); b.fill();
+    };
+    for(let i = 0; i < 620; i++){
+      const r = 2.5 + Math.pow(R(), 4.2) * 40, x = R() * W, y = H * (.08 + R() * .84);
+      crater(x, y, r); if(x < r) crater(x + W, y, r); if(x > W - r) crater(x - W, y, r);
+    }
+    const map = new THREE.CanvasTexture(col); map.colorSpace = THREE.SRGBColorSpace;
+    const bump = new THREE.CanvasTexture(bmp);
+    map.anisotropy = bump.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return { map, bump };
+  }
+  const moonMaps = makeMoonMaps();
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 64), new THREE.MeshStandardMaterial({
+    map: moonMaps.map, bumpMap: moonMaps.bump, bumpScale: 2.0, roughness: 1, metalness: 0,
+    emissive: 0xffffff, emissiveMap: moonMaps.map, emissiveIntensity: .42, fog: false }));
+  moon.rotation.y = -1.5; scene.add(moon);
+  const moonZ = -46;
+
+  const glowTex = (function(){
+    const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+    const g = cv.getContext('2d'), r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(.25, 'rgba(255,255,255,.45)');
+    r.addColorStop(.6, 'rgba(255,255,255,.1)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r; g.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t;
+  })();
+  const moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+    map: glowTex, color: new THREE.Color(.85, .9, 1.0).multiplyScalar(.1), transparent: true,
+    blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  scene.add(moonGlow);
+
+  /* faint stars */
+  const stars = (function(){
+    const N = 130, pos = new Float32Array(N * 3), seed = new Float32Array(N * 2);
+    for(let i = 0; i < N; i++){
+      pos[i*3] = (Math.random() - .5) * 2; pos[i*3+1] = Math.random() * .75 + .25;
+      seed[i*2] = Math.random() * 6.283; seed[i*2+1] = .5 + Math.random() * 1.1;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 2));
+    const m = new THREE.ShaderMaterial({
+      uniforms: { uTime: U.uTime, uBox: { value: new THREE.Vector2(120, 60) } },
+      vertexShader: `
+        attribute vec2 aSeed; uniform float uTime; uniform vec2 uBox; varying float vA;
+        void main(){
+          vec4 mv = modelViewMatrix * vec4(position.x * uBox.x, (position.y - .5) * uBox.y * 2., -110., 1.);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = 1.2 + aSeed.y * 1.3;
+          vA = (.22 + .3 * aSeed.y) * (.6 + .4 * sin(uTime * (.6 + aSeed.y) + aSeed.x));
+        }`,
+      fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord - .5); float a = smoothstep(.5, .1, d) * vA; if(a < .01) discard; gl_FragColor = vec4(.85, .9, 1., a); }`,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    const p = new THREE.Points(g, m); p.frustumCulled = false; scene.add(p); return p;
+  })();
+
+  /* ══ 2 · 3D BLOSSOM + PETAL GEOMETRY ══════════════════════════════ */
+  // a curved, cupped petal with a notched tip; vertex colours run deep pink (base) → pale (tip)
+  function petalGeometry(len, wid, cup, notch){
+    const g = new THREE.PlaneGeometry(1, 1, 6, 12), p = g.attributes.position, cols = [];
+    const base = new THREE.Color(.90, .38, .56), tip = new THREE.Color(1.0, .90, .94);
+    for(let i = 0; i < p.count; i++){
+      const u = p.getY(i) + .5, v = p.getX(i) * 2;                   // u: base→tip 0..1, v: -1..1 across
+      const env = Math.pow(Math.sin(Math.PI * (.04 + .92 * u)), .7) * (1 - .22 * u);
+      const x = v * env * wid * .5;
+      let y = u * len - notch * len * Math.pow(Math.max(0, u - .78) / .22, 1.4) * (1 - Math.abs(v));
+      const z = cup * len * (.30 * v * v * env + .34 * u * u);
+      p.setXYZ(i, x, y, z);
+      const c = base.clone().lerp(tip, Math.pow(u, .75)); cols.push(c.r, c.g, c.b);
+    }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+    g.computeVertexNormals();
+    return g;
+  }
+  // a five-petal flower with a little golden heart, facing +z
+  const flowerGeo = (function(){
+    const parts = [];
+    for(let k = 0; k < 5; k++){
+      const g = petalGeometry(1, .86, .5, .14);
+      g.rotateX(-.2); g.rotateZ(k * Math.PI * 2 / 5 + (k % 2) * .05);
+      parts.push(g);
+    }
+    const heart = new THREE.SphereGeometry(.13, 12, 8); heart.translate(0, 0, .12);
+    const hc = []; for(let i = 0; i < heart.attributes.position.count; i++) hc.push(.98, .78, .35);
+    heart.setAttribute('color', new THREE.Float32BufferAttribute(hc, 3));
+    parts.push(heart);
+    return mergeGeometries(parts.map(g => g.index ? g : g));
+  })();
+  const flowerMat = new THREE.MeshStandardMaterial({
+    vertexColors: true, side: THREE.DoubleSide, roughness: .62, metalness: 0,
+    emissive: 0x4a1226, emissiveIntensity: .5 });
+
+  /* ══ 3 · THE BRANCH ═══════════════════════════════════════════════ */
+  const branch = new THREE.Group(); scene.add(branch);
+  const branchZ = -5;
+  {
+    // coordinates in "screen-height" units from the top-right corner: (a → left, b → down, z → toward camera)
+    const P = (a, b, z = 0) => new THREE.Vector3(-a, -b, z);
+    const mainC = new THREE.CatmullRomCurve3([P(-.06, .00, -.02), P(.04, .055, .01), P(.12, .05, .06), P(.20, .11, .08), P(.28, .115, .02), P(.36, .17, -.06), P(.46, .165, -.11)]);
+    const twigs = [
+      [P(.20, .11, .08), P(.225, .17, .11), P(.205, .24, .06), P(.235, .295, .09)],
+      [P(.28, .115, .02), P(.30, .07, -.03), P(.335, .03, -.07), P(.31, -.02, -.05)],
+      [P(.36, .17, -.06), P(.385, .22, -.02), P(.365, .275, .03), P(.40, .325, .01)],
+      [P(.12, .05, .06), P(.15, .005, .09), P(.2, -.03, .05)],
+      [P(.46, .165, -.11), P(.50, .19, -.13), P(.54, .185, -.15)],
+    ].map(a => new THREE.CatmullRomCurve3(a));
+    const bark = new THREE.MeshStandardMaterial({ color: 0x3b2a22, roughness: .95 });
+    const tube = (curve, r0, r1) => {
+      const segs = 70, rs = 10, geo = new THREE.TubeGeometry(curve, segs, 1, rs, false), pa = geo.attributes.position, R = mulberry32(5);
+      for(let i = 0; i <= segs; i++){
+        const c = curve.getPointAt(i / segs), r = (r0 + (r1 - r0) * Math.pow(i / segs, .9)) * (1 + Math.sin(i * .8) * .06);
+        for(let j = 0; j <= rs; j++){
+          const k = i * (rs + 1) + j;
+          pa.setXYZ(k, c.x + (pa.getX(k) - c.x) * r, c.y + (pa.getY(k) - c.y) * r, c.z + (pa.getZ(k) - c.z) * r);
+        }
+      }
+      geo.computeVertexNormals();
+      return new THREE.Mesh(geo, bark);
+    };
+    branch.add(tube(mainC, .0165, .0060));
+    twigs.forEach(c => branch.add(tube(c, .0075, .0026)));
+
+    // ~200 real 3D flowers, instanced
+    const R = mulberry32(99), spots = [];
+    const sample = (curve, n, spread, big) => { for(let i = 0; i < n; i++){
+      const c = curve.getPointAt(Math.min(1, Math.pow(R(), .8))), a = R() * 6.283, d = Math.sqrt(R()) * spread;
+      spots.push([c.x + Math.cos(a) * d, c.y + Math.sin(a) * d, c.z + (R() - .5) * .07, (big ? .0135 : .0095) * (.65 + R() * .7)]); } };
+    sample(mainC, 70, .05, true);
+    twigs.forEach((c, i) => sample(c, i < 3 ? 46 : 22, .045, false));
+    const flowers = new THREE.InstancedMesh(flowerGeo, flowerMat, spots.length);
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), pv = new THREE.Vector3(), sv = new THREE.Vector3(), col = new THREE.Color();
+    spots.forEach((s, i) => {
+      e.set((R() - .5) * 1.3 + .1, (R() - .5) * 1.3 - .15, R() * 6.283); q.setFromEuler(e);
+      m4.compose(pv.set(s[0], s[1], s[2]), q, sv.setScalar(s[3])); flowers.setMatrixAt(i, m4);
+      const k = R(); col.setRGB(1, .88 + k * .12, .9 + k * .1).multiplyScalar(.82 + R() * .3); flowers.setColorAt(i, col);
+    });
+    flowers.frustumCulled = false; branch.add(flowers);
+  }
+
+  /* ══ 4 · FALLING PETALS — real meshes, tumbling in 3D ═════════════ */
+  const petals = (function(){
+    const N = window.innerWidth < 720 ? 40 : 90;
+    const geo = petalGeometry(1, .72, .55, .12);
+    const mesh = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({
+      vertexColors: true, side: THREE.DoubleSide, roughness: .6, emissive: 0x4a1226, emissiveIntensity: .45 }), N);
+    const P = [];
+    for(let i = 0; i < N; i++){
+      const z = -34 + Math.random() * 44, hH = spanHAt(z) * .5 + 6, hW = hH * 2.2;
+      P.push({ x: (Math.random() * 2 - 1) * hW, y: (Math.random() * 2 - 1) * hH, z, hW, hH,
+        sp: .55 + Math.random() * .9, sa: .5 + Math.random() * 1.3, sf: .3 + Math.random() * .5, ph: Math.random() * 6.283,
+        r1: (Math.random() - .5) * 1.8, r2: (Math.random() - .5) * 1.8, r3: (Math.random() - .5) * 1.2, s: .7 + Math.random() * .8 });
+    }
+    mesh.frustumCulled = false; scene.add(mesh);
+    return { mesh, P, N };
+  })();
+  let wide = true, scrollCur = 0;
+  const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3();
+  function updatePetals(t){
+    for(let i = 0; i < petals.N; i++){
+      const a = petals.P[i];
+      const y = mod(a.y - t * a.sp + a.hH, 2 * a.hH) - a.hH + scrollCur * 6;
+      const x = mod(a.x - t * a.sp * .6 + a.hW, 2 * a.hW) - a.hW + Math.sin(t * a.sf + a.ph) * a.sa + (a.ph / 6.283 - .5) * 40 * scrollCur;
+      const z = a.z + Math.cos(t * a.sf * .8 + a.ph) * a.sa * .6;
+      _e.set(a.ph + t * a.r1, a.ph * 1.7 + t * a.r2, a.ph * 2.3 + t * a.r3); _q.setFromEuler(_e);
+      let sc = a.s * 1.0 * (1 - scrollCur);
+      if(wide){ const w = spanHAt(a.z) * camera.aspect; sc *= .3 + .7 * smooth(.14, .46, x / w + .5); }   // shrink over the headline column
+      petals.mesh.setMatrixAt(i, _m.compose(_p.set(x, y, z), _q, _s.setScalar(Math.max(.001, sc))));
+    }
+    petals.mesh.instanceMatrix.needsUpdate = true;
+  }
+
+  /* ══ 5 · LAYOUT ═══════════════════════════════════════════════════ */
+  let CW = 1, CH = 1;
+  function fit(){
+    CW = hero.clientWidth || window.innerWidth; CH = hero.clientHeight || window.innerHeight;
+    renderer.setSize(CW, CH, false);
+    composer.setPixelRatio(DPR); composer.setSize(CW, CH);
+    camera.aspect = CW / CH; camera.updateProjectionMatrix();
+    wide = spanHAt(0) * camera.aspect >= 72;
+
+    const at = (o, xf, yf, z) => { const h = spanHAt(z), w = h * camera.aspect; o.position.set((xf - .5) * w, (.5 - yf) * h, z); return { h, w }; };
+    const mx = wide ? .70 : .5, my = wide ? .46 : .55;
+    { const { h, w } = at(moon, mx, my, moonZ); const d = wide ? .46 * h : .62 * w; moon.scale.setScalar(d / 2);
+      at(moonGlow, mx, my, moonZ - 1); moonGlow.scale.set(d * 2.8, d * 2.8, 1); }
+    { const h = spanHAt(branchZ), w = h * camera.aspect;
+      branch.position.set(w / 2, h / 2, branchZ); branch.scale.setScalar(wide ? h * 1.18 : Math.min(h * .72, w * 1.45)); }
+    stars.material.uniforms.uBox.value.set(spanHAt(-110) * camera.aspect * .5, spanHAt(-110) * .5);
+    bloom.resolution.set(CW, CH);
+    if(reduceMotion) renderFrame(3.0);
+  }
+
+  /* ══ 6 · LOOP ═════════════════════════════════════════════════════ */
+  const ptr = { tx: 0, ty: 0, x: 0, y: 0 };
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    hero.addEventListener('mousemove', e => {
+      const r = hero.getBoundingClientRect();
+      ptr.tx = ((e.clientX - r.left) / r.width - .5) * 2; ptr.ty = ((e.clientY - r.top) / r.height - .5) * 2;
+    });
+    hero.addEventListener('mouseleave', () => { ptr.tx = 0; ptr.ty = 0; });
+  }
+  let visible = true;
+  if('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 }).observe(hero);
+
+  let elapsed = 0, last = performance.now(), started = false;
+  function renderFrame(t){
+    U.uTime.value = t; finish.uniforms.uTime.value = t;
+    moon.rotation.y = -1.5 + t * .012;
+    branch.rotation.z = Math.sin(t * .45) * .006; branch.rotation.y = Math.sin(t * .3) * .02;
+    updatePetals(t);
+    // the camera drifts on its own and follows the mouse — near and far layers slide past each other
+    camera.position.set(Math.sin(t * .13) * 2.6 + ptr.x * 4.2, Math.cos(t * .1) * 1.3 - ptr.y * 2.4, CAM_Z - scrollCur * 6);
+    camera.lookAt(0, 0, 0);
+    composer.render();
+  }
+  function tick(now){
+    requestAnimationFrame(tick);
+    if(reduceMotion || !visible || document.hidden){ last = now; return; }
+    const dt = Math.min((now - last) / 1000, .05); last = now; elapsed += dt;
+    ptr.x += (ptr.tx - ptr.x) * .05; ptr.y += (ptr.ty - ptr.y) * .05;
+    const r = hero.getBoundingClientRect();
+    scrollCur += (clamp01(-r.top / (r.height * .75)) - scrollCur) * .07;
+    renderFrame(elapsed);
+    if(!started){ started = true; canvas.classList.add('is-ready'); }
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  if(reduceMotion){ canvas.classList.add('is-ready'); renderFrame(3.0); }
+  else requestAnimationFrame(tick);
+}
+
+/* boot after the page has loaded so building the scene never delays the intro curtain / first paint */
+if(document.readyState === 'complete') setTimeout(initHero3D, 0);
+else window.addEventListener('load', () => setTimeout(initHero3D, 0));
+
 </script>
 </body>
 </html>

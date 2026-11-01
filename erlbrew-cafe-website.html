@@ -4,6 +4,42 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="description" content="Erlbrew Café — Specialty coffee and matcha in Kawit, Cavite. A quiet corner worth finding."/>
+<meta name="theme-color" content="#000000"/>
+<!-- Three.js r186 (ES modules) for the hero. Import map first, then preload the module graph in parallel. -->
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.core.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/EffectComposer.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/CopyShader.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/ShaderPass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/Pass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/MaskPass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/RenderPass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/UnrealBloomPass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/LuminosityHighPassShader.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/OutputPass.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/OutputShader.js" crossorigin/>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/utils/BufferGeometryUtils.js" crossorigin/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Erlbrew Café"/>
+<meta property="og:title" content="Erlbrew Café — Coffee, stilled."/>
+<meta property="og:description" content="Specialty coffee and matcha in Kawit, Cavite — the birthplace of Philippine independence. Slow down. Order something beautiful."/>
+<meta property="og:locale" content="en_PH"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Erlbrew Café — Coffee, stilled."/>
+<meta name="twitter:description" content="Specialty coffee and matcha in Kawit, Cavite."/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CafeOrCoffeeShop","name":"Erlbrew Café",
+ "description":"Specialty coffee and matcha café in Kawit, Cavite, Philippines, with a mobile coffee cart for events.",
+ "servesCuisine":["Coffee","Matcha","Pastries"],"priceRange":"₱",
+ "address":{"@type":"PostalAddress","streetAddress":"Unit 1C, Wash 'n Spices Auto Oasis, Lot 4 Azalea St. corner Advincula Ave.","addressLocality":"San Sebastian, Kawit","addressRegion":"Cavite","addressCountry":"PH"},
+ "geo":{"@type":"GeoCoordinates","latitude":14.4102928,"longitude":120.9010351},
+ "hasMap":"https://www.google.com/maps/place/Erlbrew+Cafe/@14.4102928,120.8984602,17z",
+ "sameAs":["https://instagram.com/erlbrewcafe","https://www.facebook.com/profile.php?id=61590518994157"]}
+</script>
 <title>Erlbrew Café</title>
 <link rel="icon" type="image/jpeg" href="/uploads/about-467a615191f3.jpg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -24,7 +60,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 
 /* ── Nav ── */
 #nav{transition:all .35s cubic-bezier(.4,0,.2,1)}
-#nav.stuck{background:rgba(244,239,230,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(24,23,20,.08)}
+#nav.stuck{background:rgba(244,239,230,.985);border-bottom:1px solid rgba(24,23,20,.08)}
 
 /* ── Reveal ── */
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
@@ -242,7 +278,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
   position:absolute;top:14px;left:14px;z-index:2;
   display:inline-flex;align-items:center;gap:6px;
   background:rgba(244,239,230,.92);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  
   color:#3a5136;
   font-family:'Inter',sans-serif;
   font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
@@ -253,7 +289,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .seasonal-price-tag{
   position:absolute;bottom:14px;right:14px;z-index:2;
   background:rgba(184,147,90,.92);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  
   color:#181714;
   font-family:'Cormorant Garamond',Georgia,serif;
   font-size:17px;font-weight:600;
@@ -294,10 +330,10 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 @media(max-width:700px){.sp-media{aspect-ratio:16/10}}
 
 /* light sweep across the photo, loops gently */
-.sp-media .sp-sweep{position:absolute;top:0;bottom:0;left:-40%;width:35%;pointer-events:none;z-index:2;
+.sp-media .sp-sweep{position:absolute;top:0;bottom:0;left:0;width:35%;transform:translateX(-129%);pointer-events:none;z-index:2;
   background:linear-gradient(100deg,transparent,rgba(244,239,230,.14),transparent);
   animation:spSweep 6s ease-in-out infinite 1.2s}
-@keyframes spSweep{0%,60%,100%{left:-45%}80%{left:120%}}
+@keyframes spSweep{0%,60%,100%{transform:translateX(-129%)}80%{transform:translateX(343%)}}
 
 /* corner brackets that draw themselves in — kept to the top so they never crowd
    a photo's own baked-in caption/handle text along the bottom edge */
@@ -364,7 +400,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
    ══════════════════════════════════════════════════════════ */
 
 /* ── Film grain overlay ── */
-#grain{position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.035;mix-blend-mode:overlay;
+#grain{position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.03;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 @media(prefers-reduced-motion:reduce){#grain{display:none}}
@@ -412,7 +448,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .hero-ready .hero-word span{transform:translateY(0) rotate(0);opacity:1;filter:blur(0)}
 
 /* ── Magnetic buttons: shine sweep ── */
-.btn-dark,.btn-ghost,.btn-outline-dark{position:relative;overflow:hidden;will-change:transform}
+.btn-dark,.btn-ghost,.btn-outline-dark{position:relative;overflow:hidden}
 .btn-dark::before,.btn-outline-dark::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
   background:linear-gradient(120deg,transparent,rgba(244,239,230,.16),transparent);transform:skewX(-20deg);
   transition:left .65s cubic-bezier(.22,1,.36,1)}
@@ -425,15 +461,15 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 /* ── Cinematic cross-dissolve for menu panels (supersedes basic keyframes visually) ── */
 .menu-panel.fade-in{animation:panelInCine .55s cubic-bezier(.16,1,.3,1) both}
 .menu-panel.fade-out{animation:panelOutCine .28s cubic-bezier(.4,0,1,1) both}
-@keyframes panelInCine{0%{opacity:0;transform:translateY(18px) scale(.985);filter:blur(6px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
-@keyframes panelOutCine{0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}100%{opacity:0;transform:translateY(-10px) scale(.99);filter:blur(4px)}}
+@keyframes panelInCine{0%{opacity:0;transform:translateY(18px) scale(.985)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes panelOutCine{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-10px) scale(.99)}}
 
 /* ── Parallax utility ── */
 .parallax-el{will-change:transform}
 
 /* ── Gallery lightbox ── */
 #lightbox{position:fixed;inset:0;z-index:9996;background:rgba(24,23,20,.94);display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.22,1,.36,1);backdrop-filter:blur(6px)}
+  opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.22,1,.36,1)}
 #lightbox.open{opacity:1;pointer-events:all}
 #lightbox .lb-stage{max-width:min(90vw,900px);max-height:82vh;width:100%;position:relative;transform:scale(.94);transition:transform .45s cubic-bezier(.22,1,.36,1)}
 #lightbox.open .lb-stage{transform:scale(1)}
@@ -465,11 +501,73 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 #hero-webgl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;
   opacity:0;transition:opacity 1.6s ease .2s}
 #hero-webgl.is-ready{opacity:1}
-#hero-webgl{-webkit-mask-image:linear-gradient(to bottom,#000 88%,transparent);mask-image:linear-gradient(to bottom,#000 88%,transparent)}
 @media(max-width:1023px){#hero-webgl.is-ready{opacity:.55}}   /* phones: keep the headline readable over the scene */
+
+/* ══════════════════════════════════════════════════════════
+   POLISH — accessibility, contrast, resilience (everything below the hero)
+   ══════════════════════════════════════════════════════════ */
+
+/* keyboard: skip link + visible focus (the cursor-less custom UI needs it) */
+.skip-link{position:fixed;left:16px;top:-80px;z-index:10000;background:#181714;color:#F4EFE6;padding:12px 18px;
+  font:500 12px 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  border:1px solid #B8935A;transition:top .2s}
+.skip-link:focus{top:16px}
+:focus-visible{outline:2px solid #B8935A;outline-offset:3px}
+.menu-tab:focus-visible{outline:2px solid #B8935A!important;outline-offset:-3px}
+main:focus{outline:none}
+section[id]{scroll-margin-top:72px}
+
+/* mobile drawer: closed = not focusable, not read out */
+#drawer:not(.open){visibility:hidden;transition:transform .35s cubic-bezier(.4,0,.2,1),visibility 0s linear .35s}
+#drawer.open{visibility:visible}
+
+/* contrast: secondary copy was ~2.4:1 on cream and ~2.6:1 on ink — lift it to AA.
+   :where() keeps specificity at zero so hover colours still win. The hero is untouched. */
+:where(#seasonal,#about,#menu,#gallery,#events,#visit,footer,#drawer) .text-ink-40{color:rgba(24,23,20,.68)}
+:where(#seasonal,#about,#events,#visit) .text-ink\/40{color:rgba(24,23,20,.68)}
+:where(#menu) .text-paper\/40,:where(#menu) .text-paper\/30{color:rgba(244,239,230,.64)}
+:where(#menu) .text-paper\/75{color:rgba(244,239,230,.86)}
+:where(footer) .text-paper\/50{color:rgba(244,239,230,.74)}
+:where(footer) .text-paper\/40{color:rgba(244,239,230,.66)}
+:where(footer) .text-paper\/30{color:rgba(244,239,230,.58)}
+:where(footer) .text-paper\/20,:where(footer) .text-paper\/15{color:rgba(244,239,230,.46)}
+.ft-lnk{color:rgba(244,239,230,.58)}
+.google-rating-copy{color:rgba(24,23,20,.66)}
+.google-rating-title{color:rgba(24,23,20,.62)}
+.seasonal-desc{color:rgba(24,23,20,.68)}
+.sp-desc{color:rgba(244,239,230,.72)}
+.ck-text{color:rgba(244,239,230,.74)}
+
+#menu .tab-jp.text-paper\/20{color:rgba(244,239,230,.5)}
+#menu .tab-label.text-paper\/35{color:rgba(244,239,230,.6)}
+
+/* event form: clear labels, visible focus, inline errors */
+.ev-form label{color:rgba(24,23,20,.66)}
+.ev-form label .req{color:#7A3B28;margin-left:2px}
+.ev-form input:focus-visible,.ev-form select:focus-visible,.ev-form textarea:focus-visible{
+  outline:none;border-color:#B8935A;box-shadow:0 0 0 3px rgba(184,147,90,.25)}
+.ev-form [aria-invalid="true"]{border-color:#7A3B28;background:#fffaf8}
+.ev-err{display:none;margin-top:5px;font-size:11.5px;line-height:1.4;color:#7A3B28}
+.ev-err.show{display:block}
+.ev-banner{display:none;padding:12px 16px;border:1px solid rgba(122,59,40,.3);background:rgba(122,59,40,.06);
+  color:#7A3B28;font-size:13px;line-height:1.5;border-radius:3px}
+.ev-banner.show{display:block}
+.ev-success:focus{outline:none}
+.ev-form button[disabled]{opacity:.65;cursor:progress}
+
+/* gallery tiles are buttons now */
+.gal-img:focus-visible{outline:2px solid #B8935A;outline-offset:-4px}
+
+/* endless decorative loops sleep while the seasonal block is off-screen */
+.is-offscreen .sp-media img,.is-offscreen .sp-sweep,.is-offscreen .sp-content::before,.is-offscreen .sp-eyebrow .dot::after{animation-play-state:paused}
+
+/* phones: skip the full-screen blend layers (they re-composite on every scroll frame) */
+@media(max-width:760px),(pointer:coarse){#grain,#vignette{display:none}}
 </style>
+<noscript><style>.reveal,.reveal-l,.reveal-r,.mask-reveal .mask-inner,.hero-word span{opacity:1!important;transform:none!important;filter:none!important}.seasonal-spotlight,.sp-line{opacity:1!important;transform:none!important}#curtain{display:none!important}</style></noscript>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <!-- ── Cinematic intro curtain ── -->
 <div id="curtain" aria-hidden="true">
@@ -507,7 +605,7 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
       <span class="font-jp text-[10px] text-gold tracking-[.25em] leading-none mb-0.5">カフェ</span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-10">
+    <nav class="hidden md:flex items-center gap-10" aria-label="Primary">
       <a href="#about"   class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">About</a>
       <a href="#menu"    class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Menu</a>
       <a href="#gallery" class="nav-lnk font-sans text-[12px] font-medium tracking-[.1em] uppercase transition-colors duration-300 no-underline">Gallery</a>
@@ -516,7 +614,7 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
       <a href="#visit" id="nav-cta" class="nav-cta font-sans text-[11px] font-medium tracking-[.1em] uppercase py-2.5 px-5 border transition-colors duration-300 no-underline">Find us</a>
     </nav>
 
-    <button id="menu-btn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2 cursor-pointer bg-none border-none" aria-label="Open menu">
+    <button id="menu-btn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2 cursor-pointer bg-none border-none" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
       <span id="h1" class="ham-line block w-[22px] h-px transition-all duration-300"></span>
       <span id="h2" class="ham-line block w-[22px] h-px transition-all duration-300"></span>
       <span id="h3" class="ham-line block w-[14px] h-px transition-all duration-300"></span>
@@ -525,7 +623,7 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 </header>
 
 <div id="overlay" class="fixed inset-0 bg-ink/60 z-40"></div>
-<div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-cream z-50 flex flex-col px-8 py-10 gap-7">
+<div id="drawer" role="dialog" aria-modal="true" aria-label="Site menu" class="fixed top-0 right-0 h-full w-72 bg-cream z-50 flex flex-col px-8 py-10 gap-7">
   <button id="close-btn" class="self-end font-sans text-sm text-ink-40 hover:text-ink transition-colors bg-none border-none cursor-pointer mb-2">✕ Close</button>
   <a href="#about"   class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">About</a>
   <a href="#menu"    class="mob-lnk font-display text-3xl font-light text-ink hover:text-sage transition-colors no-underline">Menu</a>
@@ -542,6 +640,7 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 </div>
 
 
+<main id="main" tabindex="-1">
 <!-- ╔══════════════════════════════════════════════╗
      ║  HERO                                        ║
      ╚══════════════════════════════════════════════╝ -->
@@ -921,22 +1020,25 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
 
       <!-- Right: form -->
       <div class="reveal" style="transition-delay:.12s">
-        <div class="ev-success" id="ev-success">
+        <div class="ev-success" id="ev-success" role="status" tabindex="-1">
           <p class="font-display text-xl font-light text-sage mb-1">Thank you!</p>
           <p class="font-sans text-[13px] text-sage/80">Your inquiry has been sent. We'll be in touch soon.</p>
         </div>
         <form id="ev-form" class="ev-form" novalidate>
+          <div class="ev-banner full" id="ev-banner" role="alert"></div>
           <div>
-            <label for="ev-name">Name</label>
-            <input type="text" id="ev-name" required placeholder="Your name"/>
+            <label for="ev-name">Name <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="ev-name" name="name" required aria-required="true" autocomplete="name" aria-describedby="ev-name-err" placeholder="Your name"/>
+            <p class="ev-err" id="ev-name-err"></p>
           </div>
           <div>
-            <label for="ev-email">Email</label>
-            <input type="email" id="ev-email" required placeholder="you@example.com"/>
+            <label for="ev-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="ev-email" name="email" required aria-required="true" autocomplete="email" inputmode="email" aria-describedby="ev-email-err" placeholder="you@example.com"/>
+            <p class="ev-err" id="ev-email-err"></p>
           </div>
           <div>
             <label for="ev-type">Event type</label>
-            <select id="ev-type">
+            <select id="ev-type" name="event_type">
               <option value="">Select…</option>
               <option value="Wedding">Wedding / Engagement</option>
               <option value="Corporate">Corporate / Office</option>
@@ -947,11 +1049,12 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
           </div>
           <div>
             <label for="ev-date">Event date</label>
-            <input type="date" id="ev-date"/>
+            <input type="date" id="ev-date" name="event_date" autocomplete="off"/>
           </div>
           <div class="full">
-            <label for="ev-message">Tell us about your event</label>
-            <textarea id="ev-message" required placeholder="Location, estimated number of guests, and anything else we should know."></textarea>
+            <label for="ev-message">Tell us about your event <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="ev-message" name="message" required aria-required="true" aria-describedby="ev-message-err" placeholder="Location, estimated number of guests, and anything else we should know."></textarea>
+            <p class="ev-err" id="ev-message-err"></p>
           </div>
           <div class="full">
             <button type="submit" id="ev-submit" class="btn-dark w-full justify-center">
@@ -1091,6 +1194,8 @@ html.lenis{scroll-behavior:auto!important;overscroll-behavior:none}
   </div>
 </section>
 
+
+</main>
 
 <!-- ╔══════════════════════════════════════════════╗
      ║  FOOTER                                      ║
@@ -1258,16 +1363,14 @@ const MENU_FALLBACK = [
 async function loadMenuFromServer(){
   try {
     const res = await fetch('/api/menu');
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    if(data.menu && data.menu.length > 0){
-      MENU = data.menu;
-      renderMenu();
-    }
+    MENU = Array.isArray(data.menu) ? data.menu : MENU_FALLBACK;
   } catch(e) {
     console.warn('Could not load menu from server, using fallback:', e);
     MENU = MENU_FALLBACK;
-    renderMenu();
   }
+  renderMenu();
 }
 
 function renderMenu(){
@@ -1287,9 +1390,9 @@ function renderMenu(){
 
   // ── Tab nav (goes ABOVE the gold divider) ──────────────
   tabsWrap.innerHTML = `
-  <div id="menu-tabs" class="flex items-end gap-0 border-b border-paper/15 overflow-x-auto no-scrollbar mb-0">
+  <div id="menu-tabs" role="tablist" aria-label="Menu categories" class="flex items-end gap-0 border-b border-paper/15 overflow-x-auto no-scrollbar mb-0">
     ${displayMenu.map((s,i)=>`
-      <button data-tab="${i}" class="menu-tab group relative flex flex-col items-start gap-1 px-6 py-4 cursor-pointer shrink-0" style="background:none;border:none;outline:none">
+      <button data-tab="${i}" role="tab" id="tab-${i}" aria-selected="${i===0}" aria-controls="panel-${i}" tabindex="${i===0?0:-1}" class="menu-tab group relative flex flex-col items-start gap-1 px-6 py-4 cursor-pointer shrink-0" style="background:none;border:none;outline:none">
         <span class="tab-jp font-jp text-[9px] tracking-[.25em] transition-colors duration-300 ${i===0?'text-gold':'text-paper/20'}">${escHtml(s.ja)}</span>
         <span class="tab-label font-display text-[15px] font-light transition-colors duration-300 ${i===0?'text-paper':'text-paper/35'}">${escHtml(s.cat)}</span>
         <span class="tab-line absolute bottom-0 left-0 right-0 h-[1.5px] transition-all duration-300 ${i===0?'opacity-100':'opacity-0'}" style="background:${i===0?'#B8935A':'transparent'}"></span>
@@ -1298,7 +1401,7 @@ function renderMenu(){
 
   // ── Panels (go below divider) ─────────────────────────
   grid.innerHTML = displayMenu.map((s,i)=>`
-    <div id="panel-${i}" class="menu-panel ${i!==0?'hidden':''}">
+    <div id="panel-${i}" role="tabpanel" aria-labelledby="tab-${i}" tabindex="0" class="menu-panel ${i!==0?'hidden':''}">
       <div class="grid sm:grid-cols-2 gap-x-14 gap-y-0">
         ${s.items.map(it=>`
           <div class="menu-item flex items-center justify-between gap-6 py-3.5 border-b border-paper/8">
@@ -1315,15 +1418,17 @@ function renderMenu(){
   function switchTab(idx){
     if(idx===currentIdx || switching) return;
     switching = true;
+    setTimeout(()=>{ switching = false; }, 1200);   // never get stuck if an animation event is missed
 
     // Update tab indicators
     document.querySelectorAll('.menu-tab').forEach((b,i)=>{
       const active = i===idx;
+      b.setAttribute('aria-selected', String(active)); b.tabIndex = active ? 0 : -1;
       const jp     = b.querySelector('.tab-jp');
       const label  = b.querySelector('.tab-label');
       const line   = b.querySelector('.tab-line');
-      if(jp)    jp.style.color    = active?'#B8935A':'rgba(244,239,230,0.2)';
-      if(label) label.style.color = active?'#F4EFE6':'rgba(244,239,230,0.35)';
+      if(jp)    jp.style.color    = active?'#B8935A':'rgba(244,239,230,0.5)';
+      if(label) label.style.color = active?'#F4EFE6':'rgba(244,239,230,0.6)';
       if(line){ line.style.background=active?'#B8935A':'transparent'; line.style.opacity=active?'1':'0'; }
     });
 
@@ -1354,8 +1459,16 @@ function renderMenu(){
     }
   }
 
-  document.querySelectorAll('.menu-tab').forEach(btn=>{
+  const tabBtns = [...document.querySelectorAll('.menu-tab')];
+  tabBtns.forEach((btn,i)=>{
     btn.addEventListener('click',()=>switchTab(parseInt(btn.dataset.tab)));
+    btn.addEventListener('keydown',e=>{
+      const n = e.key==='ArrowRight' ? (i+1)%tabBtns.length
+              : e.key==='ArrowLeft'  ? (i-1+tabBtns.length)%tabBtns.length
+              : e.key==='Home' ? 0 : e.key==='End' ? tabBtns.length-1 : null;
+      if(n===null) return;
+      e.preventDefault(); tabBtns[n].focus(); switchTab(n);
+    });
   });
 
   // Trigger fade-in on first panel immediately
@@ -1402,8 +1515,11 @@ function initLenis(){
 }
 
 /* Re-measure ScrollTriggers after async content (menu, seasonal items) changes the page height */
+let _refreshT = 0;
 function refreshMotion(){
-  if(window.gsap && window.ScrollTrigger) ScrollTrigger.refresh();
+  if(!(window.gsap && window.ScrollTrigger)) return;
+  clearTimeout(_refreshT);
+  _refreshT = setTimeout(() => ScrollTrigger.refresh(), 200);   // menu + seasonal + gallery land together → one re-measure, not three
 }
 
 /* ── Scroll reveal ─────────────────────────────────── */
@@ -1448,16 +1564,19 @@ function initNav(){
   const cta=document.getElementById('nav-cta');
   const hamLines=document.querySelectorAll('.ham-line');
 
+  let navStuck = null;
   function setNavMode(stuck){
+    if(stuck === navStuck) return;      // 'scroll' fires constantly; only touch the DOM when the state flips
+    navStuck = stuck;
     nav.classList.toggle('stuck',stuck);
     // Links
     lnks.forEach(l=>{
-      l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)';
+      l.style.color=stuck?'rgba(24,23,20,0.68)':'rgba(244,239,230,0.75)';
     });
     // Hover handled inline via mouseover
     lnks.forEach(l=>{
       l.onmouseenter=()=>{ l.style.color=stuck?'#181714':'#F4EFE6'; };
-      l.onmouseleave=()=>{ l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)'; };
+      l.onmouseleave=()=>{ l.style.color=stuck?'rgba(24,23,20,0.68)':'rgba(244,239,230,0.75)'; };
     });
     // Logo
     if(logo) logo.style.color=stuck?'#181714':'#F4EFE6';
@@ -1493,11 +1612,12 @@ function initActiveNav(){
         const stuck=window.scrollY>70;
         lnks.forEach(l=>{
           const active=l.getAttribute('href')==='#'+e.target.id;
+          if(active) l.setAttribute('aria-current','true'); else l.removeAttribute('aria-current');
           if(active){
             l.style.color=stuck?'#4D6B48':'#B8935A';
             l.style.fontWeight='500';
           } else {
-            l.style.color=stuck?'rgba(24,23,20,0.5)':'rgba(244,239,230,0.65)';
+            l.style.color=stuck?'rgba(24,23,20,0.68)':'rgba(244,239,230,0.75)';
             l.style.fontWeight='';
           }
         });
@@ -1516,30 +1636,47 @@ function initDrawer(){
   const h1=document.getElementById('h1');
   const h2=document.getElementById('h2');
   const h3=document.getElementById('h3');
+  if(!btn || !drawer) return;
+  let lastFocus=null;
 
   const open=()=>{
+    lastFocus=document.activeElement;
     drawer.classList.add('open');
     overlay.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
     document.body.style.overflow='hidden';
     if(window.__erlenLenis) window.__erlenLenis.stop();
     if(h1){h1.style.transform='rotate(45deg) translate(4px,4px)'}
     if(h2){h2.style.opacity='0'}
     if(h3){h3.style.transform='rotate(-45deg) translate(4px,-4px)';h3.style.width='22px'}
+    setTimeout(()=>close&&close.focus(),60);
   };
-  const shut=()=>{
+  const shut=(restore=true)=>{
     drawer.classList.remove('open');
     overlay.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
     document.body.style.overflow='';
     if(window.__erlenLenis) window.__erlenLenis.start();
     if(h1){h1.style.transform=''}
     if(h2){h2.style.opacity=''}
     if(h3){h3.style.transform='';h3.style.width=''}
+    if(restore && lastFocus && lastFocus.focus) lastFocus.focus();
   };
 
-  btn&&btn.addEventListener('click',open);
-  close&&close.addEventListener('click',shut);
-  overlay&&overlay.addEventListener('click',shut);
-  document.querySelectorAll('.mob-lnk').forEach(l=>l.addEventListener('click',shut));
+  btn.addEventListener('click',open);
+  close&&close.addEventListener('click',()=>shut());
+  overlay&&overlay.addEventListener('click',()=>shut());
+  document.querySelectorAll('.mob-lnk').forEach(l=>l.addEventListener('click',()=>shut(false)));
+  document.addEventListener('keydown',e=>{
+    if(!drawer.classList.contains('open')) return;
+    if(e.key==='Escape'){ shut(); return; }
+    if(e.key!=='Tab') return;
+    const f=[...drawer.querySelectorAll('a[href],button:not([disabled])')];
+    if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  });
 }
 
 /* ── Smooth scroll (Lenis-driven, native fallback) ─── */
@@ -1594,17 +1731,22 @@ async function loadAboutPhoto(){
 
 /* ── Hours loader — fetches from API ───────────────────── */
 async function loadHours(){
+  const container = document.getElementById('hours-container');
+  if(!container) return;
+  const fallback = () => {
+    container.innerHTML = '<p class="font-sans text-[13px] text-ink-40 leading-relaxed py-4 font-light">Our latest opening hours are on our <a href="https://www.google.com/maps/place/Erlbrew+Cafe/@14.4102928,120.8984602,17z" target="_blank" rel="noopener" class="text-sage hover:text-ink underline underline-offset-2">Google listing</a> — or message us on <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="text-sage hover:text-ink underline underline-offset-2">Instagram</a>.</p>';
+  };
   let hours = [];
   try {
     const res = await fetch('/api/hours');
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     hours = data.hours || [];
   } catch(e) {
     console.warn('Could not load hours:', e);
-    return;
+    fallback(); return;
   }
-  const container = document.getElementById('hours-container');
-  if(!container) return;
+  if(!hours.length){ fallback(); return; }
   container.innerHTML = hours.map(h => {
     const cls = h.is_highlighted
       ? 'text-rust font-sans font-light'
@@ -1615,13 +1757,17 @@ async function loadHours(){
     return `<div class="hr-row"><span class="${cls}">${escHtml(h.day_label)}</span><span class="${valCls}">${escHtml(h.hours_text)}</span></div>`;
   }).join('');
 }
-function escHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+// escapes quotes too — it is used inside HTML attributes (alt="…") as well as text
+function escHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// only plain http(s) / site-relative URLs may reach an src attribute
+function safeUrl(u){ u = String(u ?? '').trim(); return (/^(https?:\/\/|\/(?!\/))/i.test(u)) ? escHtml(u) : ''; }
 
 /* ── Gallery loader — fetches from API ────────────────── */
 async function loadGalleryPhotos(){
   let photos = {};
   try {
     const res = await fetch('/api/gallery');
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     photos = data.photos || {};
   } catch(e) {
@@ -1642,7 +1788,8 @@ async function loadGalleryPhotos(){
     if(existing){ existing.src=photo.url; continue; }
     const img = document.createElement('img');
     img.src = photo.url;
-    img.alt = 'Gallery photo '+(i+1);
+    img.alt = ((inner.closest('.gal-img')?.dataset.caption) || 'Gallery photo '+(i+1)) + ' at Erlbrew Café';
+    img.decoding = 'async';
     img.className = 'gal-real-img';
     img.loading = 'lazy';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
@@ -1651,60 +1798,84 @@ async function loadGalleryPhotos(){
 }
 
 /* ── Events form ────────────────────────────────────── */
-document.getElementById('ev-form')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('ev-submit');
+(function initEventsForm(){
   const form = document.getElementById('ev-form');
+  if(!form) return;
+  const banner  = document.getElementById('ev-banner');
   const success = document.getElementById('ev-success');
+  const btn     = document.getElementById('ev-submit');
+  const dateEl  = document.getElementById('ev-date');
+  if(dateEl) dateEl.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
-  // Basic validation styling
-  form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-  let valid = true;
-  const name = document.getElementById('ev-name');
-  const email = document.getElementById('ev-email');
-  const message = document.getElementById('ev-message');
-  if (!name.value.trim()) { name.classList.add('error'); valid = false; }
-  if (!email.value.trim() || !email.value.includes('@')) { email.classList.add('error'); valid = false; }
-  if (!message.value.trim()) { message.classList.add('error'); valid = false; }
-  if (!valid) return;
+  const fields = {
+    name:    { el: document.getElementById('ev-name'),    test: v => v.trim().length > 1,                          msg: 'Please tell us your name.' },
+    email:   { el: document.getElementById('ev-email'),   test: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()), msg: 'Please enter a valid email address.' },
+    message: { el: document.getElementById('ev-message'), test: v => v.trim().length >= 3,                          msg: 'A few details about your event help us reply faster.' },
+  };
+  const setErr = (k, msg) => {
+    const el = fields[k].el, p = document.getElementById(el.id + '-err');
+    el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    el.classList.toggle('error', !!msg);
+    if(p){ p.textContent = msg || ''; p.classList.toggle('show', !!msg); }
+  };
+  Object.keys(fields).forEach(k => fields[k].el.addEventListener('input', () => {
+    if(fields[k].el.getAttribute('aria-invalid') === 'true' && fields[k].test(fields[k].el.value)) setErr(k, '');
+  }));
 
-  btn.textContent = 'Sending…';
-  btn.disabled = true;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    banner.classList.remove('show'); banner.textContent = '';
+    let first = null;
+    for(const k in fields){
+      const ok = fields[k].test(fields[k].el.value);
+      setErr(k, ok ? '' : fields[k].msg);
+      if(!ok && !first) first = fields[k].el;
+    }
+    if(first){ first.focus(); return; }
+    if(btn.disabled) return;
 
-  try {
-    const res = await fetch('/api/events/inquiries', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: name.value.trim(),
-        email: email.value.trim(),
-        event_type: document.getElementById('ev-type').value,
-        event_date: document.getElementById('ev-date').value || null,
-        message: message.value.trim(),
-      }),
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message || 'Failed to send');
-    form.style.display = 'none';
-    success.classList.add('show');
-  } catch(err) {
-    alert('Something went wrong: ' + err.message);
-  } finally {
-    btn.textContent = 'Send Inquiry';
-    btn.disabled = false;
-  }
-});
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/events/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fields.name.el.value.trim(),
+          email: fields.email.el.value.trim(),
+          event_type: document.getElementById('ev-type').value,
+          event_date: dateEl.value || null,
+          message: fields.message.el.value.trim(),
+        }),
+      });
+      let data = null;
+      try { data = await res.json(); } catch(_) {}
+      if(!res.ok || !data || !data.success) throw new Error((data && data.message) || 'We could not send your inquiry just now.');
+      form.style.display = 'none';
+      success.classList.add('show');
+      success.focus();
+    } catch(err) {
+      banner.textContent = ((err && err.message) || 'Something went wrong.') + ' You can also message us on Instagram @erlbrewcafe.';
+      banner.classList.add('show');
+    } finally {
+      btn.textContent = 'Send Inquiry';
+      btn.disabled = false;
+    }
+  });
+})();
 
 /* ── Load seasonal items ───────────────────────────── */
 async function loadSeasonal(limit = 3){
   try {
     const res = await fetch('/api/recommendations?limit=' + encodeURIComponent(limit));
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const container = document.getElementById('seasonal-container');
     if(!container) return;
     const items = data.recommendations || [];
     if(items.length === 0){
-      container.innerHTML = '<div class="text-ink/40 text-center py-10">No seasonal items right now.</div>';
+      document.getElementById('seasonal')?.setAttribute('hidden', '');   // nothing seasonal → no empty section
+      refreshMotion();
       return;
     }
 
@@ -1716,8 +1887,8 @@ async function loadSeasonal(limit = 3){
           <div class="sp-media">
             <span class="sp-corner tl"></span>
             <span class="sp-corner tr"></span>
-            ${it.image_url
-              ? `<img src="${it.image_url}" alt="${escHtml(it.name)}" loading="lazy">`
+            ${safeUrl(it.image_url)
+              ? `<img src="${safeUrl(it.image_url)}" alt="${escHtml(it.name)}" loading="lazy" decoding="async">`
               : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🍰</div>`}
             <span class="sp-sweep"></span>
           </div>
@@ -1730,7 +1901,7 @@ async function loadSeasonal(limit = 3){
               ${it.price != null ? `<span class="sp-price">&#8369;${it.price}<sup>Limited time</sup></span>` : '<span></span>'}
               <a href="#menu" class="sp-cta">
                 See it on the menu
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
             </div>
           </div>
@@ -1753,7 +1924,7 @@ async function loadSeasonal(limit = 3){
         <div class="seasonal-img">\
           <span class="seasonal-badge">Seasonal</span>\
           ${it.price != null ? `<span class="seasonal-price-tag">₱${it.price}</span>` : ''}\
-          ${it.image_url ? `<img src="${it.image_url}" alt="${escHtml(it.name)}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px">🍰</div>`}\
+          ${safeUrl(it.image_url) ? `<img src="${safeUrl(it.image_url)}" alt="${escHtml(it.name)}" loading="lazy" decoding="async">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px">🍰</div>`}\
         </div>\
         <div class="seasonal-body">\
           <h3 class="seasonal-title">${escHtml(it.name)}</h3>\
@@ -1764,6 +1935,8 @@ async function loadSeasonal(limit = 3){
     refreshMotion();
   } catch (e){
     console.warn('Could not load seasonal items', e);
+    document.getElementById('seasonal')?.setAttribute('hidden', '');   // don't leave "Loading…" on screen
+    refreshMotion();
   }
 }
 
@@ -1787,12 +1960,17 @@ function initCurtain(){
   // Hold the page still while the curtain is up
   if(window.__erlenLenis) window.__erlenLenis.stop();
 
+  // The 3D hero builds while the curtain is up; lift it once the first frame is painted
+  // (never waiting more than ~1.8s past 'load', and not at all if three.js can't load).
+  const heroReady = new Promise(res => {
+    if(window.__hero3dReady) res(); else window.addEventListener('hero3d:ready', res, { once:true });
+  });
   window.addEventListener('load', () => {
-    setTimeout(() => {
+    Promise.race([heroReady, new Promise(r => setTimeout(r, 1800))]).then(() => setTimeout(() => {
       curtain.classList.add('hide');
       reveal();
       if(window.__erlenLenis) window.__erlenLenis.start();
-    }, 500);
+    }, 450));
   }, { once:true });
 
   // Safety fallback in case 'load' is slow
@@ -1801,7 +1979,7 @@ function initCurtain(){
     curtain.classList.add('hide');
     reveal();
     if(window.__erlenLenis) window.__erlenLenis.start();
-  }, 2400);
+  }, 3400);
 }
 
 /* ── Scroll progress bar (GSAP scrub, native fallback) ── */
@@ -1839,17 +2017,18 @@ function initCursor(){
   const ring = document.getElementById('cur-ring');
   if(!dot || !ring) return;
 
-  let mx=0,my=0, rx=0, ry=0;
+  let mx=0,my=0, rx=0, ry=0, running=false;
+  const loop = () => {
+    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+    dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    ring.style.transform = `translate(${rx.toFixed(1)}px,${ry.toFixed(1)}px) translate(-50%,-50%)`;
+    if(Math.abs(mx-rx) > .1 || Math.abs(my-ry) > .1) requestAnimationFrame(loop); else running = false;   // resting cursor = zero frames of work
+  };
   window.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
     dot.style.opacity = '1'; ring.style.opacity = '1';
-  });
-  (function loop(){
-    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-    dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-    requestAnimationFrame(loop);
-  })();
+    if(!running){ running = true; requestAnimationFrame(loop); }
+  }, { passive:true });
 
   const lightTargets = 'section.bg-ink, footer, .hero-bg';
   const bigTargets = 'a, button, .menu-tab, .gal-img, input, textarea, select, .seasonal-card';
@@ -1920,12 +2099,18 @@ function initHeroParallax(){
   }
 
   if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches || reduced) return;
+  let pend = false, ex = 0, ey = 0;
   hero.addEventListener('mousemove', e => {
-    const r = hero.getBoundingClientRect();
-    mx = (e.clientX - r.left) / r.width  - 0.5;
-    my = (e.clientY - r.top)  / r.height - 0.5;
-    apply();
-  });
+    ex = e.clientX; ey = e.clientY;
+    if(pend) return; pend = true;
+    requestAnimationFrame(() => {        // at most one measure + write per frame, however fast the mouse reports
+      pend = false;
+      const r = hero.getBoundingClientRect();
+      mx = (ex - r.left) / r.width  - 0.5;
+      my = (ey - r.top)  / r.height - 0.5;
+      apply();
+    });
+  }, { passive:true });
   hero.addEventListener('mouseleave', () => { mx = 0; my = 0; apply(); });
 }
 
@@ -1946,12 +2131,18 @@ function initSpotlightTilt(){
   const img = media?.querySelector('img');
   if(!media || !img) return;
   media.style.perspective = '900px';
+  let pend = false, ex = 0, ey = 0;
   media.addEventListener('mousemove', e => {
-    const r = media.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    img.style.transform = `scale(1.09) rotateX(${-py*4}deg) rotateY(${px*6}deg)`;
-  });
+    ex = e.clientX; ey = e.clientY;
+    if(pend) return; pend = true;
+    requestAnimationFrame(() => {
+      pend = false;
+      const r = media.getBoundingClientRect();
+      const px = (ex - r.left) / r.width - 0.5;
+      const py = (ey - r.top) / r.height - 0.5;
+      img.style.transform = `scale(1.09) rotateX(${-py*4}deg) rotateY(${px*6}deg)`;
+    });
+  }, { passive:true });
   media.addEventListener('mouseleave', () => { img.style.transform = ''; });
 }
 
@@ -1994,6 +2185,7 @@ function initLightbox(){
   const cap = document.getElementById('lb-cap');
   const closeBtn = document.getElementById('lb-close');
   if(!lb || !content) return;
+  let lastFocus = null;
 
   const open = (slot) => {
     const inner = slot.querySelector('.gal-img-inner');
@@ -2007,28 +2199,38 @@ function initLightbox(){
     } else {
       const div = document.createElement('div');
       div.className = 'lb-fallback';
-      div.style.cssText = 'aspect-ratio:4/3;background:#2a2620;display:flex;align-items:center;justify-content:center;color:rgba(244,239,230,.3);font-family:Inter,sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;';
+      div.style.cssText = 'aspect-ratio:4/3;background:#2a2620;display:flex;align-items:center;justify-content:center;color:rgba(244,239,230,.55);font-family:Inter,sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;';
       div.textContent = slot.dataset.caption || 'Photo coming soon';
       content.appendChild(div);
     }
     cap.textContent = slot.dataset.caption || '';
+    lastFocus = document.activeElement;
     lb.classList.add('open');
     lb.setAttribute('aria-hidden','false');
+    lb.setAttribute('aria-label', (slot.dataset.caption || 'Gallery') + ' photo');
     document.body.style.overflow = 'hidden';
     if(window.__erlenLenis) window.__erlenLenis.stop();
+    setTimeout(() => closeBtn && closeBtn.focus(), 50);
   };
   const close = () => {
+    if(!lb.classList.contains('open')) return;
     lb.classList.remove('open');
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
     if(window.__erlenLenis) window.__erlenLenis.start();
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
   };
 
   document.querySelectorAll('.gal-img').forEach(slot=>{
+    slot.setAttribute('role', 'button');
+    slot.tabIndex = 0;
+    slot.setAttribute('aria-label', 'Open photo: ' + (slot.dataset.caption || 'gallery'));
     slot.addEventListener('click', () => open(slot));
+    slot.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(slot); } });
   });
   closeBtn?.addEventListener('click', close);
   lb.addEventListener('click', e => { if(e.target === lb) close(); });
+  lb.addEventListener('keydown', e => { if(e.key === 'Tab'){ e.preventDefault(); closeBtn && closeBtn.focus(); } });   // the close button is the only control
   document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
 }
 
@@ -2036,12 +2238,18 @@ function initLightbox(){
 function initMagneticButtons(){
   if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   document.querySelectorAll('.btn-dark, .btn-ghost, .btn-outline-dark').forEach(btn=>{
+    let pend = false, ex = 0, ey = 0;
     btn.addEventListener('mousemove', e=>{
-      const r = btn.getBoundingClientRect();
-      const x = (e.clientX - r.left - r.width/2) * 0.25;
-      const y = (e.clientY - r.top - r.height/2) * 0.35;
-      btn.style.transform = `translate(${x}px, ${y}px)`;
-    });
+      ex = e.clientX; ey = e.clientY;
+      if(pend) return; pend = true;
+      requestAnimationFrame(()=>{
+        pend = false;
+        const r = btn.getBoundingClientRect();
+        const x = (ex - r.left - r.width/2) * 0.25;
+        const y = (ey - r.top - r.height/2) * 0.35;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }, { passive:true });
     btn.addEventListener('mouseleave', ()=>{ btn.style.transform = 'translate(0,0)'; });
   });
 }
@@ -2072,6 +2280,13 @@ function initGalleryParallax(){
       }
     }, { passive:true });
   }
+}
+
+/* ── Pause endless CSS loops while their section is off-screen ── */
+function initOffscreenPause(){
+  if(!('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-offscreen', !e.isIntersecting)), { rootMargin: '120px 0px' });
+  document.querySelectorAll('#seasonal').forEach(el => io.observe(el));
 }
 
 /* ── Cookie consent ─────────────────────────────── */
@@ -2142,12 +2357,12 @@ function initAtmosphere(){
   }
 }
 
-/* ── Three.js hero lives in the <script type="module"> at the end of <body> ── */
+/* ── Three.js hero lives in the <script type="module" onerror="window.__hero3dReady=true;window.dispatchEvent(new Event('hero3d:ready'))"> at the end of <body> ── */
 
 /* ── Init ──────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded',()=>{
   // Register GSAP plugins before any motion boots
-  if(window.gsap && window.ScrollTrigger){ gsap.registerPlugin(ScrollTrigger); }
+  if(window.gsap && window.ScrollTrigger){ gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ ignoreMobileResize: true }); }
 
   // Smooth scrolling first — everything else rides on it
   initLenis();
@@ -2169,6 +2384,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   initGalleryParallax();
   // GSAP scroll atmosphere (the Three.js hero boots itself as a module)
   initAtmosphere();
+  initOffscreenPause();
   // Load all data from API
   loadMenuFromServer();
   loadAboutPhoto();
@@ -2186,10 +2402,6 @@ renderMenu = function(){
 };
 
 function escapeHtml(s){ if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-</script>
-<!-- ── Three.js r186 (ES modules): EffectComposer + UnrealBloomPass for the hero ── -->
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
 </script>
 <script type="module">
 import * as THREE from 'three';
@@ -2218,11 +2430,12 @@ function initHero3D(){
   let renderer;
   try{
     renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:false, powerPreference:'high-performance' });
-  }catch(e){ canvas.style.display = 'none'; return; }
+  }catch(e){ canvas.style.display = 'none'; window.__hero3dReady = true; window.dispatchEvent(new Event('hero3d:ready')); return; }
   renderer.setClearColor(0x000000, 1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
-  const DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+  const DEVICE_DPR = window.devicePixelRatio || 1;
+  let DPR = Math.min(DEVICE_DPR, 1.75);
   renderer.setPixelRatio(DPR);
 
   const FOV = 38, CAM_Z = 56;
@@ -2258,6 +2471,7 @@ function initHero3D(){
         vec4 c = texture2D(tDiffuse, vUv);
         vec2 d = (vUv - 0.5) * vec2(1.0, 0.92);
         c.rgb *= mix(1.0 - uVig, 1.0, smoothstep(0.9, 0.28, length(d)));
+        c.rgb *= smoothstep(0.0, 0.12, vUv.y);                   // soft fade into the page below
         float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
         float n = h(vUv * vec2(1931.0, 1087.0) + fract(uTime * 0.37) * 91.0) - 0.5;
         c.rgb += n * uGrain * smoothstep(0.0, 0.2, lum);       // grain only where there is light — blacks stay black
@@ -2274,10 +2488,10 @@ function initHero3D(){
 
   /* ══ 1 · THE MOON — a real sphere with craters + bump ═════════════ */
   function makeMoonMaps(){
-    const W = 2048, H = 1024, R = mulberry32(8);
+    const W = 2048, H = 1024, R = mulberry32(8), K = Math.min(window.innerWidth, window.innerHeight) < 720 ? .5 : 1;
     const col = document.createElement('canvas'), bmp = document.createElement('canvas');
-    col.width = bmp.width = W; col.height = bmp.height = H;
-    const c = col.getContext('2d'), b = bmp.getContext('2d');
+    col.width = bmp.width = W * K; col.height = bmp.height = H * K;
+    const c = col.getContext('2d'), b = bmp.getContext('2d'); c.scale(K, K); b.scale(K, K);
     c.fillStyle = '#e4dbc6'; c.fillRect(0, 0, W, H);
     b.fillStyle = '#808080'; b.fillRect(0, 0, W, H);
     const blob = (ctx, x, y, r, rgba) => {
@@ -2473,11 +2687,17 @@ function initHero3D(){
   }
 
   /* ══ 5 · LAYOUT ═══════════════════════════════════════════════════ */
-  let CW = 1, CH = 1;
-  function fit(){
-    CW = hero.clientWidth || window.innerWidth; CH = hero.clientHeight || window.innerHeight;
+  let CW = 1, CH = 1, bufW = 0, bufH = 0, bufDPR = 0;
+  function resizeBuffers(){
+    if(bufW === CW && bufH === CH && bufDPR === DPR) return;     // setting canvas.width even to the same value wipes it
+    bufW = CW; bufH = CH; bufDPR = DPR;
+    renderer.setPixelRatio(DPR);
     renderer.setSize(CW, CH, false);
     composer.setPixelRatio(DPR); composer.setSize(CW, CH);
+  }
+  function fit(){
+    CW = hero.clientWidth || window.innerWidth; CH = hero.clientHeight || window.innerHeight;
+    resizeBuffers();
     camera.aspect = CW / CH; camera.updateProjectionMatrix();
     wide = spanHAt(0) * camera.aspect >= 72;
 
@@ -2496,13 +2716,41 @@ function initHero3D(){
   const ptr = { tx: 0, ty: 0, x: 0, y: 0 };
   if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
     hero.addEventListener('mousemove', e => {
-      const r = hero.getBoundingClientRect();
-      ptr.tx = ((e.clientX - r.left) / r.width - .5) * 2; ptr.ty = ((e.clientY - r.top) / r.height - .5) * 2;
-    });
+      ptr.tx = (e.clientX / window.innerWidth - .5) * 2; ptr.ty = (e.clientY / window.innerHeight - .5) * 2;
+    }, { passive: true });
     hero.addEventListener('mouseleave', () => { ptr.tx = 0; ptr.ty = 0; });
   }
   let visible = true;
   if('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 }).observe(hero);
+
+  /* Adaptive quality — identical picture on capable hardware. If frames run long, shed resolution
+     first (then MSAA, then bloom, finally cap to 30fps) instead of letting the page stutter. */
+  const TIERS = [
+    { dpr: Math.min(DEVICE_DPR, 1.75), samples: 4, bloom: true,  ms: 0  },
+    { dpr: Math.min(DEVICE_DPR, 1.4),  samples: 2, bloom: true,  ms: 0  },
+    { dpr: Math.min(DEVICE_DPR, 1.1),  samples: 0, bloom: true,  ms: 0  },
+    { dpr: 1,                          samples: 0, bloom: false, ms: 32 },
+  ];
+  let tier = 0, ema = 16.7, slowMs = 0, fastMs = 0, warm = 0, lastDown = 0, flips = 0, lastRender = 0;
+  function applyTier(n){
+    tier = Math.max(0, Math.min(TIERS.length - 1, n)); const T = TIERS[tier];
+    DPR = T.dpr;
+    [composer.renderTarget1, composer.renderTarget2].forEach(r => { r.samples = T.samples; r.dispose(); });
+    bloom.enabled = T.bloom;
+    resizeBuffers();
+    ema = 16.7; slowMs = fastMs = 0; warm = 0;
+  }
+  function govern(ms, now){
+    if(++warm < 6) return;                                 // skip the frames right after boot / a tier change (buffer re-allocation)
+    ms = Math.min(ms, 400);                                // one huge frame must not pin the average
+    ema += (ms - ema) * (ema > 60 ? .5 : .08);             // react fast when frames are very slow
+    const target = Math.max(16.7, TIERS[tier].ms);
+    if(ema > target * 1.45){ slowMs += ms; fastMs = 0; }
+    else if(ema < target * 1.12){ fastMs += ms; slowMs = 0; }
+    else { slowMs = fastMs = 0; }
+    if(slowMs > 1100 && tier < TIERS.length - 1){ applyTier(tier + 1); lastDown = now; flips++; }
+    else if(fastMs > 12000 && tier > 0 && flips < 2 && now - lastDown > 30000){ applyTier(tier - 1); }
+  }
 
   let elapsed = 0, last = performance.now(), started = false;
   function renderFrame(t){
@@ -2517,23 +2765,36 @@ function initHero3D(){
   }
   function tick(now){
     requestAnimationFrame(tick);
-    if(reduceMotion || !visible || document.hidden){ last = now; return; }
+    if(reduceMotion || !visible || document.hidden){ last = now; lastRender = now; return; }
+    const cap = TIERS[tier].ms;
+    if(cap && now - lastRender < cap - 2) return;          // lowest tier: 30fps cap
+    const ms = now - lastRender; lastRender = now;
     const dt = Math.min((now - last) / 1000, .05); last = now; elapsed += dt;
     ptr.x += (ptr.tx - ptr.x) * .05; ptr.y += (ptr.ty - ptr.y) * .05;
-    const r = hero.getBoundingClientRect();
-    scrollCur += (clamp01(-r.top / (r.height * .75)) - scrollCur) * .07;
+    scrollCur += (clamp01(window.scrollY / (CH * .75)) - scrollCur) * .07;   // the hero sits at the top of the page: no layout read needed
     renderFrame(elapsed);
+    govern(ms, now);
     if(!started){ started = true; canvas.classList.add('is-ready'); }
   }
-  window.addEventListener('resize', fit);
+  let rsT = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(rsT);
+    rsT = setTimeout(() => {
+      const w = hero.clientWidth || window.innerWidth, h = hero.clientHeight || window.innerHeight;
+      if(w === CW && Math.abs(h - CH) < 80) return;        // phone URL-bar show/hide fires resize while scrolling — ignore it
+      fit();
+    }, 150);
+  });
   fit();
-  if(reduceMotion){ canvas.classList.add('is-ready'); renderFrame(3.0); }
-  else requestAnimationFrame(tick);
+  if((navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4 && DEVICE_DPR >= 2)) applyTier(1);
+  const signalReady = () => { window.__hero3dReady = true; window.dispatchEvent(new Event('hero3d:ready')); };
+  if(reduceMotion){ canvas.classList.add('is-ready'); renderFrame(3.0); signalReady(); }
+  else { renderFrame(0); signalReady(); requestAnimationFrame(tick); }   // first frame (shader compile, texture upload) happens behind the curtain
 }
 
-/* boot after the page has loaded so building the scene never delays the intro curtain / first paint */
-if(document.readyState === 'complete') setTimeout(initHero3D, 0);
-else window.addEventListener('load', () => setTimeout(initHero3D, 0));
+/* boot as soon as the DOM is parsed: the intro curtain covers the build, and the curtain lifts when the first frame is ready */
+const bootHero = () => setTimeout(initHero3D, 0);
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootHero); else bootHero();
 
 </script>
 </body>

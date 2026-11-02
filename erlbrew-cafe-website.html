@@ -134,7 +134,7 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .menu-tab:hover .tab-label{color:rgba(244,239,230,0.7)!important}
 
 /* ── Gallery ── */
-.gal-img{overflow:hidden;position:relative}
+.gal-img{overflow:hidden;position:relative;contain:layout paint}
 .gal-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(24,23,20,.5))}
 .gal-img-inner{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;justify-content:center;background:#2a2620}
 .gal-img:hover .gal-img-inner{transform:scale(1.06)}
@@ -436,10 +436,10 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 }
 
 /* ── Text mask reveal (cinematic heading unveil) ── */
-.mask-reveal{overflow:hidden;display:block}
-.mask-reveal .mask-inner{display:block;transform:translateY(115%);opacity:0;
+.mask-reveal{overflow:hidden;display:block;contain:paint}
+.mask-reveal .mask-inner{display:block;transform:translate3d(0,115%,0);opacity:0;will-change:transform,opacity;
   transition:transform 1s cubic-bezier(.16,1,.3,1),opacity .8s ease}
-.mask-reveal.show .mask-inner{transform:translateY(0);opacity:1}
+.mask-reveal.show .mask-inner{transform:translate3d(0,0,0);opacity:1;will-change:auto}
 
 /* ── Hero title stagger (word-level cinematic entrance) ── */
 .hero-word{display:inline-block;overflow:hidden;vertical-align:top}
@@ -557,7 +557,7 @@ section[id]{scroll-margin-top:72px}
 
 
 /* map facade + guarded iframe */
-.map-wrap{position:relative;min-height:360px;background:#1d1b17}
+.map-wrap{position:relative;min-height:360px;background:#1d1b17;contain:layout paint style}
 .map-facade{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:360px;
   border:0;cursor:pointer;color:#F4EFE6;text-align:center;font-family:'Inter',sans-serif;
   background:radial-gradient(circle at 50% 44%,rgba(184,147,90,.18),transparent 40%),
@@ -1551,12 +1551,16 @@ function initReveal(){
       start: 'top 92%',
       once: true,
       onEnter: batch => {
+        // Promote to their own layer for the duration of the tween: without it every
+        // frame of the opacity/transform ramp repaints whole blocks of text (scroll jank).
+        batch.forEach(el => { el.style.willChange = 'transform, opacity'; });
         gsap.to(batch, {
           opacity: 1, x: 0, y: 0,
           duration: 1.05,
           ease: 'power3.out',
           stagger: 0.09,
           overwrite: 'auto',
+          onComplete: () => batch.forEach(el => { el.style.willChange = ''; })
         });
       }
     });
@@ -1801,11 +1805,12 @@ async function loadGalleryPhotos(){
     const existing = inner.querySelector('.gal-real-img');
     if(existing){ existing.src=photo.url; continue; }
     const img = document.createElement('img');
+    // loading/decoding must be set BEFORE src, or the browser starts fetching immediately
+    img.loading = 'lazy';
+    img.decoding = 'async';
     img.src = photo.url;
     img.alt = ((inner.closest('.gal-img')?.dataset.caption) || 'Gallery photo '+(i+1)) + ' at Erlbrew Café';
-    img.decoding = 'async';
     img.className = 'gal-real-img';
-    img.loading = 'lazy';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
     inner.appendChild(img);
   }
@@ -2331,13 +2336,22 @@ function initMap(){
   wrap.addEventListener('mouseleave', () => wrap.classList.remove('is-active'));
   document.addEventListener('pointerdown', e => { if(!wrap.contains(e.target)) wrap.classList.remove('is-active'); }, { passive:true });
 
-  // auto-load: map at least half in view AND no scrolling for ~0.7s (never on data-saver connections)
+  // auto-load: map at least half in view AND no scrolling for 2s (never on data-saver connections).
+  // The Google embed keeps running once loaded and costs ~14 points of dropped frames on every
+  // scroll past it, so only load it when the visitor has genuinely stopped to read this section —
+  // not during a casual pause mid-scroll. The facade button stays as the instant path.
   if(!('IntersectionObserver' in window) || (navigator.connection && navigator.connection.saveData)) return;
-  let inView = false, idleT = 0;
+  let inView = false, idleT = 0, armPending = false;
   const arm = () => {
-    if(wrap.dataset.loaded){ window.removeEventListener('scroll', arm); return; }
-    clearTimeout(idleT);
-    if(inView) idleT = setTimeout(load, 700);
+    // one timer update per frame at most — a raw scroll handler churns timers on every event
+    if(armPending) return;
+    armPending = true;
+    requestAnimationFrame(() => {
+      armPending = false;
+      if(wrap.dataset.loaded){ window.removeEventListener('scroll', arm); return; }
+      clearTimeout(idleT);
+      if(inView) idleT = setTimeout(load, 2000);
+    });
   };
   new IntersectionObserver(es => { inView = es[0].intersectionRatio >= .5; arm(); }, { threshold:[0, .5] }).observe(wrap);
   window.addEventListener('scroll', arm, { passive:true });

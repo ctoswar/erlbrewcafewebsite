@@ -555,6 +555,24 @@ section[id]{scroll-margin-top:72px}
 .ev-success:focus{outline:none}
 .ev-form button[disabled]{opacity:.65;cursor:progress}
 
+
+/* map facade + guarded iframe */
+.map-wrap{position:relative;min-height:360px;background:#1d1b17}
+.map-facade{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:360px;
+  border:0;cursor:pointer;color:#F4EFE6;text-align:center;font-family:'Inter',sans-serif;
+  background:radial-gradient(circle at 50% 44%,rgba(184,147,90,.18),transparent 40%),
+    repeating-linear-gradient(0deg,rgba(244,239,230,.035) 0 1px,transparent 1px 36px),
+    repeating-linear-gradient(90deg,rgba(244,239,230,.035) 0 1px,transparent 1px 36px),#1d1b17}
+.map-fac-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:400;letter-spacing:-.01em}
+.map-fac-sub{font-size:12px;letter-spacing:.04em;color:rgba(244,239,230,.72)}
+.map-fac-cta{margin-top:12px;padding:10px 18px;border:1px solid rgba(184,147,90,.65);color:#B8935A;font-size:10.5px;
+  letter-spacing:.18em;text-transform:uppercase;transition:background .3s,color .3s}
+.map-facade:hover .map-fac-cta,.map-facade:focus-visible .map-fac-cta{background:#B8935A;color:#181714}
+.map-fac-link{display:block;padding:150px 20px;text-align:center;color:#B8935A;font:500 12px 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase}
+/* a cross-origin map swallows the mouse wheel and stalls page scrolling — it only gets pointer events after a click */
+.map-wrap .map-frame{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}   /* sits on top of the card — no layout jump */
+.map-wrap.is-active .map-frame{pointer-events:auto}
+
 /* gallery tiles are buttons now */
 .gal-img:focus-visible{outline:2px solid #B8935A;outline-offset:-4px}
 
@@ -1163,20 +1181,16 @@ section[id]{scroll-margin-top:72px}
 
       <!-- Right: map -->
       <div class="reveal" style="transition-delay:.15s">
-        <div class="map-wrap">
-          <!--
-            GOOGLE MAPS EMBED
-            Go to maps.google.com → search your café → Share → Embed a map
-            Copy the src= URL from the <iframe> and replace the src below.
-          -->
-          <iframe
-            class="map-frame"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3864.292531966692!2d120.89846017598799!3d14.410292786053866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d3103effdf7f%3A0xf3ef84de2c1de928!2sErlbrew%20Cafe!5e0!3m2!1sen!2sph!4v1782271458436!5m2!1sen!2sph"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            title="Erlbrew Café on Google Maps"
-          ></iframe>
+        <div class="map-wrap" id="map-wrap" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3864.292531966692!2d120.89846017598799!3d14.410292786053866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d3103effdf7f%3A0xf3ef84de2c1de928!2sErlbrew%20Cafe!5e0!3m2!1sen!2sph!4v1782271458436!5m2!1sen!2sph">
+          <!-- The Google Maps embed is heavy (scripts, tiles, WebGL). It is only loaded once the visitor
+               arrives here and stops scrolling — or taps the card — so it can't compete with scrolling. -->
+          <button type="button" class="map-facade" id="map-facade" aria-label="Load the interactive map of Erlbrew Café">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B8935A" stroke-width="1.4" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.2A7 7 0 0 1 19 9.8C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>
+            <span class="map-fac-title">Erlbrew Café</span>
+            <span class="map-fac-sub">Azalea St. corner Advincula Ave., Kawit</span>
+            <span class="map-fac-cta">Load interactive map</span>
+          </button>
+          <noscript><a class="map-fac-link" href="https://www.google.com/maps/place/Erlbrew+Cafe/@14.4102928,120.8984602,17z" target="_blank" rel="noopener">Open Erlbrew Café in Google Maps</a></noscript>
         </div>
         <p class="mt-3 font-sans text-[11px] text-ink-40 tracking-wide text-right">
           Azalea St. corner Advincula Ave., Kawit
@@ -2267,7 +2281,8 @@ function initGalleryParallax(){
     gsap.fromTo(inner,
       { yPercent: -5, scale: 1.13 },
       { yPercent:  5, scale: 1.03, ease: 'none',
-        scrollTrigger: { trigger: slot, start: 'top bottom', end: 'bottom top', scrub: true } });
+        scrollTrigger: { trigger: slot, start: 'top bottom', end: 'bottom top', scrub: true,
+          onToggle: self => { inner.style.willChange = self.isActive ? 'transform' : 'auto'; } } });   // fixed raster scale while scaling a large photo → no re-raster per frame
   } else {
     // Original lightweight fallback (desktop only)
     if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -2280,6 +2295,46 @@ function initGalleryParallax(){
       }
     }, { passive:true });
   }
+}
+
+/* ── Map: load the Google embed only when the visitor has arrived and stopped scrolling ── */
+function initMap(){
+  const wrap = document.getElementById('map-wrap');
+  if(!wrap) return;
+  const facade = document.getElementById('map-facade');
+  const load = () => {
+    if(wrap.dataset.loaded) return;
+    wrap.dataset.loaded = '1';
+    const f = document.createElement('iframe');
+    f.className = 'map-frame';
+    f.src = wrap.dataset.src;
+    f.title = 'Erlbrew Café on Google Maps';
+    f.allowFullscreen = true;
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.style.opacity = '0';
+    f.addEventListener('load', () => {
+      f.style.transition = 'opacity .45s ease'; f.style.opacity = '1';
+      setTimeout(() => facade && facade.remove(), 500);
+    });
+    wrap.appendChild(f);
+  };
+  facade && facade.addEventListener('click', () => { load(); wrap.classList.add('is-active'); });
+
+  // click/tap the map to interact; leaving it (or tapping elsewhere) hands the wheel / swipe back to the page
+  wrap.addEventListener('click', () => { if(wrap.dataset.loaded) wrap.classList.add('is-active'); });
+  wrap.addEventListener('mouseleave', () => wrap.classList.remove('is-active'));
+  document.addEventListener('pointerdown', e => { if(!wrap.contains(e.target)) wrap.classList.remove('is-active'); }, { passive:true });
+
+  // auto-load: map at least half in view AND no scrolling for ~0.7s (never on data-saver connections)
+  if(!('IntersectionObserver' in window) || (navigator.connection && navigator.connection.saveData)) return;
+  let inView = false, idleT = 0;
+  const arm = () => {
+    if(wrap.dataset.loaded){ window.removeEventListener('scroll', arm); return; }
+    clearTimeout(idleT);
+    if(inView) idleT = setTimeout(load, 700);
+  };
+  new IntersectionObserver(es => { inView = es[0].intersectionRatio >= .5; arm(); }, { threshold:[0, .5] }).observe(wrap);
+  window.addEventListener('scroll', arm, { passive:true });
 }
 
 /* ── Pause endless CSS loops while their section is off-screen ── */
@@ -2380,6 +2435,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   initHeroParallax();
   initMaskReveal();
   initLightbox();
+  initMap();
   initMagneticButtons();
   initGalleryParallax();
   // GSAP scroll atmosphere (the Three.js hero boots itself as a module)

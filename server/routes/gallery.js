@@ -87,12 +87,19 @@ router.post('/:slot', (req, res, next) => {
         }
       }
 
-      // Convert to WebP using sharp for optimization
+      // Resize + convert to WebP using sharp for optimization.
+      // Without the resize a phone camera photo arrives at 4000-6000px and is decoded
+      // into a ~100MB texture that the compositor has to move on every scroll frame —
+      // that is what made scrolling below the gallery drop frames. The largest slot
+      // renders ~640px tall, so 1600px on the long edge is ~2.5x retina with headroom.
+      const MAX_EDGE = 1600;
       const webpFilename = `slot-${slot}-${crypto.randomBytes(6).toString('hex')}.webp`;
       const webpPath = path.join(UPLOAD_DIR, webpFilename);
-      
+
       await sharp(req.file.path)
-        .webp({ quality: 85 })
+        .rotate()                                   // honour EXIF orientation before resizing
+        .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 82, effort: 4 })
         .toFile(webpPath);
 
       // Remove original file

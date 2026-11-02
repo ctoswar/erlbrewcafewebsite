@@ -2277,23 +2277,29 @@ function initGalleryParallax(){
   if(window.gsap && window.ScrollTrigger){
     // The class ships with a 0.7s transform transition — GSAP scrub writes must not lag behind it
     inner.style.transition = 'none';
-    // Parallax inside the cropped slot — inner image drifts ±5% while easing out of its zoom
+    /* Parallax inside the cropped slot. Scale stays PINNED at 1.10: an animating scale makes the
+       compositor re-raster this large photo on every scroll frame (visible scroll lag), while a
+       constant scale rasterizes the layer once and each frame is a cheap translate.
+       1.10 exactly covers the ±5% drift — no gaps at either extreme. */
     gsap.fromTo(inner,
-      { yPercent: -5, scale: 1.13 },
-      { yPercent:  5, scale: 1.03, ease: 'none',
+      { yPercent: -5, scale: 1.10 },
+      { yPercent:  5, scale: 1.10, ease: 'none',
         scrollTrigger: { trigger: slot, start: 'top bottom', end: 'bottom top', scrub: true,
-          onToggle: self => { inner.style.willChange = self.isActive ? 'transform' : 'auto'; } } });   // fixed raster scale while scaling a large photo → no re-raster per frame
+          onToggle: self => { inner.style.willChange = self.isActive ? 'transform' : 'auto'; } } });
   } else {
     // Original lightweight fallback (desktop only)
     if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    window.addEventListener('scroll', () => {
+    let pend = false;
+    const apply = () => {                                    // at most one measure + write per frame
+      pend = false;
       const r = slot.getBoundingClientRect();
       if(r.top < window.innerHeight && r.bottom > 0){
         const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height);
         const shift = (progress - 0.5) * 40;
         inner.style.transform = `translateY(${shift}px) scale(1.08)`;
       }
-    }, { passive:true });
+    };
+    window.addEventListener('scroll', () => { if(!pend){ pend = true; requestAnimationFrame(apply); } }, { passive:true });
   }
 }
 

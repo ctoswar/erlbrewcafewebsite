@@ -1,5 +1,12 @@
 // One-off: downscale oversized gallery/seasonal uploads in place.
 // Keeps the original filename (DB references it), writes JPEG for .jpg/.jpeg/.png.
+//
+// ⚠ /uploads is served with Cache-Control: max-age=604800 (7 days). Resizing in
+// place does NOT reach browsers that already cached the old bytes under the same
+// URL — they keep using the heavy original for a week. If you re-run this against
+// files that are already in browsers' caches, rename them to a fresh
+// slot-N-<hex>.jpg AND update gallery_photos.filename, or the fix is invisible
+// to everyone who visited before.
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');

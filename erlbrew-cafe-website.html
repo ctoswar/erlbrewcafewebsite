@@ -145,15 +145,130 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 .pill-best{background:rgba(184,147,90,.15);color:#7a5c2a;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
 
 /* ── Events Form ── */
-.ev-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.ev-form .full{grid-column:1/-1}
-.ev-form label{display:block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(24,23,20,.4);margin-bottom:4px}
-.ev-form input,.ev-form select,.ev-form textarea{width:100%;padding:10px 14px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid rgba(24,23,20,.12);border-radius:3px;background:#fff;color:#181714;outline:none;transition:border-color .2s}
-.ev-form input:focus,.ev-form select:focus,.ev-form textarea:focus{border-color:#B8935A}
-.ev-form textarea{resize:vertical;min-height:100px}
-.ev-form input.error,.ev-form textarea.error{border-color:#7A3B28}
-.ev-success{display:none;padding:20px 24px;background:rgba(77,107,72,.08);border:1px solid rgba(77,107,72,.2);border-radius:3px;color:#3a5136;font-size:14px;text-align:center}
-.ev-success.show{display:block}
+.ev-card{position:relative;background:#FDFCF9;border:1px solid rgba(24,23,20,.1);border-radius:6px;
+  padding:32px 34px 36px;
+  box-shadow:0 30px 70px -38px rgba(24,23,20,.28),0 2px 8px -4px rgba(24,23,20,.05)}
+.ev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:6px 6px 0 0;
+  background:linear-gradient(90deg,transparent,#B8935A 25%,#B8935A 75%,transparent)}
+.ev-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid rgba(24,23,20,.08)}
+.ev-card-title{font-size:10px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(24,23,20,.45)}
+.ev-reply-pill{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:#3a5136;background:rgba(77,107,72,.08);border:1px solid rgba(77,107,72,.22);padding:5px 12px;border-radius:99px;white-space:nowrap}
+.ev-reply-pill svg{width:11px;height:11px;flex:none}
+
+.ev-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
+.ev-form-grid .full{grid-column:1/-1}
+.ev-form label,.ev-form .ev-form-label{display:block;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(24,23,20,.55);margin-bottom:9px}
+.ev-form .req{color:#7A3B28;margin-left:2px}
+.ev-optional{color:rgba(24,23,20,.32);font-weight:400;font-size:9px;letter-spacing:.08em;margin-left:6px}
+.ev-form input,.ev-form textarea{width:100%;padding:12px 14px;font-size:13.5px;font-family:'Inter',sans-serif;
+  border:1px solid rgba(24,23,20,.14);border-radius:4px;background:#fff;color:#181714;outline:none;
+  box-shadow:0 1px 2px rgba(24,23,20,.04);transition:border-color .25s,box-shadow .25s,background .25s}
+.ev-form input::placeholder,.ev-form textarea::placeholder{color:rgba(24,23,20,.3)}
+.ev-form input:hover,.ev-form textarea:hover{border-color:rgba(24,23,20,.3)}
+.ev-form input:focus,.ev-form textarea:focus{border-color:#B8935A;background:#fff;box-shadow:0 0 0 3px rgba(184,147,90,.18)}
+.ev-form textarea{resize:vertical;min-height:118px;line-height:1.65}
+.ev-form input.error,.ev-form textarea.error{border-color:#7A3B28;background:#FFFAF7}
+.ev-form input.error:focus,.ev-form textarea.error:focus{box-shadow:0 0 0 3px rgba(122,59,40,.12)}
+
+/* custom date picker (branded calendar; native input stays hidden as data source) */
+.ev-date-wrap{position:relative}
+.ev-date-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+.ev-date-field{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;font-size:13.5px;font-family:'Inter',sans-serif;text-align:left;
+  border:1px solid rgba(24,23,20,.14);border-radius:4px;background:#fff;color:#181714;cursor:pointer;
+  box-shadow:0 1px 2px rgba(24,23,20,.04);transition:border-color .25s,box-shadow .25s}
+.ev-date-field:hover{border-color:rgba(24,23,20,.3)}
+.ev-date-field:focus-visible{outline:none;border-color:#B8935A;box-shadow:0 0 0 3px rgba(184,147,90,.18)}
+.ev-date-field svg{width:15px;height:15px;color:rgba(24,23,20,.35);flex:none;transition:color .25s}
+.ev-date-field:hover svg,.ev-date-field.filled svg{color:#B8935A}
+.ev-date-placeholder{color:rgba(24,23,20,.3)}
+.ev-cal{position:absolute;top:calc(100% + 8px);left:0;width:min(100%,320px);z-index:40;background:#fff;
+  border:1px solid rgba(24,23,20,.12);border-radius:6px;padding:16px 16px 12px;
+  box-shadow:0 24px 48px -20px rgba(24,23,20,.3);
+  opacity:0;transform:translateY(-6px);transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1)}
+.ev-cal.open{opacity:1;transform:none}
+.ev-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ev-cal-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#181714;letter-spacing:.02em}
+.ev-cal-nav{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid transparent;border-radius:4px;background:none;color:rgba(24,23,20,.5);cursor:pointer;transition:all .2s}
+.ev-cal-nav:hover{border-color:rgba(184,147,90,.5);color:#B8935A}
+.ev-cal-nav svg{width:13px;height:13px}
+.ev-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.ev-cal-dow span{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(24,23,20,.35);text-align:center;padding:6px 0 8px}
+.ev-cal-day{height:34px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-family:'Inter',sans-serif;color:#181714;background:none;
+  border:1px solid transparent;border-radius:99px;cursor:pointer;position:relative;transition:background .15s,border-color .15s,color .15s}
+.ev-cal-day:hover:not(:disabled):not(.sel){background:rgba(184,147,90,.12);border-color:rgba(184,147,90,.4)}
+.ev-cal-day:disabled{color:rgba(24,23,20,.22);cursor:default}
+.ev-cal-day.today::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#4D6B48}
+.ev-cal-day.sel{background:#181714;color:#F4EFE6;border-color:#181714}
+.ev-cal-day.sel::after{display:none}
+.ev-cal-foot{display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(24,23,20,.07)}
+.ev-cal-action{background:none;border:none;font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(24,23,20,.5);cursor:pointer;padding:4px 2px;transition:color .2s;font-family:'Inter',sans-serif}
+.ev-cal-action:hover{color:#B8935A}
+
+/* event type: tap-to-select chips (no native dropdown) */
+.ev-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ev-chip{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ev-chip input{position:absolute;opacity:0;pointer-events:none}
+.ev-chip span{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;font-size:11.5px;font-weight:500;letter-spacing:.04em;
+  color:rgba(24,23,20,.58);background:#fff;border:1px solid rgba(24,23,20,.14);border-radius:99px;user-select:none;
+  transition:color .25s,border-color .25s,background .25s,transform .25s cubic-bezier(.22,1,.36,1)}
+.ev-chip span::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(24,23,20,.16);transition:background .25s}
+.ev-chip:hover span{border-color:rgba(184,147,90,.55);color:#181714;transform:translateY(-1px)}
+.ev-chip input:checked + span{background:#181714;border-color:#181714;color:#F4EFE6}
+.ev-chip input:checked + span::before{background:#B8935A}
+.ev-chip input:focus-visible + span{outline:2px solid #B8935A;outline-offset:2px}
+
+/* submit */
+.ev-submit{padding:16px 32px;border-radius:4px}
+.ev-submit .ev-btn-arrow{width:14px;height:14px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.ev-submit:hover .ev-btn-arrow{transform:translateX(4px)}
+
+/* success state */
+.ev-success{display:none;text-align:center;padding:48px 30px;background:rgba(77,107,72,.06);border:1px solid rgba(77,107,72,.2);border-radius:6px}
+.ev-success.show{display:block;animation:evPop .5s cubic-bezier(.22,1,.36,1) both}
+.ev-check{width:56px;height:56px;margin:0 auto 18px;display:block}
+.ev-check circle{fill:none;stroke:rgba(77,107,72,.3);stroke-width:1.5;stroke-dasharray:164;stroke-dashoffset:164}
+.ev-check path{fill:none;stroke:#4D6B48;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40}
+.ev-success.show .ev-check circle{animation:evDraw .8s cubic-bezier(.65,0,.35,1) .1s forwards}
+.ev-success.show .ev-check path{animation:evDraw .5s ease .55s forwards}
+@keyframes evPop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes evDraw{to{stroke-dashoffset:0}}
+
+/* mobile: single column form */
+@media(max-width:560px){
+  .ev-form-grid{grid-template-columns:1fr}
+  .ev-card{padding:26px 20px 30px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ev-success.show,.ev-banner.show{animation:none}
+  .ev-check circle,.ev-check path{animation:none;stroke-dashoffset:0}
+  .ev-chip span,.ev-submit .ev-btn-arrow,.ev-cal{transition:none}
+}
+
+/* left column: feature list + contact strip */
+.ev-features{list-style:none}
+.ev-features li{display:flex;align-items:center;gap:14px;padding:10px 0}
+.ev-f-icon{flex:none;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(24,23,20,.13);border-radius:4px;background:#fff;color:#B8935A;
+  transition:border-color .3s,transform .3s cubic-bezier(.22,1,.36,1)}
+.ev-f-icon svg{width:16px;height:16px}
+.ev-features li:hover .ev-f-icon{border-color:rgba(184,147,90,.5);transform:translateY(-2px)}
+.ev-features li:hover .ev-f-icon{color:#7a5c2a}
+.ev-f-text{font-size:13px;color:rgba(24,23,20,.72);font-weight:300;letter-spacing:.01em}
+.ev-contact{border-top:1px solid rgba(24,23,20,.12);padding-top:22px}
+.ev-note{font-size:11px;color:rgba(24,23,20,.55);letter-spacing:.02em;line-height:1.75;margin-bottom:14px}
+.ev-socials{display:flex;gap:10px;flex-wrap:wrap}
+.ev-social{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid rgba(24,23,20,.18);border-radius:99px;
+  font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#181714;text-decoration:none;background:transparent;
+  transition:background .3s,color .3s,border-color .3s}
+.ev-social svg{width:10px;height:10px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.ev-social:hover{background:#181714;color:#F4EFE6;border-color:#181714}
+.ev-social:hover svg{transform:translate(2px,-2px)}
 
 /* ── Hours ── */
 .hr-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(24,23,20,.07);font-size:13.5px}
@@ -541,19 +656,17 @@ section[id]{scroll-margin-top:72px}
 #menu .tab-jp.text-paper\/20{color:rgba(244,239,230,.5)}
 #menu .tab-label.text-paper\/35{color:rgba(244,239,230,.6)}
 
-/* event form: clear labels, visible focus, inline errors */
-.ev-form label{color:rgba(24,23,20,.66)}
-.ev-form label .req{color:#7A3B28;margin-left:2px}
-.ev-form input:focus-visible,.ev-form select:focus-visible,.ev-form textarea:focus-visible{
-  outline:none;border-color:#B8935A;box-shadow:0 0 0 3px rgba(184,147,90,.25)}
-.ev-form [aria-invalid="true"]{border-color:#7A3B28;background:#fffaf8}
-.ev-err{display:none;margin-top:5px;font-size:11.5px;line-height:1.4;color:#7A3B28}
-.ev-err.show{display:block}
-.ev-banner{display:none;padding:12px 16px;border:1px solid rgba(122,59,40,.3);background:rgba(122,59,40,.06);
-  color:#7A3B28;font-size:13px;line-height:1.5;border-radius:3px}
-.ev-banner.show{display:block}
+/* event form: a11y + state polish */
+.ev-form input:focus-visible,.ev-form textarea:focus-visible{outline:none}
+.ev-form [aria-invalid="true"]{border-color:#7A3B28;background:#FFFAF7}
+.ev-err{display:none;margin-top:7px;font-size:11.5px;line-height:1.45;color:#7A3B28}
+.ev-err.show{display:flex;align-items:baseline;gap:6px}
+.ev-err::before{content:'';flex:none;width:4px;height:4px;border-radius:50%;background:#7A3B28;transform:translateY(-2px)}
+.ev-banner{display:none;padding:13px 16px;border:1px solid rgba(122,59,40,.3);background:rgba(122,59,40,.06);
+  color:#7A3B28;font-size:12.5px;line-height:1.55;border-radius:4px;margin-bottom:20px}
+.ev-banner.show{display:block;animation:evPop .4s cubic-bezier(.22,1,.36,1) both}
 .ev-success:focus{outline:none}
-.ev-form button[disabled]{opacity:.65;cursor:progress}
+.ev-form button[disabled]{opacity:.7;cursor:progress}
 
 
 /* map facade + guarded iframe */
@@ -1005,79 +1118,135 @@ section[id]{scroll-margin-top:72px}
     <div class="grid lg:grid-cols-2 gap-16 items-start">
       <!-- Left: info -->
       <div class="reveal">
-        <p class="font-sans text-[14px] text-ink leading-[1.8] font-light mb-6">
+        <p class="font-sans text-[14px] text-ink leading-[1.8] font-light mb-8">
           We bring the café to you. Whether it's a wedding, corporate event,
           market, or private party — Erlbrew's mobile coffee cart serves
           specialty coffee, matcha, and craft drinks on-site.
         </p>
-        <ul class="space-y-3 mb-8">
-          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
-            <span class="text-gold shrink-0 mt-0.5">—</span>
-            <span>Weddings &amp; engagement parties</span>
+        <ul class="ev-features mb-10">
+          <li>
+            <span class="ev-f-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="14.5" r="4.5"/><circle cx="15" cy="14.5" r="4.5"/><path d="M10.5 5.5L12 4l1.5 1.5L12 7z"/></svg>
+            </span>
+            <span class="ev-f-text">Weddings &amp; engagement parties</span>
           </li>
-          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
-            <span class="text-gold shrink-0 mt-0.5">—</span>
-            <span>Corporate events &amp; office gatherings</span>
+          <li>
+            <span class="ev-f-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16"/><path d="M9 8.5h1.5M13.5 8.5H15M9 12h1.5M13.5 12H15M9 15.5h1.5M13.5 15.5H15"/></svg>
+            </span>
+            <span class="ev-f-text">Corporate events &amp; office gatherings</span>
           </li>
-          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
-            <span class="text-gold shrink-0 mt-0.5">—</span>
-            <span>Markets, bazaars &amp; pop-ups</span>
+          <li>
+            <span class="ev-f-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9L6 4.5h12L19.5 9"/><path d="M4.5 9a2.1 2.1 0 004.2 0 2.1 2.1 0 004.2 0 2.1 2.1 0 004.2 0 2.1 2.1 0 004.2 0"/><path d="M6 13.5v6h12v-6"/></svg>
+            </span>
+            <span class="ev-f-text">Markets, bazaars &amp; pop-ups</span>
           </li>
-          <li class="flex items-start gap-3 font-sans text-[13px] text-ink-40 font-light">
-            <span class="text-gold shrink-0 mt-0.5">—</span>
-            <span>Private parties &amp; celebrations</span>
+          <li>
+            <span class="ev-f-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5l1.1 3.2 3.2 1.1-3.2 1.1L11 13.6 9.9 10.4 6.7 9.3l3.2-1.1z"/><path d="M17.5 13.5l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z"/></svg>
+            </span>
+            <span class="ev-f-text">Private parties &amp; celebrations</span>
           </li>
         </ul>
-        <div class="border-t border-ink-15 pt-6">
-          <p class="font-sans text-[11px] text-ink-40 tracking-wide leading-relaxed">
-            Fill out the form and we'll get back to you within 24 hours.<br/>
-            Or reach us on <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="text-sage hover:text-ink transition-colors">Instagram</a> or <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="text-sage hover:text-ink transition-colors">Facebook</a>.
+        <div class="ev-contact">
+          <p class="ev-note">
+            Fill out the form and we'll get back to you within 24 hours.
+            Prefer social? Message us directly.
           </p>
+          <div class="ev-socials">
+            <a href="https://instagram.com/erlbrewcafe" target="_blank" rel="noopener" class="ev-social">
+              Instagram
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 9.5L9.5 2.5M4 2.5h5.5V8"/></svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61590518994157" target="_blank" rel="noopener" class="ev-social">
+              Facebook
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 9.5L9.5 2.5M4 2.5h5.5V8"/></svg>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Right: form -->
       <div class="reveal" style="transition-delay:.12s">
         <div class="ev-success" id="ev-success" role="status" tabindex="-1">
-          <p class="font-display text-xl font-light text-sage mb-1">Thank you!</p>
-          <p class="font-sans text-[13px] text-sage/80">Your inquiry has been sent. We'll be in touch soon.</p>
+          <svg class="ev-check" viewBox="0 0 56 56" aria-hidden="true">
+            <circle cx="28" cy="28" r="26"/>
+            <path d="M18 29.5l7 7 13-14"/>
+          </svg>
+          <p class="font-display text-3xl font-light text-sage mb-2">Thank you!</p>
+          <p class="font-sans text-[13px] text-ink-40">Your inquiry is on its way — we'll get back to you within 24 hours.</p>
         </div>
         <form id="ev-form" class="ev-form" novalidate>
-          <div class="ev-banner full" id="ev-banner" role="alert"></div>
-          <div>
-            <label for="ev-name">Name <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="ev-name" name="name" required aria-required="true" autocomplete="name" aria-describedby="ev-name-err" placeholder="Your name"/>
-            <p class="ev-err" id="ev-name-err"></p>
-          </div>
-          <div>
-            <label for="ev-email">Email <span class="req" aria-hidden="true">*</span></label>
-            <input type="email" id="ev-email" name="email" required aria-required="true" autocomplete="email" inputmode="email" aria-describedby="ev-email-err" placeholder="you@example.com"/>
-            <p class="ev-err" id="ev-email-err"></p>
-          </div>
-          <div>
-            <label for="ev-type">Event type</label>
-            <select id="ev-type" name="event_type">
-              <option value="">Select…</option>
-              <option value="Wedding">Wedding / Engagement</option>
-              <option value="Corporate">Corporate / Office</option>
-              <option value="Market">Market / Bazaar / Pop-up</option>
-              <option value="Private Party">Private Party</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="ev-date">Event date</label>
-            <input type="date" id="ev-date" name="event_date" autocomplete="off"/>
-          </div>
-          <div class="full">
-            <label for="ev-message">Tell us about your event <span class="req" aria-hidden="true">*</span></label>
-            <textarea id="ev-message" name="message" required aria-required="true" aria-describedby="ev-message-err" placeholder="Location, estimated number of guests, and anything else we should know."></textarea>
-            <p class="ev-err" id="ev-message-err"></p>
-          </div>
-          <div class="full">
-            <button type="submit" id="ev-submit" class="btn-dark w-full justify-center">
-              Send Inquiry
-            </button>
+          <div class="ev-card full">
+            <div class="ev-card-head">
+              <span class="ev-card-title">Inquiry Form</span>
+              <span class="ev-reply-pill" aria-label="We reply within 24 hours">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="6" cy="6" r="4.6"/><path d="M6 3.4V6l1.8 1.1"/></svg>
+                24-hr reply
+              </span>
+            </div>
+            <div class="ev-banner full" id="ev-banner" role="alert"></div>
+            <div class="ev-form-grid">
+              <div>
+                <label for="ev-name">Name <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="ev-name" name="name" required aria-required="true" autocomplete="name" aria-describedby="ev-name-err" placeholder="Your name"/>
+                <p class="ev-err" id="ev-name-err"></p>
+              </div>
+              <div>
+                <label for="ev-email">Email <span class="req" aria-hidden="true">*</span></label>
+                <input type="email" id="ev-email" name="email" required aria-required="true" autocomplete="email" inputmode="email" aria-describedby="ev-email-err" placeholder="you@example.com"/>
+                <p class="ev-err" id="ev-email-err"></p>
+              </div>
+              <div class="full">
+                <span class="ev-form-label" id="ev-type-label">Event type <span class="ev-optional">optional</span></span>
+                <div class="ev-chips" role="radiogroup" aria-labelledby="ev-type-label">
+                  <label class="ev-chip"><input type="radio" name="event_type" value="Wedding"/><span>Wedding / Engagement</span></label>
+                  <label class="ev-chip"><input type="radio" name="event_type" value="Corporate"/><span>Corporate / Office</span></label>
+                  <label class="ev-chip"><input type="radio" name="event_type" value="Market"/><span>Market / Bazaar / Pop-up</span></label>
+                  <label class="ev-chip"><input type="radio" name="event_type" value="Private Party"/><span>Private Party</span></label>
+                  <label class="ev-chip"><input type="radio" name="event_type" value="Other"/><span>Other</span></label>
+                </div>
+              </div>
+              <div class="full ev-date-wrap">
+                <span class="ev-form-label" id="ev-date-label">Event date <span class="ev-optional">optional</span></span>
+                <input type="date" id="ev-date" name="event_date" autocomplete="off" class="ev-date-native" tabindex="-1" aria-hidden="true"/>
+                <button type="button" id="ev-date-display" class="ev-date-field" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="ev-date-label">
+                  <span id="ev-date-text" class="ev-date-placeholder">Select a date</span>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg>
+                </button>
+                <div class="ev-cal" id="ev-cal" role="dialog" aria-label="Choose event date" hidden>
+                  <div class="ev-cal-head">
+                    <button type="button" class="ev-cal-nav" id="ev-cal-prev" aria-label="Previous month">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>
+                    </button>
+                    <span class="ev-cal-title" id="ev-cal-title" aria-live="polite"></span>
+                    <button type="button" class="ev-cal-nav" id="ev-cal-next" aria-label="Next month">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
+                    </button>
+                  </div>
+                  <div class="ev-cal-grid ev-cal-dow" aria-hidden="true">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                  </div>
+                  <div class="ev-cal-grid" id="ev-cal-days"></div>
+                  <div class="ev-cal-foot">
+                    <button type="button" id="ev-cal-clear" class="ev-cal-action">Clear</button>
+                    <button type="button" id="ev-cal-today" class="ev-cal-action">Today</button>
+                  </div>
+                </div>
+              </div>
+              <div class="full">
+                <label for="ev-message">Tell us about your event <span class="req" aria-hidden="true">*</span></label>
+                <textarea id="ev-message" name="message" required aria-required="true" aria-describedby="ev-message-err" placeholder="Location, estimated number of guests, and anything else we should know."></textarea>
+                <p class="ev-err" id="ev-message-err"></p>
+              </div>
+              <div class="full">
+                <button type="submit" id="ev-submit" class="btn-dark ev-submit w-full justify-center">
+                  <span id="ev-submit-label">Send Inquiry</span>
+                  <svg class="ev-btn-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 7h11M8.5 3L12.5 7l-4 4"/></svg>
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -1823,6 +1992,7 @@ async function loadGalleryPhotos(){
   const banner  = document.getElementById('ev-banner');
   const success = document.getElementById('ev-success');
   const btn     = document.getElementById('ev-submit');
+  const btnLabel = document.getElementById('ev-submit-label') || btn;
   const dateEl  = document.getElementById('ev-date');
   if(dateEl) dateEl.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
@@ -1853,7 +2023,7 @@ async function loadGalleryPhotos(){
     if(first){ first.focus(); return; }
     if(btn.disabled) return;
 
-    btn.textContent = 'Sending…';
+    btnLabel.textContent = 'Sending…';
     btn.disabled = true;
     try {
       const res = await fetch('/api/events/inquiries', {
@@ -1862,7 +2032,7 @@ async function loadGalleryPhotos(){
         body: JSON.stringify({
           name: fields.name.el.value.trim(),
           email: fields.email.el.value.trim(),
-          event_type: document.getElementById('ev-type').value,
+          event_type: (form.querySelector('input[name="event_type"]:checked') || {}).value || '',
           event_date: dateEl.value || null,
           message: fields.message.el.value.trim(),
         }),
@@ -1877,10 +2047,133 @@ async function loadGalleryPhotos(){
       banner.textContent = ((err && err.message) || 'Something went wrong.') + ' You can also message us on Instagram @erlbrewcafe.';
       banner.classList.add('show');
     } finally {
-      btn.textContent = 'Send Inquiry';
+      btnLabel.textContent = 'Send Inquiry';
       btn.disabled = false;
     }
   });
+})();
+
+/* ── Custom date picker (branded calendar for the event form) ── */
+(function initDatePicker(){
+  const wrap = document.querySelector('.ev-date-wrap');
+  if(!wrap) return;
+  const native = document.getElementById('ev-date');
+  const display = document.getElementById('ev-date-display');
+  const text   = document.getElementById('ev-date-text');
+  const cal    = document.getElementById('ev-cal');
+  const titleEl = document.getElementById('ev-cal-title');
+  const daysEl  = document.getElementById('ev-cal-days');
+  if(!native || !display || !cal || !daysEl) return;
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  const sameDay = (a,b) => a && b && a.getTime() === b.getTime();
+  let view = null;   // {y, m} month shown in the panel
+  let hideT = null;
+
+  function minDate(){
+    if(!native.min) return null;
+    const p = native.min.split('-').map(Number);
+    return new Date(p[0], p[1]-1, p[2]);
+  }
+
+  function render(){
+    const y = view.y, m = view.m;
+    titleEl.textContent = MONTHS[m] + ' ' + y;
+    daysEl.innerHTML = '';
+    const start = new Date(y, m, 1).getDay();
+    const daysIn = new Date(y, m+1, 0).getDate();
+    const daysInPrev = new Date(y, m, 0).getDate();
+    const today = new Date(); today.setHours(0,0,0,0);
+    const min = minDate();
+    const sel = native.value ? native.value.split('-').map(Number) : null;
+    const selDate = sel ? new Date(sel[0], sel[1]-1, sel[2]) : null;
+    const total = Math.ceil((start + daysIn) / 7) * 7;
+    for(let i = 0; i < total; i++){
+      const n = i - start + 1;
+      const d = n < 1 ? new Date(y, m-1, daysInPrev + n)
+              : n > daysIn ? new Date(y, m+1, n - daysIn)
+              : new Date(y, m, n);
+      const out = n < 1 || n > daysIn;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ev-cal-day' + (out ? ' out' : '') + (sameDay(d, selDate) ? ' sel' : '') + (sameDay(d, today) ? ' today' : '');
+      b.textContent = d.getDate();
+      b.disabled = out || (min && d < min);
+      b.setAttribute('aria-label', d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'}));
+      if(sameDay(d, selDate)) b.setAttribute('aria-current', 'date');
+      if(!b.disabled) b.addEventListener('click', () => pick(fmt(d)));
+      daysEl.appendChild(b);
+    }
+  }
+
+  function pick(ds){
+    native.value = ds;
+    syncText();
+    close();
+  }
+
+  function syncText(){
+    if(native.value){
+      const p = native.value.split('-').map(Number);
+      const dt = new Date(p[0], p[1]-1, p[2]);
+      text.textContent = dt.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+      text.classList.remove('ev-date-placeholder');
+      display.classList.add('filled');
+    } else {
+      text.textContent = 'Select a date';
+      text.classList.add('ev-date-placeholder');
+      display.classList.remove('filled');
+    }
+  }
+
+  function open(){
+    if(hideT){ clearTimeout(hideT); hideT = null; }
+    const sel = native.value ? native.value.split('-').map(Number) : null;
+    const now = new Date();
+    view = sel ? {y: sel[0], m: sel[1]-1} : {y: now.getFullYear(), m: now.getMonth()};
+    cal.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => cal.classList.add('open')));
+    display.setAttribute('aria-expanded', 'true');
+    render();
+  }
+
+  function close(){
+    cal.classList.remove('open');
+    display.setAttribute('aria-expanded', 'false');
+    hideT = setTimeout(() => { cal.hidden = true; hideT = null; }, 200);
+  }
+
+  display.addEventListener('click', () => { if(cal.hidden) open(); else close(); });
+  document.getElementById('ev-cal-prev').addEventListener('click', () => { view.m--; if(view.m < 0){ view.m = 11; view.y--; } render(); });
+  document.getElementById('ev-cal-next').addEventListener('click', () => { view.m++; if(view.m > 11){ view.m = 0; view.y++; } render(); });
+  document.getElementById('ev-cal-clear').addEventListener('click', () => { native.value = ''; syncText(); close(); });
+  document.getElementById('ev-cal-today').addEventListener('click', () => { pick(fmt(new Date())); });
+
+  // close on outside click / Escape
+  document.addEventListener('click', (e) => {
+    if(cal.hidden || wrap.contains(e.target)) return;
+    close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !cal.hidden){ close(); display.focus(); }
+  });
+
+  // arrow-key navigation between enabled day buttons
+  daysEl.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)) return;
+    const btns = [...daysEl.querySelectorAll('button:not(:disabled)')];
+    const i = btns.indexOf(document.activeElement);
+    if(i < 0) return;
+    e.preventDefault();
+    const delta = k === 'ArrowLeft' ? -1 : k === 'ArrowRight' ? 1 : k === 'ArrowUp' ? -7 : 7;
+    const j = Math.min(btns.length - 1, Math.max(0, i + delta));
+    btns[j].focus();
+  });
+
+  syncText();
 })();
 
 /* ── Load seasonal items ───────────────────────────── */

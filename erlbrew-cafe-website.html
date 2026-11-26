@@ -538,16 +538,17 @@ body{background:#F4EFE6;color:#181714;font-family:'Inter',sans-serif;overflow-x:
 @keyframes curtainMark{0%{opacity:0;transform:translateY(10px) scale(.96);letter-spacing:.9em}60%{opacity:1}100%{opacity:.85;transform:translateY(0) scale(1);letter-spacing:.5em}}
 @media(prefers-reduced-motion:reduce){#curtain{display:none}}
 
-/* ── Custom cinematic cursor (desktop / hover-capable only) ── */
+/* ── Cursor: a precise gold dot, rings over clickable things (desktop only) ── */
 @media(hover:hover) and (pointer:fine){
   html.has-cursor,html.has-cursor *{cursor:none!important}
-  #cur-dot,#cur-ring{position:fixed;top:0;left:0;z-index:9997;pointer-events:none;border-radius:50%;
-    transform:translate(-50%,-50%);will-change:transform}
-  #cur-dot{width:6px;height:6px;background:#B8935A;transition:opacity .2s,background .3s}
-  #cur-ring{width:34px;height:34px;border:1px solid rgba(184,147,90,.5);transition:width .28s cubic-bezier(.22,1,.36,1),height .28s cubic-bezier(.22,1,.36,1),border-color .3s,opacity .2s,background .3s}
-  #cur-ring.big{width:64px;height:64px;background:rgba(184,147,90,.08);border-color:rgba(184,147,90,.7)}
-  #cur-ring.light{border-color:rgba(244,239,230,.6)}
-  #cur-dot.light{background:#F4EFE6}
+  html.has-cursor :is(input,textarea,select){cursor:text!important}
+  #cur-dot{position:fixed;top:0;left:0;z-index:9997;pointer-events:none;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;
+    border-radius:50%;background:#B8935A;box-shadow:0 0 0 1px rgba(244,239,230,.5),0 0 5px rgba(24,23,20,.28);
+    opacity:0;will-change:transform;
+    transition:width .16s ease,height .16s ease,margin .16s ease,background .16s ease,box-shadow .16s ease,opacity .12s ease}
+  #cur-dot.big{width:26px;height:26px;margin:-13px 0 0 -13px;background:rgba(184,147,90,.08);
+    box-shadow:0 0 0 1.5px #B8935A,0 0 0 3px rgba(244,239,230,.22)}
+  #cur-dot.hide{opacity:0!important}
 }
 
 /* ── Text mask reveal (cinematic heading unveil) ── */
@@ -694,6 +695,24 @@ section[id]{scroll-margin-top:72px}
 
 /* phones: skip the full-screen blend layers (they re-composite on every scroll frame) */
 @media(max-width:760px),(pointer:coarse){#grain,#vignette{display:none}}
+
+/* ══════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND — vanilla port of motion-primitives <AnimatedBackground>
+   One shared highlight that glides (spring-style) between items.
+   ══════════════════════════════════════════════════════════ */
+.ab-root{position:relative;isolation:isolate}
+.ab-bg{position:absolute;left:0;top:0;z-index:-1;width:0;height:0;pointer-events:none;opacity:0;will-change:transform,width,height;
+  transition:transform .55s cubic-bezier(.34,1.32,.56,1),width .55s cubic-bezier(.34,1.32,.56,1),height .55s cubic-bezier(.34,1.32,.56,1),opacity .25s ease}
+.ab-bg.is-on{opacity:1}
+.ab-bg.ab-snap{transition:opacity .25s ease}
+.ab-nav{background:rgba(244,239,230,.12);border-radius:8px}
+#nav.stuck .ab-nav{background:rgba(24,23,20,.07)}
+.ab-tab{background:rgba(184,147,90,.13);border-radius:6px 6px 0 0}
+.ab-menu{background:rgba(184,147,90,.1);border-radius:6px;box-shadow:inset 2px 0 0 #B8935A}
+.ab-hours{background:rgba(77,107,72,.1);border-radius:6px}
+.ab-social{background:rgba(24,23,20,.06);border-radius:8px}
+.ab-foot{background:rgba(244,239,230,.08);border-radius:8px}
+.menu-item:hover{background:transparent}   /* the shared highlight replaces the per-row hover tint */
 </style>
 <noscript><style>.reveal,.reveal-l,.reveal-r,.mask-reveal .mask-inner,.hero-word span{opacity:1!important;transform:none!important;filter:none!important}.seasonal-spotlight,.sp-line{opacity:1!important;transform:none!important}#curtain{display:none!important}</style></noscript>
 </head>
@@ -714,7 +733,6 @@ section[id]{scroll-margin-top:72px}
 
 <!-- ── Custom cursor ── -->
 <div id="cur-dot" aria-hidden="true"></div>
-<div id="cur-ring" aria-hidden="true"></div>
 
 <!-- ── Gallery lightbox ── -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
@@ -2321,40 +2339,23 @@ function initScrollProgress(){
   window.addEventListener('resize', update);
 }
 
-/* ── Custom cinematic cursor ── */
+/* ── Cursor: a precise dot that tracks the pointer with no lag ── */
 function initCursor(){
   if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const dot = document.getElementById('cur-dot');
+  if(!dot) return;
   document.documentElement.classList.add('has-cursor');
-  const dot  = document.getElementById('cur-dot');
-  const ring = document.getElementById('cur-ring');
-  if(!dot || !ring) return;
-
-  let mx=0,my=0, rx=0, ry=0, running=false;
-  const loop = () => {
-    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-    dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-    ring.style.transform = `translate(${rx.toFixed(1)}px,${ry.toFixed(1)}px) translate(-50%,-50%)`;
-    if(Math.abs(mx-rx) > .1 || Math.abs(my-ry) > .1) requestAnimationFrame(loop); else running = false;   // resting cursor = zero frames of work
-  };
+  let seen = false;
   window.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.opacity = '1'; ring.style.opacity = '1';
-    if(!running){ running = true; requestAnimationFrame(loop); }
+    dot.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+    if(!seen){ seen = true; dot.style.opacity = '1'; }
   }, { passive:true });
-
-  const lightTargets = 'section.bg-ink, footer, .hero-bg';
-  const bigTargets = 'a, button, .menu-tab, .gal-img, input, textarea, select, .seasonal-card';
-
+  const grow = 'a, button, [role="button"], .menu-tab, .gal-img, .seasonal-card, label';
   document.addEventListener('mouseover', e => {
-    if(e.target.closest(bigTargets)) ring.classList.add('big');
-    const onDark = e.target.closest(lightTargets);
-    ring.classList.toggle('light', !!onDark);
-    dot.classList.toggle('light', !!onDark);
+    dot.classList.toggle('big', !!e.target.closest(grow));
+    dot.classList.toggle('hide', !!e.target.closest('input, textarea, select'));
   });
-  document.addEventListener('mouseout', e => {
-    if(e.target.closest(bigTargets)) ring.classList.remove('big');
-  });
-  document.addEventListener('mouseleave', () => { dot.style.opacity='0'; ring.style.opacity='0'; });
+  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; seen = false; });
 }
 
 /* ── Hero mouse + scroll parallax ────────────────── */
@@ -2771,6 +2772,71 @@ renderMenu = function(){
 };
 
 function escapeHtml(s){ if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+<script>
+/* ── Animated Background (port of motion-primitives AnimatedBackground) ──
+   animatedBackground(root, {items, cls, rest, pad, click})
+   · one absolutely-positioned highlight lives in `root`
+   · it glides to the hovered / keyboard-focused item, and returns to `rest()` (the active item) on leave */
+function animatedBackground(root, o){
+  if(!root || root._ab) return;
+  root._ab = 1;
+  const pad = o.pad || [0, 0];
+  const bg = document.createElement('div');
+  bg.className = 'ab-bg ' + o.cls;
+  bg.setAttribute('aria-hidden', 'true');
+  root.classList.add('ab-root');
+  let cur = null, shown = false;
+
+  const hide = () => { bg.classList.remove('is-on'); shown = false; cur = null; };
+  const place = el => {
+    if(!el || !el.isConnected) return hide();
+    if(bg.parentNode !== root) root.insertBefore(bg, root.firstChild);   // survives innerHTML re-renders
+    const a = el.getBoundingClientRect(), b = root.getBoundingClientRect();
+    const x = a.left - b.left - root.clientLeft + root.scrollLeft - pad[0];
+    const y = a.top  - b.top  - root.clientTop  + root.scrollTop  - pad[1];
+    if(!shown) bg.classList.add('ab-snap');                       // first appearance: no slide-in from nowhere
+    bg.style.width  = (a.width  + pad[0] * 2) + 'px';
+    bg.style.height = (a.height + pad[1] * 2) + 'px';
+    bg.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    if(!shown){ void bg.offsetWidth; bg.classList.remove('ab-snap'); bg.classList.add('is-on'); shown = true; }
+    cur = el;
+  };
+  const rest = () => { const r = o.rest && o.rest(); r ? place(r) : hide(); };
+  const pick = e => { const it = e.target.closest && e.target.closest(o.items); return it && root.contains(it) ? it : null; };
+
+  root.addEventListener('pointerover', e => { if(e.pointerType === 'touch') return; const it = pick(e); if(it && it !== cur) place(it); });
+  root.addEventListener('pointerleave', e => { if(e.pointerType !== 'touch') rest(); });
+  root.addEventListener('focusin',  e => { const it = pick(e); if(it && e.target.matches(':focus-visible')) place(it); });
+  root.addEventListener('focusout', e => { if(!root.contains(e.relatedTarget)) rest(); });
+  if(o.click) root.addEventListener('click', e => { const it = pick(e); if(it) place(it); });
+  if('ResizeObserver' in window) new ResizeObserver(() => cur && place(cur)).observe(root);
+  if(o.rest) new MutationObserver(() => { if(!root.matches(':hover')) rest(); })
+    .observe(root, { attributes:true, subtree:true, attributeFilter:['aria-selected', 'aria-current'] });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => cur && place(cur));
+  rest();
+}
+
+function initAnimatedBackgrounds(){
+  const $ = s => document.querySelector(s);
+  // Desktop nav — the pill rests on the section you are reading
+  animatedBackground($('nav[aria-label="Primary"]'), { items:'.nav-lnk', cls:'ab-nav', pad:[10, 6], rest:() => $('nav[aria-label="Primary"] .nav-lnk[aria-current]') });
+  // Opening hours
+  animatedBackground($('#hours-container'), { items:'.hr-row', cls:'ab-hours', pad:[12, 0] });
+  // Social links + footer navigation
+  animatedBackground($('#visit .flex.flex-col.gap-3'), { items:'a', cls:'ab-social', pad:[12, 6] });
+  animatedBackground($('footer .grid > div:nth-child(2)'), { items:'a', cls:'ab-foot', pad:[12, 6] });
+}
+
+/* Menu is rendered asynchronously — attach once its tabs and panels exist */
+function initMenuBackgrounds(){
+  const tabs = document.getElementById('menu-tabs');
+  if(tabs) animatedBackground(tabs, { items:'.menu-tab', cls:'ab-tab', click:true, rest:() => tabs.querySelector('.menu-tab[aria-selected="true"]') });
+  document.querySelectorAll('.menu-panel').forEach(p => animatedBackground(p, { items:'.menu-item', cls:'ab-menu', pad:[14, 0] }));
+}
+const _renderMenuAB = renderMenu;
+renderMenu = function(){ _renderMenuAB(); requestAnimationFrame(() => requestAnimationFrame(initMenuBackgrounds)); };
+document.addEventListener('DOMContentLoaded', initAnimatedBackgrounds);
 </script>
 <script type="module">
 import * as THREE from 'three';
